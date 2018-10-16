@@ -21,7 +21,14 @@ description: "Some description about Victor Igor..."
 	<ul class="recent">
 		{% for project in site.projects %}
 		<li><a href="{{ project.url}}">
-				<h3 class="project-name" itemprop="name">{{project.name}}</h3>
+				<h3 class="project-name" itemprop="name">
+					{{
+						project.name
+						console.log("ssssssss");
+						console.log(project.name);
+						console.log(project);
+						
+						}}</h3>
 			</a></li>
 		{% endfor %}
 	</ul>
