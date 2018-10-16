@@ -5,14 +5,24 @@ permalink: /about/index.html
 description: "Some description about Victor Igor..."
 ---
 
-<img itemprop="image" class="img-rounded about_perfil" src=" https://68.media.tumblr.com/93f384858e9273d5b980b418e2f2f4d5/tumblr_o5i2aybLJG1uapsfmo2_250.png" alt="My profile">
+<img itemprop="image" class="img-rounded about_perfil" src="https://avatars0.githubusercontent.com/u/11432479?s=400&u=b2c0e5f25c5f4abe6608095ddd1b2e1d534c03f2&v=4"
+ alt="My profile">
 
-<h2>My projects</h2>
 
-<div class="aboutme">
+<h1>Kyuhyeon Kim, 김규현</h1>
+<div class="aboutme project">
+	<h2>Intro</h2>
+	<p>안녕하세요. 김규현입니다.</p>
+
+</div>
+
+<div class="aboutme project">
+	<h2>My projects</h2>
 	<ul class="recent">
 		{% for project in site.projects %}
-	    	<li><a href="{{ project.url}}"><h3 class="project-name" itemprop="name">{{ project.name }}</h3></a></li>
-	    {% endfor %}
+		<li><a href="{{ project.url}}">
+				<h3 class="project-name" itemprop="name">{{ project.name }}</h3>
+			</a></li>
+		{% endfor %}
 	</ul>
 </div>
