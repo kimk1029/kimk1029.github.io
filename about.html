@@ -17,14 +17,16 @@ description: "Some description about Victor Igor..."
 </div>
 
 
-	  
+
 <div class="aboutme project">
 	<h2>My projects</h2>
 	<ul class="recent collapsible">
 		{% for project in site.projects %}
 		<li>
-				<div class="collapsible-header"><i class="material-icons">add</i><h3 class="project-name" itemprop="name">{{project.name}}</h3></div>
-				<div class="collapsible-body"><span>프로젝트 내용 </span></div>
+			<div class="collapsible-header"><i class="material-icons">add</i>
+				<h3 class="project-name" itemprop="name">{{project.name}}</h3>
+			</div>
+			<div class="collapsible-body"><span>프로젝트 내용 </span></div>
 		</li>
 		{% endfor %}
 	</ul>
