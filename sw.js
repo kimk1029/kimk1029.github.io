@@ -24,7 +24,7 @@ self.addEventListener('push', function(event) {
     console.log('[Service Worker] Push Received.');
     console.log(`[Service Worker] Push had this data: "${event.data.text()}"`);
   
-    const title = 'Push Codelab';
+    const title = '--새글알림--';
     const options = {
       body: 'POST에 새글이 등록되었습니다.',
       icon: 'images/icon.png',
