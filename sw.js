@@ -26,7 +26,7 @@ self.addEventListener('push', function(event) {
   
     const title = 'Push Codelab';
     const options = {
-      body: 'Yay it works.',
+      body: 'POST에 새글이 등록되었습니다.',
       icon: 'images/icon.png',
       badge: 'images/badge.png'
     };
