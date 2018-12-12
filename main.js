@@ -27,6 +27,30 @@ const pushButton = document.querySelector('.js-push-btn');
 
 let isSubscribed = false;
 let swRegistration = null;
+console.log(navigator);
+console.log(window);
+console.log(pushButton);
+
+//서비스 워커가 등록되어있나 지원을 하는 브라우저인지 체크를한다.
+if ('serviceWorker' in navigator && 'PushManager' in window) {
+  console.log('Service Worker and Push is supported');
+  //브라우저에 서비스워커 "sw.js를 등록한다."
+  navigator.serviceWorker.register('sw.js')
+  .then(function(swReg) {
+    console.log('Service Worker is registered', swReg);
+
+    swRegistration = swReg;
+    initialiseUI();
+  })
+  .catch(function(error) {
+    console.error('Service Worker Error', error);
+  });
+} else {//없을경우에는 지원하지않는다는 문구출력
+  console.warn('Push messaging is not supported');
+  pushButton.textContent = 'Push Not Supported';
+}
+
+
 
 function urlB64ToUint8Array(base64String) {
   const padding = '='.repeat((4 - base64String.length % 4) % 4);
@@ -60,7 +84,7 @@ function updateSubscriptionOnServer(subscription) {
 
 //해당 클라이언트가 구독을하였는지 하지않았는지 확인하는 펑션
 function initialiseUI() {
-
+console.log(pushButton);
   pushButton.addEventListener('click', function() {
     pushButton.disabled = true;
     if (isSubscribed) {
@@ -116,31 +140,3 @@ function subscribeUser() {
     updateBtn();
   });
 }
-console.log(navigator);
-console.log(window);
-
-//서비스 워커가 등록되어있나 지원을 하는 브라우저인지 체크를한다.
-if ('serviceWorker' in navigator && 'PushManager' in window) {
-  console.log('Service Worker and Push is supported');
-  //브라우저에 서비스워커 "sw.js를 등록한다."
-  navigator.serviceWorker.register('sw.js')
-  .then(function(swReg) {
-    console.log('Service Worker is registered', swReg);
-
-    swRegistration = swReg;
-  })
-  .catch(function(error) {
-    console.error('Service Worker Error', error);
-  });
-} else {//없을경우에는 지원하지않는다는 문구출력
-  console.warn('Push messaging is not supported');
-  pushButton.textContent = 'Push Not Supported';
-}
-
-navigator.serviceWorker.register('sw.js')
-.then(function(swReg) {
-  console.log('Service Worker is registered', swReg);
-
-  swRegistration = swReg;
-  initialiseUI();
-})
