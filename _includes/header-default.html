@@ -42,7 +42,9 @@
                 <svg class="icon icon-photo"><use xlink:href="#icon-photo"></use></svg>
             </a>
         </div>
-
+        <button disabled class="js-push-btn mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
+                Enable Push Messaging
+        </button>
         <ul class="recent">
             <p>Recent posts:</p>
              {% for post in site.posts limit:3%}
