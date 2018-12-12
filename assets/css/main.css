@@ -1395,3 +1395,13 @@ footer p {
     text-align: center;
     margin: 0;
 }
+.subscription-details {
+    transition: opacity 1s;
+  }
+  
+  @media (max-width: 600px) {
+    header > h1 {
+      font-size: 36px;
+    }
+  }
+  
