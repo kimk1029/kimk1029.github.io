@@ -59,15 +59,15 @@ links:
 
 # projects in header index
 projects:
-  - name: Report Page at Trumpia
+  - name: Report
     
-  - name: Responsive Web at Trumpia
+  - name: Responsive Web
   
-  - name: Custom DB query Page at Trumpia
+  - name: Project Num2
 
-  - name: Trumpua legacy solution at Trumpia
+  - name: Weplay
 
-  - name: Polling Result service & web crawing at BitCamp
+  - name: ToyProject
    
 
 # exclude my node related stuff
