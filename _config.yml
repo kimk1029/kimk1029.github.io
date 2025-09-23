@@ -1,74 +1,31 @@
-# Site settings
-title: KyuHyeon Kim - Web Developer
-description: "A blog about KyuHyeon dev site"
-baseurl:  # for test: remove string '/space-jekyll-template' to ''
-url: "http://kimk1029.github.io/"
+title: Title of your CV site
+profile_img: /assets/img/profile.webp
+icon_img: /assets/img/icon.webp
 
-# User settings
-username: KyuHyeon Kim
-user_title: KyuHyeon Kim - WebDev
-email: kimk10291@gmail.com
+name: "Your Name Here"
+job: "〈Your Job Here〉"
 
-github_username:  kimk1029
-gplus_username:  kimk10291
-instagram_username: kimqh
-linkedin_public_url: kimk1029
-profile_picture: https://avatars0.githubusercontent.com/u/11432479?s=400&u=b2c0e5f25c5f4abe6608095ddd1b2e1d534c03f2&v=4
+phone_number: 012-345-6789
+address: City, Country
+email: email@example.com
+linkedin_username: linkedin
+github_username: github
+instagram_username: instagram
+twitter_username: twitter
+facebook_username: facebook
+youtube_username: youtube
+blog_url: homepage-url
 
-# Build settings
-markdown: kramdown
-highlighter: rouge
-permalink: /:title/
+# If your repo name follows the format "<user-name>.github.io", then leave the below blank.
+# Otherwise, set its value as "/<repo-name>". ex) baseurl: /resume
+baseurl:
 
-# html minify
-compress_html:
-  clippings: all
-  comments: all
-  endings: []
-  profile: false
+exclude:
+  - _posts/
+  - resources/
+  - vendor/
 
-# Links to include in menu navigation
-links:
-  section_1:
-    - title: home
-      url: /
-      key_trigger: 1
-    - title: my posts
-      url: /posts
-      key_trigger: 2
-    - title: series
-      url: /series
-      key_trigger: 3
-    - title: tags
-      url: /tags
-      key_trigger: 4
-    - title: about me
-      url: /about
-      key_trigger: 5
-  section_2:
-    - title: github
-      url: http://www.github.com/victorvoid
-      new_tab: true
-      key_trigger: g
-    - title: twitter
-      url: http://www.twitter.com/victorvoid
-      key_trigger: t
-    - title: search
-      url: ""
-      key_trigger: s #WARNING: search only works with "s"
-
-# projects in header index
-projects:
-  - name: Report
-    
-  - name: Responsive Web
-  
-  - name: Project Num2
-
-  - name: Weplay
-
-  - name: ToyProject
-   
-
-# exclude my node related stuff
-exclude: ['package.json', 'src', 'node_modules']
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
