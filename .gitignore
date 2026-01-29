@@ -1,4 +1,8 @@
-_site
-.sass-cache
 node_modules
-_drafts
+
+# Next.js
+.next
+out
+next-env.d.ts
+*.tsbuildinfo
+.DS_Store
