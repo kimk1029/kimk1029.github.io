@@ -1,6 +1,17 @@
 import { Code2, Layers, Smartphone, Bot, Database } from "lucide-react";
 export const experience = [
   {
+    company: "Personal Project (Self-Employed)",
+    role: "Full Stack Developer",
+    period: "2025.01 ~ 현재",
+    description: "AI 기반 개발 생산성 극대화 및 신규 서비스 런칭 준비 중",
+    details: [
+      "Cursor AI 및 LLM을 활용한 개발 워크플로우 최적화 연구",
+      "dopamine.land 및 위치 기반 데이팅 앱 고도화",
+      "새로운 비즈니스 모델 발굴 및 MVP 빠른 검증"
+    ]
+  },
+  {
     company: "NEOWIZ (네오위즈)",
     role: "Frontend Developer (Blockchain Team)",
     period: "2020.03 ~ 2024.12",
@@ -26,13 +37,15 @@ export const experience = [
   }
 ];
 export const personalInfo = {
+  // ... 기존 데이터
   name: "김규현 (Kyu-hyun Kim)",
   title: "Frontend Engineer",
   subtitle: "Web3 & Blockchain | AI-Assisted Dev",
   email: "kimk1029@naver.com",
-  phone: "010-3244-0103", // 핸드폰 번호를 수정해주세요
+  phone: "010-3244-0103", // 이력서 기반 번호
   github: "https://github.com/kimk1029",
   summary: [
+    // About 섹션에서 비행기가 지나갈 문구들
     "탄탄한 UI/UX 개발 역량 위에 블록체인(Web3) 도메인 지식을 더한 8년 차 개발자입니다.",
     "기술적 구현을 넘어 프론트엔드가 '협업의 허브'임을 이해하며, 주도적으로 디자인 시스템을 도입하고 팀의 효율을 높여왔습니다.",
     "최근에는 Cursor AI 등 AI 도구를 적극 활용하여 개발 생산성을 극대화하는 데 집중하고 있습니다."
