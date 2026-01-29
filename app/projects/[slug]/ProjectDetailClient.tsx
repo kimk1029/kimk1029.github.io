@@ -9,6 +9,7 @@ import {
   Building,
   Cpu,
   CheckCircle,
+  ExternalLink,
 } from 'lucide-react';
 import type { Project } from '@/app/data';
 
@@ -98,6 +99,22 @@ export default function ProjectDetailClient({
             transition={{ delay: 0.4 }}
             className="space-y-8"
           >
+            {project.url && (
+              <div className="bg-slate-900/20 border border-slate-800 p-6">
+                <a
+                  href={project.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold transition-colors"
+                >
+                  <ExternalLink size={18} />
+                  {project.title} 방문하기
+                </a>
+                <p className="text-slate-500 text-xs font-mono mt-2 text-center">
+                  {project.url}
+                </p>
+              </div>
+            )}
             <div className="bg-slate-900/20 border border-slate-800 p-6">
               <h4 className="text-sm font-bold text-white uppercase tracking-widest mb-4 flex items-center gap-2">
                 <Cpu size={16} /> Tech Stack

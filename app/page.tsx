@@ -4,7 +4,7 @@ import React, { useRef } from "react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import Link from "next/link";
 import {
-  Github, Mail, ArrowRight, Phone, Send, MapPin, Calendar, Briefcase
+  Github, Mail, ArrowRight, Phone, Send, MapPin, Calendar, Briefcase, Instagram
 } from "lucide-react";
 import { personalInfo, skills, allProjects, experience } from "./data";
 
@@ -276,6 +276,40 @@ export default function Portfolio() {
                   </a>
                 </div>
               </div>
+
+              <a
+                href={personalInfo.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 group"
+              >
+                <div className="bg-blue-900/20 p-3 border border-blue-500/30 group-hover:border-blue-500/80 transition-colors">
+                  <Github className="text-blue-400 w-5 h-5" />
+                </div>
+                <div>
+                  <div className="text-[10px] text-slate-500 font-mono uppercase tracking-wider">GitHub</div>
+                  <span className="text-white font-bold tracking-wider group-hover:text-blue-400 transition-colors">
+                    {personalInfo.github.replace(/^https?:\/\//, "")}
+                  </span>
+                </div>
+              </a>
+
+              <a
+                href="https://instagram.com/kimqh"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 group"
+              >
+                <div className="bg-blue-900/20 p-3 border border-blue-500/30 group-hover:border-blue-500/80 transition-colors">
+                  <Instagram className="text-blue-400 w-5 h-5" />
+                </div>
+                <div>
+                  <div className="text-[10px] text-slate-500 font-mono uppercase tracking-wider">Instagram</div>
+                  <span className="text-white font-bold tracking-wider group-hover:text-blue-400 transition-colors">
+                    @kimqh
+                  </span>
+                </div>
+              </a>
             </div>
           </motion.div>
         </section>

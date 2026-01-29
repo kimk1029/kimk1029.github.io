@@ -75,6 +75,7 @@ export interface Project {
   description: string;
   details: string[];
   image?: string;
+  url?: string;
 }
 
 export const allProjects: Project[] = [
@@ -86,6 +87,7 @@ export const allProjects: Project[] = [
     period: "2025.09 ~ 2025.12",
     type: "Web Game Platform",
     image: placeholderTech(1),
+    url: "https://dopamine.land",
     tech: ["Next.js", "Phaser.js", "Supabase", "WebSockets", "Cursor AI"],
     shortDesc: "웹 기반 멀티플레이 게임 플랫폼. Cursor AI를 활용해 개발 속도 2배 단축.",
     description: "네오위즈 재직 시 습득한 게임 엔진 기술을 웹 서비스에 접목하여 구축한 카지노 컨셉의 멀티플레이 게임 놀이터입니다.",
