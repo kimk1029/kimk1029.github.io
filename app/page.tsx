@@ -10,6 +10,20 @@ import { personalInfo, skills, allProjects, experience } from "./data";
 
 // --- Components ---
 
+const SectionHeading = ({ children, num }: { children: React.ReactNode, num: string }) => (
+  <motion.div
+    initial={{ opacity: 0, x: -20 }}
+    whileInView={{ opacity: 1, x: 0 }}
+    viewport={{ once: true }}
+    className="flex items-baseline gap-4 mb-16 border-b border-white/20 pb-4"
+  >
+    <span className="font-mono text-blue-500 text-xl">0{num}.</span>
+    <h2 className="text-3xl md:text-5xl font-bold text-white uppercase tracking-tight">
+      {children}
+    </h2>
+  </motion.div>
+);
+
 const ProjectCard = ({ project }: { project: any }) => {
   const isPersonal = project.company === "Personal Project";
   const labelStyles = isPersonal
@@ -69,43 +83,43 @@ export default function Portfolio() {
   const smoothScroll = useSpring(scrollYProgress, { stiffness: 50, damping: 20 });
 
   /**
-   * ✈️ REVISED FLIGHT PATH (Storytelling Based)
-   * * [Section 1: Hero] 0.0 ~ 0.2
-   * - Start: Top Right
-   * - Action: Swoop down to center
-   * * [Section 2: Career] 0.2 ~ 0.45
-   * - Target: "Current Focus" Card (Top Left of content)
-   * - Action: Hover at approx 15vw, 32vh
-   * * [Section 3: About - Text] 0.45 ~ 0.65
-   * - Target: 3 Lines of text
-   * - Action: Zigzag (Right -> Left -> Right)
-   * * [Section 3: About - Stats] 0.65 ~ 0.8
-   * - Target: 8+ and 13+ numbers
-   * - Action: Figure-8 loop (Left Stat -> Right Stat)
-   * * [Section 4: Projects] 0.8 ~ 1.0
-   * - Action: Center alignment, Rotate Down (90deg), Fall with scroll, Loop at end
+   * ✈️ FLIGHT PATH CHOREOGRAPHY
+   * * [Section 1: Hero] 0.0 ~ 0.20
+   * - Action: Start Top-Right -> Swoop to Center
+   * * [Section 2: Career History] 0.20 ~ 0.45
+   * - Target: "Current Focus" Card (Left side, Top)
+   * - Action: Move to approx 15vw, 35vh and hover to point at the card.
+   * * [Section 3: About - Texts] 0.45 ~ 0.60
+   * - Target: 3 Summary Lines
+   * - Action: Zigzag reading (Left -> Right -> Left)
+   * * [Section 3: About - Stats] 0.60 ~ 0.75
+   * - Target: Numbers "8+" (Left) and "13+" (Right)
+   * - Action: Figure-8 loop
+   * * [Section 4: Projects] 0.75 ~ 1.0
+   * - Action: Center X, Point Down (180deg), Follow scroll down, Loop up at end.
    */
 
   // X Coordinates (vw)
   const planeX = useTransform(smoothScroll,
-    // Keyframes aligned with section scroll percentage
-    [0, 0.2, 0.3, 0.45, 0.52, 0.58, 0.64, 0.70, 0.75, 0.85, 1.0],
-    ["85vw", "50vw", "15vw", "15vw", "80vw", "20vw", "80vw", "30vw", "70vw", "50vw", "50vw"]
-    // Start -> Center -> [CAREER: Left Card] -> [ABOUT: Text R -> Text L -> Text R] -> [STATS: L -> R] -> [PROJECTS: Center]
+    // Scroll Progress Points
+    [0, 0.2, 0.3, 0.45, 0.50, 0.55, 0.65, 0.70, 0.80, 0.90, 1.0],
+    // VW Positions
+    ["85vw", "50vw", "15vw", "15vw", "80vw", "20vw", "30vw", "70vw", "50vw", "50vw", "50vw"]
+    // Start -> Center -> [CAREER: Pointing at Current] -> [ABOUT: Text R -> Text L] -> [STATS: 8+ -> 13+] -> [PROJECTS: Center]
   );
 
   // Y Coordinates (vh - relative to viewport)
   const planeY = useTransform(smoothScroll,
-    [0, 0.2, 0.3, 0.45, 0.52, 0.58, 0.64, 0.70, 0.75, 0.85, 1.0],
-    ["10vh", "60vh", "32vh", "32vh", "25vh", "40vh", "55vh", "75vh", "75vh", "20vh", "95vh"]
-    // Start -> Down -> [CAREER: Hold at Card Top] -> [ABOUT: Line 1 -> Line 2 -> Line 3] -> [STATS: Bottom] -> [PROJECTS: Top -> Down]
+    [0, 0.2, 0.3, 0.45, 0.50, 0.55, 0.65, 0.70, 0.80, 0.95, 1.0],
+    ["10vh", "60vh", "35vh", "35vh", "45vh", "55vh", "75vh", "75vh", "20vh", "90vh", "80vh"]
+    // Start -> Down -> [CAREER: Hold at Card] -> [ABOUT: Line 1 -> Line 3] -> [STATS: Bottom] -> [PROJECTS: Top -> Bottom -> Loop Up]
   );
 
   // Rotation (Degrees)
   const planeRotate = useTransform(smoothScroll,
-    [0, 0.15, 0.2, 0.25, 0.45, 0.50, 0.55, 0.60, 0.68, 0.72, 0.80, 0.85, 1.0],
-    [0, 45, 135, 0, 10, 160, 20, 160, -20, 20, 90, 90, 0]
-    // Banking turns corresponding to the X/Y movements. 90deg = Pointing Down at Projects
+    [0, 0.15, 0.2, 0.25, 0.45, 0.50, 0.55, 0.65, 0.75, 0.80, 0.95, 1.0],
+    [0, 45, 135, 0, 10, 160, 20, -20, 20, 180, 180, 0]
+    // Banks into turns. At 0.80 (Projects start), rotates 180deg to point DOWN.
   );
 
   const starsY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
@@ -119,6 +133,7 @@ export default function Portfolio() {
         className="fixed z-50 pointer-events-none drop-shadow-[0_0_20px_rgba(59,130,246,1)] origin-center w-12 h-12 flex items-center justify-center"
       >
         <Send size={48} className="text-cyan-400 fill-cyan-400/20" strokeWidth={1.5} />
+        {/* Engine Trail */}
         <div className="absolute -top-2 -left-2 w-16 h-16 bg-blue-500/20 rounded-full blur-xl -z-10 animate-pulse" />
       </motion.div>
 
@@ -130,8 +145,11 @@ export default function Portfolio() {
 
       <div className="relative z-10">
 
-        {/* SECTION 1: HERO */}
-        <section className="h-screen flex flex-col justify-center items-center px-6 border-x border-white/5 relative snap-start">
+        {/* =========================================================================
+            SECTION 1: HERO (Profile)
+            Height: min-h-screen (Full Screen)
+           ========================================================================= */}
+        <section className="min-h-screen flex flex-col justify-center items-center px-6 border-x border-white/5 relative snap-start">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
@@ -176,16 +194,19 @@ export default function Portfolio() {
           </motion.div>
         </section>
 
-        {/* SECTION 2: CAREER HISTORY */}
-        <section className="h-screen flex flex-col justify-center px-6 border-x border-white/5 relative bg-gradient-to-b from-black via-slate-950 to-black snap-start overflow-hidden">
-          <div className="max-w-6xl mx-auto w-full h-full flex flex-col justify-center">
+        {/* =========================================================================
+            SECTION 2: CAREER HISTORY
+            Height: min-h-screen (Full Screen) - Plane Points to Current Project
+           ========================================================================= */}
+        <section className="min-h-screen flex flex-col justify-center px-6 border-x border-white/5 relative bg-gradient-to-b from-black via-slate-950 to-black snap-start overflow-hidden">
+          <div className="max-w-6xl mx-auto w-full flex flex-col justify-center h-full py-20">
             <div className="flex items-baseline gap-4 mb-12 border-b border-white/20 pb-4">
               <span className="font-mono text-blue-500 text-xl">02.</span>
               <h2 className="text-4xl font-bold text-white uppercase">Career History</h2>
             </div>
 
             <div className="relative border-l-2 border-slate-800 ml-4 md:ml-0 md:border-l-0">
-              {/* Target: 2025 Current Project */}
+              {/* Target: 2025 Current Project (비행기가 가리킬 곳) */}
               <div className="relative md:grid md:grid-cols-2 gap-12 mb-12 items-start">
                 <motion.div
                   initial={{ opacity: 0, x: -50 }}
@@ -205,6 +226,7 @@ export default function Portfolio() {
                 <div className="hidden md:block"></div>
               </div>
 
+              {/* Other History */}
               <div className="opacity-50 hover:opacity-100 transition-opacity duration-500">
                 {experience.slice(1, 3).map((exp, idx) => (
                   <div key={idx} className="relative md:grid md:grid-cols-2 gap-12 mb-8 items-center">
@@ -221,9 +243,12 @@ export default function Portfolio() {
           </div>
         </section>
 
-        {/* SECTION 3: ABOUT & SKILLS */}
-        <section className="h-screen flex flex-col justify-center px-6 border-x border-white/5 relative bg-black/60 backdrop-blur-sm snap-start">
-          <div className="max-w-6xl mx-auto w-full">
+        {/* =========================================================================
+            SECTION 3: ABOUT & SKILLS
+            Height: min-h-screen (Full Screen) - Zigzag & Figure-8 Flight
+           ========================================================================= */}
+        <section className="min-h-screen flex flex-col justify-center px-6 border-x border-white/5 relative bg-black/60 backdrop-blur-sm snap-start">
+          <div className="max-w-6xl mx-auto w-full py-20">
             <div className="flex items-baseline gap-4 mb-16 border-b border-white/20 pb-4">
               <span className="font-mono text-blue-500 text-xl">03.</span>
               <h2 className="text-4xl font-bold text-white uppercase">About & Skills</h2>
@@ -269,7 +294,10 @@ export default function Portfolio() {
           </div>
         </section>
 
-        {/* SECTION 4: PROJECTS ARCHIVE */}
+        {/* =========================================================================
+            SECTION 4: PROJECTS ARCHIVE
+            Height: min-h-screen - Plane Centers & Points Down
+           ========================================================================= */}
         <section className="py-40 px-6 max-w-7xl mx-auto border-x border-white/5 bg-slate-950/30 backdrop-blur-sm relative z-10 min-h-screen">
           <div className="flex items-baseline gap-4 mb-16 border-b border-white/20 pb-4">
             <span className="font-mono text-blue-500 text-xl">04.</span>
@@ -297,7 +325,7 @@ export default function Portfolio() {
             <span className="font-mono text-xs tracking-widest">MISSION COMPLETE</span>
           </div>
           <p className="text-slate-600 font-mono text-xs">
-            © {new Date().getFullYear()} KYU-HYUN KIM.
+            © {new Date().getFullYear()} KYU-HYUN KIM. DESIGNED FOR THE FUTURE.
           </p>
         </footer>
       </div>
