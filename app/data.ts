@@ -1,5 +1,30 @@
 import { Code2, Layers, Smartphone, Bot, Database } from "lucide-react";
-
+export const experience = [
+  {
+    company: "NEOWIZ (네오위즈)",
+    role: "Frontend Developer (Blockchain Team)",
+    period: "2020.03 ~ 2024.12",
+    description: "블록체인 오픈 DeFi 플랫폼 'Neopin' 및 게임 플랫폼 개발",
+    details: [
+      "Neopin 지갑 익스텐션(Chrome) 아키텍처 설계 및 코어 기능 구현",
+      "React/SWR 기반 상태 관리 최적화 및 디자인 시스템 도입 주도",
+      "하이브리드 앱(Webview)과 네이티브 간 양방향 통신 인터페이스 개발",
+      "레거시(Svelte) 관리자 페이지 React 마이그레이션 성공적 수행"
+    ]
+  },
+  {
+    company: "Trumpia",
+    role: "Full Stack Developer (Base Team)",
+    period: "2016.01 ~ 2020.02",
+    description: "미국 실리콘밸리 소재 메시징 서비스 기업 (본사 협업)",
+    details: [
+      "대규모 데이터 시각화 차트 엔진(D3.js/C3.js) 리팩토링 (성능 30% 개선)",
+      "PHP 레거시 시스템 -> Java Spring Boot 마이그레이션 주도",
+      "글로벌 클라이언트(AT&T) 기술 지원 및 Jenkins CI/CD 구축",
+      "반응형 웹 리뉴얼 및 크로스 브라우징 이슈 해결"
+    ]
+  }
+];
 export const personalInfo = {
   name: "김규현 (Kyu-hyun Kim)",
   title: "Frontend Engineer",
