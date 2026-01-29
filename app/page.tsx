@@ -1,6 +1,6 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import {
   Github,
@@ -14,9 +14,12 @@ import {
   ChevronDown,
 } from 'lucide-react';
 
+// --- Data Section (이력서 데이터) ---
+
 const personalInfo = {
   name: '김규현 (Kyu-hyun Kim)',
-  title: "협업의 중심에서 신뢰를 만드는 8년 차 프론트엔드 전문가",
+  title: '협업의 중심에서 신뢰를 만드는 8년 차 프론트엔드 전문가',
+  subtitle: 'Frontend | Web3 & Blockchain | AI-Assisted Dev',
   email: 'kimk1029@naver.com',
   github: 'https://github.com/kimk1029',
   summary: [
@@ -108,7 +111,9 @@ const projects = [
   },
 ];
 
-const SectionHeading = ({ children }: { children: ReactNode }) => (
+// --- Components ---
+
+const SectionHeading = ({ children }: { children: React.ReactNode }) => (
   <motion.h2
     initial={{ opacity: 0, x: -20 }}
     whileInView={{ opacity: 1, x: 0 }}
@@ -123,7 +128,7 @@ const Card = ({
   children,
   className = '',
 }: {
-  children: ReactNode;
+  children: React.ReactNode;
   className?: string;
 }) => (
   <motion.div
@@ -157,6 +162,7 @@ export default function Portfolio() {
             <p className="text-xl md:text-2xl text-slate-400 max-w-2xl leading-relaxed">
               {personalInfo.title}
             </p>
+            <p className="mt-2 text-sm text-slate-500">{personalInfo.subtitle}</p>
           </motion.div>
 
           <motion.div
@@ -182,6 +188,7 @@ export default function Portfolio() {
           </motion.div>
         </div>
 
+        {/* Background Decorations */}
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-3xl -z-0 pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-cyan-600/10 rounded-full blur-3xl -z-0 pointer-events-none" />
 
@@ -274,40 +281,57 @@ export default function Portfolio() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: idx * 0.1 }}
-              className={`relative pl-8 md:pl-0 flex flex-col md:flex-row md:justify-between md:items-start gap-12 ${idx % 2 === 1 ? 'md:flex-row-reverse' : ''}`}
+              className="relative pl-8 md:pl-0"
             >
-              <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-px bg-slate-800 -translate-x-1/2" />
+              {/* Timeline Connector for Desktop */}
+              <div className="hidden md:block absolute left-[50%] top-0 bottom-0 w-px bg-slate-800 -translate-x-1/2" />
+
               <div
-                className={`hidden md:block w-1/2 shrink-0 ${idx % 2 === 0 ? 'md:pr-12 md:text-right' : 'md:pl-12 md:text-left'}`}
+                className={`md:flex justify-between items-start gap-12 ${idx % 2 === 0 ? 'flex-row' : 'flex-row-reverse'}`}
               >
-                <span className="text-blue-400 font-bold text-lg">
-                  {exp.period}
-                </span>
-              </div>
-              <div className="md:w-1/2 relative shrink-0">
-                <span className="md:hidden block text-blue-400 font-bold mb-2">
-                  {exp.period}
-                </span>
+                {/* Date Side */}
                 <div
-                  className="absolute top-2 -left-2 w-5 h-5 bg-blue-500 rounded-full border-4 border-slate-950 z-10 md:left-1/2 md:-translate-x-1/2"
-                  aria-hidden
-                />
-                <Card className="relative z-10 ml-4 md:ml-0">
-                  <h3 className="text-xl font-bold text-white">{exp.company}</h3>
-                  <p className="text-slate-400 mb-4 font-medium">{exp.role}</p>
-                  <p className="mb-4 text-slate-300">{exp.description}</p>
-                  <ul className="space-y-2">
-                    {exp.achievements.map((ach, i) => (
-                      <li
-                        key={i}
-                        className="flex items-start gap-2 text-sm text-slate-400"
-                      >
-                        <span className="mt-1.5 w-1.5 h-1.5 bg-blue-500 rounded-full flex-shrink-0" />
-                        {ach}
-                      </li>
-                    ))}
-                  </ul>
-                </Card>
+                  className={`hidden md:block w-1/2 ${idx % 2 === 0 ? 'text-right pr-12' : 'text-left pl-12'}`}
+                >
+                  <span className="text-blue-400 font-bold text-lg">
+                    {exp.period}
+                  </span>
+                </div>
+
+                {/* Content Side */}
+                <div className="md:w-1/2 relative">
+                  {/* Mobile Date */}
+                  <span className="md:hidden block text-blue-400 font-bold mb-2">
+                    {exp.period}
+                  </span>
+
+                  {/* Dot - CSS만 사용 (SSR/hydration 안전) */}
+                  <div
+                    className="absolute top-2 -left-[26px] w-5 h-5 bg-blue-500 rounded-full border-4 border-slate-950 z-10 md:left-1/2 md:-translate-x-1/2"
+                    aria-hidden
+                  />
+
+                  <Card className="relative z-10 ml-4 md:ml-0">
+                    <h3 className="text-xl font-bold text-white">
+                      {exp.company}
+                    </h3>
+                    <p className="text-slate-400 mb-4 font-medium">
+                      {exp.role}
+                    </p>
+                    <p className="mb-4 text-slate-300">{exp.description}</p>
+                    <ul className="space-y-2">
+                      {exp.achievements.map((ach, i) => (
+                        <li
+                          key={i}
+                          className="flex items-start gap-2 text-sm text-slate-400"
+                        >
+                          <span className="mt-1.5 w-1.5 h-1.5 bg-blue-500 rounded-full flex-shrink-0" />
+                          {ach}
+                        </li>
+                      ))}
+                    </ul>
+                  </Card>
+                </div>
               </div>
             </motion.div>
           ))}
