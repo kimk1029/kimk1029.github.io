@@ -30,7 +30,7 @@ const proofNotes = [
   "UI 반복 4~5회 -> 1~2회",
   "메인 데이터 페칭 34% 개선",
   "Lighthouse 20% 개선",
-  "독립 개발 프로덕트 5종",
+  "독립 개발 프로덕트 6종",
   "Claude Code + Custom MCP",
 ];
 
@@ -56,7 +56,7 @@ const leadership = [
   "Bit Camp Academy 웹 크롤링·시각화 프로젝트 팀 리더",
 ];
 
-const featuredProjects = allProjects.slice(0, 5);
+const featuredProjects = allProjects.slice(0, 6);
 
 const SectionLabel = ({
   index,
@@ -202,7 +202,7 @@ export default function Portfolio() {
               </div>
               <div className="p-5">
                 <div className="font-mono text-xs uppercase">Solo products</div>
-                <div className="mt-8 text-5xl font-black">5</div>
+                <div className="mt-8 text-5xl font-black">6</div>
               </div>
             </div>
             <div className="border-2 border-zinc-950 bg-[#f5f0e6] p-5">
@@ -329,14 +329,14 @@ export default function Portfolio() {
       </section>
 
       <section id="projects" className="relative mx-auto max-w-7xl px-4 py-14 md:px-6 md:py-20">
-        <SectionLabel index="03" eyebrow="Selected Projects" title="개인 프로젝트 5종과 핵심 업무 프로젝트." />
+        <SectionLabel index="03" eyebrow="Selected Projects" title="개인 프로젝트 6종과 핵심 업무 프로젝트." />
         <div className="border-t-2 border-zinc-950">
           {featuredProjects.map((project, index) => (
             <ProjectRow key={project.slug} project={project} index={index} />
           ))}
         </div>
         <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {allProjects.slice(5).map((project, index) => (
+          {allProjects.slice(6).map((project, index) => (
             <Link
               key={project.slug}
               href={`/projects/${project.slug}`}

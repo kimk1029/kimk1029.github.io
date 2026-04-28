@@ -4,10 +4,10 @@ export const experience = [
     company: "독립 개발 / AI 기반 프로덕트 빌딩",
     role: "Full Stack Maker",
     period: "2025.01 ~ 현재",
-    description: "웹, 모바일, 게임 영역의 프로덕트 5종을 기획부터 배포까지 단독 진행",
+    description: "웹, 모바일, 게임, 커뮤니티 영역의 프로덕트 6종을 기획부터 배포까지 단독 진행",
     details: [
       "Claude Code를 주 작업 도구로 사용하고, 필요한 경우 커스텀 MCP 서버와 공개 Agent Skills를 도입",
-      "dopamine.land, 위치 기반 데이팅 앱, 교회 익명 커뮤니티, Cop vs Robbers, 피에스타를 단독 개발",
+      "dopamine.land, datebase, 포케페스타30, Cop vs Robbers, Fiesta, 교회 익명 커뮤니티를 단독 개발",
       "디자이너, 인플루언서 섭외부터 NAS Stage 서버 구축, 앱스토어 배포 준비까지 제품 전 과정 주도"
     ]
   },
@@ -49,7 +49,7 @@ export const personalInfo = {
   summary: [
     "8년간 프론트엔드 개발을 해왔고, 최근 1년은 독립 개발자로 LLM 기반 도구를 실제 프로젝트에 녹여보는 시간을 보냈습니다.",
     "네오위즈 Neopin에서는 Svelte에서 React로 관리자 페이지를 옮기고, 디자인 시스템을 만들어 디자인팀과의 반복 작업을 줄였습니다.",
-    "Claude Code, 커스텀 MCP 서버, Agent Skills, 간이 eval을 활용해 웹·모바일 프로덕트 5종을 혼자 기획부터 배포까지 끝냈습니다."
+    "Claude Code, 커스텀 MCP 서버, Agent Skills, 간이 eval을 활용해 웹·모바일 프로덕트 6종을 혼자 기획부터 배포까지 끝냈습니다."
   ]
 };
 
@@ -101,21 +101,40 @@ export const allProjects: Project[] = [
     ]
   },
   {
-    slug: "datepick-app",
-    title: "위치 기반 데이팅 앱",
+    slug: "datebase",
+    title: "datebase",
     company: "Personal Project",
     period: "2024.10 ~ 진행중",
-    type: "Mobile App",
+    type: "Date Course App",
     image: placeholderTech(2),
-    tech: ["Flutter", "Node.js", "Prisma", "Docker", "Supabase"],
-    shortDesc: "Flutter 기반 위치 매칭 서비스. 기획부터 스토어 배포까지 풀스택 주도.",
-    description: "Flutter로 제작된 위치 기반 매칭 서비스로, APK 생성 및 스토어 배포 준비 단계까지 진행된 풀스택 프로젝트입니다.",
+    tech: ["Flutter", "Node.js", "Prisma", "Docker", "Supabase", "Maps API"],
+    shortDesc: "데이트 코스를 저장하고 공유하는 앱. 장소, 동선, 코스 데이터를 모바일 UX로 정리.",
+    description: "커플과 지인이 다녀온 데이트 코스를 장소 단위로 모아 공유하고, 코스 추천과 기록을 자연스럽게 연결하는 모바일 앱입니다.",
     details: [
-      "익숙하지 않은 Flutter/Dart 환경이었으나, Cursor AI와의 페어 프로그래밍을 통해 러닝 커브를 극복하고 네이티브 수준의 앱 기능 구현",
-      "Node.js(Express)와 Prisma ORM을 사용하여 안정적인 RESTful API를 설계하고, Railway를 통해 서버를 배포하여 운영 환경 구축",
-      "Supabase를 메인 데이터베이스로 활용하여 사용자 프로필, 매칭 기록, 채팅 로그 등 복잡한 관계형 데이터를 효율적으로 관리",
+      "Flutter/Dart 기반으로 코스 탐색, 코스 상세, 장소 저장, 공유 플로우를 모바일 중심 UX로 구현",
+      "Node.js(Express)와 Prisma ORM을 사용하여 코스, 장소, 사용자 기록을 다루는 RESTful API 설계",
+      "Supabase를 메인 데이터베이스로 활용하여 사용자 프로필, 저장한 코스, 장소 메타데이터 등 관계형 데이터 관리",
       "직접 Stage 서버를 운용하기 위해 Nas 서버를 구축하고, Docker에 우분투 이미지를 올려 Stage 서버 구성",
-      "직접 마케팅 인플루언서와 디자이너를 섭외하여 기획부터 개발, 마케팅까지 프로젝트 전 과정 주도"
+      "디자이너와 마케팅 인플루언서를 섭외해 기획, 개발, 초기 마케팅 준비까지 프로젝트 전 과정 주도"
+    ]
+  },
+  {
+    slug: "poke-30",
+    title: "포케페스타30 (poke-30.com)",
+    company: "Personal Project",
+    period: "2025.04 ~ 진행중",
+    type: "Fan Community",
+    image: placeholderTech(6),
+    url: "https://www.poke-30.com",
+    tech: ["Next.js", "TypeScript", "Mobile Web", "Community Feed", "Realtime UX"],
+    shortDesc: "포켓몬 팬 커뮤니티. 사용자 제보 기반 장소 혼잡도, 카드 거래, 시세, 지도, 오리파 기능 제공.",
+    description: "포케페스타30은 포켓몬 팬 이벤트와 현장 정보를 중심으로 만든 모바일 웹 커뮤니티입니다.",
+    details: [
+      "공개 사이트 기준 사용자 제보 기반 매장/장소 혼잡도, 시간대별 제보량, 실시간 피드 기능을 제공",
+      "카드 거래, 카드 시세, 지도, 마이페이지, 작성 플로우를 하단 탭 중심의 모바일 앱 형태 UX로 구성",
+      "성수 지역 이벤트와 잉어킹 프로모션 등 현장성 있는 정보를 빠르게 탐색할 수 있는 히어로/퀵 메뉴 설계",
+      "픽셀 아트, 포켓볼 아이콘, 포켓몬 sprite를 활용해 팬 커뮤니티 성격에 맞춘 레트로 모바일 UI 구현",
+      "SEO 메타데이터와 OG/Twitter 카드 설정으로 팬 프로젝트의 검색/공유 노출 기반 구성"
     ]
   },
   {
@@ -137,8 +156,8 @@ export const allProjects: Project[] = [
     ]
   },
   {
-    slug: "piesta",
-    title: "피에스타 (Piesta)",
+    slug: "fiesta",
+    title: "Fiesta",
     company: "Personal Project",
     period: "2025.01 ~ 진행중",
     type: "Job Platform",
