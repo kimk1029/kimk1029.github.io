@@ -31,13 +31,13 @@ const proofNotes = [
   "메인 데이터 페칭 34% 개선",
   "Lighthouse 20% 개선",
   "독립 개발 프로덕트 6종",
-  "Claude Code + Custom MCP",
+  "Harness Engineering",
 ];
 
 const capabilityNotes = [
   {
     title: "AI를 기능이 아니라 작업 흐름으로 다룹니다",
-    body: "Claude Code, 커스텀 MCP 서버, 공개 Agent Skills, 간이 eval을 실제 개인 프로젝트에 붙여 PR 단위 작업과 반복 파싱 작업을 맡겼습니다.",
+    body: "Claude Code, 커스텀 MCP 서버, 공개 Agent Skills, 하네스 엔지니어링, 간이 eval을 실제 개인 프로젝트에 붙여 PR 단위 작업과 반복 파싱 작업을 맡겼습니다.",
   },
   {
     title: "프론트엔드를 협업 인터페이스로 봅니다",
@@ -233,7 +233,7 @@ export default function Portfolio() {
                 Current Focus
               </div>
               <p className="text-3xl font-black leading-tight">
-                Claude Code, MCP, Agent Skills를 제품 개발 루틴으로 가져오는 프론트엔드 엔지니어.
+                Claude Code, MCP, Agent Skills, 하네스 엔지니어링을 제품 개발 루틴으로 가져오는 프론트엔드 엔지니어.
               </p>
             </div>
             <div className="grid grid-cols-2 border-2 border-zinc-950 bg-[#d7ff4f]">

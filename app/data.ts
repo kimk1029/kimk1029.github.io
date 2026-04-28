@@ -6,7 +6,7 @@ export const experience = [
     period: "2025.01 ~ 현재",
     description: "웹, 모바일, 게임, 커뮤니티 영역의 프로덕트 6종을 기획부터 배포까지 단독 진행",
     details: [
-      "Claude Code를 주 작업 도구로 사용하고, 필요한 경우 커스텀 MCP 서버와 공개 Agent Skills를 도입",
+      "Claude Code를 주 작업 도구로 사용하고, 커스텀 MCP 서버, 공개 Agent Skills, 하네스 엔지니어링을 도입",
       "dopamine.land, datebase, 포케페스타30, Cop vs Robbers, Fiesta, 교회 익명 커뮤니티를 단독 개발",
       "디자이너, 인플루언서 섭외부터 NAS Stage 서버 구축, 앱스토어 배포 준비까지 제품 전 과정 주도"
     ]
@@ -49,12 +49,12 @@ export const personalInfo = {
   summary: [
     "8년간 프론트엔드 개발을 해왔고, 최근 1년은 독립 개발자로 LLM 기반 도구를 실제 프로젝트에 녹여보는 시간을 보냈습니다.",
     "네오위즈 Neopin에서는 Svelte에서 React로 관리자 페이지를 옮기고, 디자인 시스템을 만들어 디자인팀과의 반복 작업을 줄였습니다.",
-    "Claude Code, 커스텀 MCP 서버, Agent Skills, 간이 eval을 활용해 웹·모바일 프로덕트 6종을 혼자 기획부터 배포까지 끝냈습니다."
+    "Claude Code, 커스텀 MCP 서버, Agent Skills, 하네스 엔지니어링, 간이 eval을 활용해 웹·모바일 프로덕트 6종을 혼자 기획부터 배포까지 끝냈습니다."
   ]
 };
 
 export const skills = [
-  { category: "AI Engineering", items: ["Claude Code", "OpenAI API", "Anthropic Claude API", "Custom MCP", "Agent Skills", "Agent Harness"], icon: Bot },
+  { category: "AI Engineering", items: ["Claude Code", "OpenAI API", "Anthropic Claude API", "Custom MCP", "Agent Skills", "Harness Engineering"], icon: Bot },
   { category: "Frontend", items: ["React.js", "Next.js 14+", "TypeScript", "Tailwind CSS", "Vue.js", "shadcn/ui"], icon: Code2 },
   { category: "Web3", items: ["Web3.js", "Ethers.js", "WalletConnect", "Smart Contract"], icon: Layers },
   { category: "Mobile/Game", items: ["Flutter", "React Native", "Phaser.js", "WebSocket", "WebRTC", "D3.js"], icon: Smartphone },
