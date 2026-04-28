@@ -81,6 +81,46 @@ const SectionLabel = ({
   </div>
 );
 
+const getProjectLabel = (company: string) => {
+  if (company === "Personal Project") {
+    return {
+      text: "PERSONAL",
+      className: "bg-[#d7ff4f] text-zinc-950",
+    };
+  }
+
+  if (company === "NEOWIZ") {
+    return {
+      text: "NEOWIZ",
+      className: "bg-zinc-950 text-[#d7ff4f]",
+    };
+  }
+
+  if (company === "Trumpia") {
+    return {
+      text: "TRUMPIA",
+      className: "bg-[#f5f0e6] text-zinc-950",
+    };
+  }
+
+  return {
+    text: company.toUpperCase(),
+    className: "bg-[#f5f0e6] text-zinc-950",
+  };
+};
+
+const ProjectLabel = ({ company }: { company: string }) => {
+  const label = getProjectLabel(company);
+
+  return (
+    <span
+      className={`inline-flex w-fit items-center border border-zinc-950 px-2 py-1 font-mono text-[10px] font-bold uppercase tracking-widest ${label.className}`}
+    >
+      {label.text}
+    </span>
+  );
+};
+
 const ProjectRow = ({ project, index }: { project: Project; index: number }) => (
   <Link
     href={`/projects/${project.slug}`}
@@ -90,6 +130,7 @@ const ProjectRow = ({ project, index }: { project: Project; index: number }) => 
       P-{String(index + 1).padStart(2, "0")}
     </div>
     <div>
+      <ProjectLabel company={project.company} />
       <div className="flex flex-wrap items-center gap-3">
         <h3 className="text-2xl font-black text-zinc-950 md:text-4xl">
           {project.title}
@@ -345,6 +386,9 @@ export default function Portfolio() {
               <div className="mb-8 flex items-center justify-between font-mono text-xs uppercase tracking-widest text-zinc-500 group-hover:text-[#d7ff4f]">
                 <span>A-{String(index + 1).padStart(2, "0")}</span>
                 <ArrowUpRight className="h-4 w-4" />
+              </div>
+              <div className="mb-4">
+                <ProjectLabel company={project.company} />
               </div>
               <h3 className="text-2xl font-black leading-tight">{project.title}</h3>
               <p className="mt-3 text-sm leading-relaxed text-zinc-700 group-hover:text-[#f5f0e6]/75">

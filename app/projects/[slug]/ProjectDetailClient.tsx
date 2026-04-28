@@ -12,6 +12,46 @@ import {
 } from "lucide-react";
 import type { Project } from "@/app/data";
 
+const getProjectLabel = (company: string) => {
+  if (company === "Personal Project") {
+    return {
+      text: "PERSONAL",
+      className: "bg-[#d7ff4f] text-zinc-950",
+    };
+  }
+
+  if (company === "NEOWIZ") {
+    return {
+      text: "NEOWIZ",
+      className: "bg-zinc-950 text-[#d7ff4f]",
+    };
+  }
+
+  if (company === "Trumpia") {
+    return {
+      text: "TRUMPIA",
+      className: "bg-[#f5f0e6] text-zinc-950",
+    };
+  }
+
+  return {
+    text: company.toUpperCase(),
+    className: "bg-[#f5f0e6] text-zinc-950",
+  };
+};
+
+const ProjectLabel = ({ company }: { company: string }) => {
+  const label = getProjectLabel(company);
+
+  return (
+    <span
+      className={`inline-flex w-fit items-center border border-zinc-950 px-2 py-1 font-mono text-[10px] font-bold uppercase tracking-widest ${label.className}`}
+    >
+      {label.text}
+    </span>
+  );
+};
+
 export default function ProjectDetailClient({
   project,
 }: {
@@ -39,6 +79,7 @@ export default function ProjectDetailClient({
           </div>
           <div className="grid gap-8 p-5 md:grid-cols-[1fr_280px] md:p-8">
             <div>
+              <ProjectLabel company={project.company} />
               <h1 className="max-w-4xl text-5xl font-black leading-none tracking-normal md:text-8xl">
                 {project.title}
               </h1>
@@ -50,9 +91,10 @@ export default function ProjectDetailClient({
               <div className="border-2 border-zinc-950 bg-[#d7ff4f] p-4">
                 <div className="mb-8 flex items-center gap-2 font-mono text-xs uppercase tracking-widest">
                   <Factory className="h-4 w-4" />
-                  Company
+                  Label
                 </div>
-                <p className="text-2xl font-black">{project.company}</p>
+                <ProjectLabel company={project.company} />
+                <p className="mt-4 text-2xl font-black">{project.company}</p>
               </div>
               {project.url && (
                 <a
