@@ -1,415 +1,397 @@
 "use client";
 
-import React, { useRef } from "react";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import React from "react";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import {
-  Github, Mail, ArrowRight, Phone, Send, MapPin, Calendar, Briefcase, Instagram
+  ArrowUpRight,
+  Bot,
+  BriefcaseBusiness,
+  Github,
+  Mail,
+  MapPin,
+  Phone,
+  Radar,
+  ScrollText,
+  Sparkles,
 } from "lucide-react";
-import { personalInfo, skills, allProjects, experience } from "./data";
+import { allProjects, experience, personalInfo, skills, type Project } from "./data";
 
-// --- Components ---
+const navItems = [
+  ["Intro", "#intro"],
+  ["Skills", "#skills"],
+  ["Work", "#work"],
+  ["Projects", "#projects"],
+  ["Contact", "#contact"],
+];
 
-const SectionHeading = ({ children, num }: { children: React.ReactNode, num: string }) => (
-  <motion.div
-    initial={{ opacity: 0, x: -20 }}
-    whileInView={{ opacity: 1, x: 0 }}
-    viewport={{ once: true }}
-    className="flex items-baseline gap-4 mb-16 border-b border-white/20 pb-4"
-  >
-    <span className="font-mono text-blue-500 text-xl">0{num}.</span>
-    <h2 className="text-3xl md:text-5xl font-bold text-white uppercase tracking-tight">
-      {children}
-    </h2>
-  </motion.div>
+const proofNotes = [
+  "Svelte -> React 마이그레이션",
+  "UI 반복 4~5회 -> 1~2회",
+  "메인 데이터 페칭 34% 개선",
+  "Lighthouse 20% 개선",
+  "독립 개발 프로덕트 5종",
+  "Claude Code + Custom MCP",
+];
+
+const capabilityNotes = [
+  {
+    title: "AI를 기능이 아니라 작업 흐름으로 다룹니다",
+    body: "Claude Code, 커스텀 MCP 서버, 공개 Agent Skills, 간이 eval을 실제 개인 프로젝트에 붙여 PR 단위 작업과 반복 파싱 작업을 맡겼습니다.",
+  },
+  {
+    title: "프론트엔드를 협업 인터페이스로 봅니다",
+    body: "Neopin에서 디자인 시스템과 스타일 가이드를 만들고, 기획·디자인·개발 간 반복 비용을 줄이는 프로세스를 문서화했습니다.",
+  },
+  {
+    title: "끝까지 굴러가는 제품을 만듭니다",
+    body: "Next.js, Flutter, React Native, NestJS, Supabase, Docker를 오가며 서버 구축, 앱 배포 준비, 마케팅 섭외까지 직접 진행했습니다.",
+  },
+];
+
+const leadership = [
+  "React·SWR·상태 관리 패턴 주간 기술 세션 운영",
+  "마이그레이션 과정과 API 표준을 Notion Wiki로 문서화",
+  "미국 본사 및 AT&T 엔지니어와 영어로 이슈 트래킹",
+  "Bit Camp Academy 웹 크롤링·시각화 프로젝트 팀 리더",
+];
+
+const featuredProjects = allProjects.slice(0, 5);
+
+const SectionLabel = ({
+  index,
+  eyebrow,
+  title,
+}: {
+  index: string;
+  eyebrow: string;
+  title: string;
+}) => (
+  <div className="mb-10 flex items-end justify-between gap-6 border-b-2 border-zinc-950 pb-4">
+    <div>
+      <div className="mb-3 flex items-center gap-3 font-mono text-xs uppercase tracking-[0.28em] text-zinc-500">
+        <span>{index}</span>
+        <span className="h-px w-10 bg-zinc-400" />
+        <span>{eyebrow}</span>
+      </div>
+      <h2 className="max-w-4xl text-4xl font-black leading-none tracking-normal text-zinc-950 md:text-7xl">
+        {title}
+      </h2>
+    </div>
+  </div>
 );
 
-const ProjectCard = ({ project }: { project: any }) => {
-  const isPersonal = project.company === "Personal Project";
-
-  const labelStyles = isPersonal
-    ? "bg-pink-600 text-white border-pink-700 shadow-[0_0_15px_rgba(219,39,119,0.4)]"
-    : "bg-blue-600 text-white border-blue-700 shadow-[0_0_15px_rgba(37,99,235,0.4)]";
-  const gradientOverlay = isPersonal
-    ? "from-pink-950/90 to-purple-950/90"
-    : "from-blue-950/90 to-cyan-950/90";
-  const hoverBorder = isPersonal ? "group-hover:border-pink-500/50" : "group-hover:border-blue-500/50";
-
-  return (
-    <Link href={`/projects/${project.slug}`} className="block h-full">
-      <motion.div
-        whileHover={{ y: -10 }}
-        className={`h-full bg-slate-900/40 backdrop-blur-sm border border-slate-800 flex flex-col group transition-all duration-300 rounded-none ${hoverBorder}`}
-      >
-        <div className="relative h-60 overflow-hidden border-b border-slate-800">
-          <div className={`absolute inset-0 bg-gradient-to-t ${gradientOverlay} z-10 pointer-events-none transition-opacity duration-500`} />
-          <img
-            src={project.image}
-            alt={project.title}
-            className="w-full h-full object-cover grayscale opacity-50 group-hover:scale-110 group-hover:opacity-80 transition-all duration-700"
-          />
-          <div className="absolute top-4 left-4 z-20 flex gap-2">
-            <span className={`font-mono text-[10px] font-bold border px-2 py-1 tracking-wider uppercase backdrop-blur-md ${labelStyles}`}>
-              {isPersonal ? "PERSONAL" : "COMPANY"}
-            </span>
-            <span className="font-mono text-[10px] font-bold border border-white/20 bg-black/50 text-slate-300 px-2 py-1 tracking-wider uppercase backdrop-blur-md">
-              {project.type}
-            </span>
-          </div>
-        </div>
-
-        <div className="p-8 flex flex-col flex-grow relative overflow-hidden">
-          {/* Decorative Corner */}
-          <div className={`absolute top-0 right-0 w-8 h-8 border-t border-r transition-colors ${isPersonal ? 'border-pink-500/30' : 'border-blue-500/30'}`} />
-
-          <div className="flex justify-between items-start mb-4">
-            <div>
-              <h3 className={`text-2xl font-bold text-white mt-1 transition-colors ${isPersonal ? 'group-hover:text-pink-400' : 'group-hover:text-blue-400'}`}>
-                {project.title}
-              </h3>
-              <p className="text-xs text-slate-500 font-mono mt-1 flex items-center gap-2">
-                <Briefcase size={10} /> {project.company}
-              </p>
-            </div>
-            <ArrowRight className={`text-slate-600 transition-colors w-5 h-5 ${isPersonal ? 'group-hover:text-pink-500' : 'group-hover:text-blue-500'}`} />
-          </div>
-
-          <p className="text-slate-400 text-sm mb-6 flex-grow line-clamp-3 leading-relaxed">
-            {project.shortDesc}
-          </p>
-
-          <div className="flex flex-wrap gap-2 mt-auto">
-            {project.tech.slice(0, 4).map((t: string, i: number) => (
-              <span key={i} className="text-[10px] uppercase tracking-wider px-2 py-1 bg-black border border-slate-700 text-slate-500 font-mono">
-                {t}
-              </span>
-            ))}
-          </div>
-        </div>
-      </motion.div>
-    </Link>
-  );
-};
-
-// --- Timeline Component ---
-const TimelineItem = ({ exp, index }: { exp: any, index: number }) => {
-  const isLeft = index % 2 === 0;
-  return (
-    <div className={`flex flex-col md:flex-row gap-8 md:gap-0 relative mb-24 last:mb-0 ${isLeft ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
-
-      {/* Date & Meta (Side) */}
-      <div className={`md:w-1/2 flex flex-col justify-center ${isLeft ? 'md:items-end md:pr-16 text-right' : 'md:items-start md:pl-16 text-left'}`}>
-        <motion.div
-          initial={{ opacity: 0, x: isLeft ? 20 : -20 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          className="font-mono text-blue-400 text-sm mb-2 tracking-widest uppercase flex items-center gap-2"
-        >
-          {isLeft ? <>{exp.period} <Calendar size={14} /></> : <><Calendar size={14} /> {exp.period}</>}
-        </motion.div>
-        <motion.h3
-          initial={{ opacity: 0, y: 10 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.1 }}
-          className="text-3xl font-black text-white mb-1"
-        >
-          {exp.company}
-        </motion.h3>
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.2 }}
-          className="text-lg text-slate-400 font-light"
-        >
-          {exp.role}
-        </motion.p>
-      </div>
-
-      {/* Center Line & Node */}
-      <div className="absolute left-0 md:left-1/2 w-0.5 h-full bg-gradient-to-b from-blue-500/0 via-blue-500/50 to-blue-500/0 -ml-[1px] hidden md:block">
-        <div className="sticky top-1/2 w-4 h-4 bg-black border-2 border-blue-500 rounded-full -ml-[7px] shadow-[0_0_15px_rgba(59,130,246,0.8)] z-10" />
-      </div>
-
-      {/* Content Card (Other Side) */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: true, margin: "-100px" }}
-        className={`md:w-1/2 relative ${isLeft ? 'md:pl-16' : 'md:pr-16'}`}
-      >
-        <div className="bg-slate-900/40 backdrop-blur-md border border-slate-800 p-8 hover:border-blue-500/30 transition-all group relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-1 h-full bg-blue-600/50" />
-          <p className="text-slate-300 mb-6 leading-relaxed">
-            {exp.description}
-          </p>
-          <ul className="space-y-3">
-            {exp.details.map((detail: string, i: number) => (
-              <li key={i} className="flex items-start gap-3 text-sm text-slate-400">
-                <span className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1.5 flex-shrink-0" />
-                {detail}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </motion.div>
+const ProjectRow = ({ project, index }: { project: Project; index: number }) => (
+  <Link
+    href={`/projects/${project.slug}`}
+    className="group grid gap-5 border-b-2 border-zinc-950 py-7 transition-colors hover:bg-[#d7ff4f] md:grid-cols-[110px_1.4fr_1fr_170px]"
+  >
+    <div className="font-mono text-xs text-zinc-500 group-hover:text-zinc-950">
+      P-{String(index + 1).padStart(2, "0")}
     </div>
-  );
-};
+    <div>
+      <div className="flex flex-wrap items-center gap-3">
+        <h3 className="text-2xl font-black text-zinc-950 md:text-4xl">
+          {project.title}
+        </h3>
+        <ArrowUpRight className="h-6 w-6 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" />
+      </div>
+      <p className="mt-3 max-w-2xl text-base leading-relaxed text-zinc-700">
+        {project.shortDesc}
+      </p>
+    </div>
+    <div className="flex flex-wrap content-start gap-2">
+      {project.tech.slice(0, 5).map((tech) => (
+        <span
+          key={tech}
+          className="border border-zinc-950 bg-[#f5f0e6] px-2 py-1 font-mono text-[11px] uppercase text-zinc-800 group-hover:bg-zinc-950 group-hover:text-[#d7ff4f]"
+        >
+          {tech}
+        </span>
+      ))}
+    </div>
+    <div className="font-mono text-xs uppercase text-zinc-500 md:text-right">
+      <div>{project.company}</div>
+      <div className="mt-1 text-zinc-950">{project.period}</div>
+    </div>
+  </Link>
+);
 
 export default function Portfolio() {
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  // 전체 스크롤 진행도 (0 ~ 1)
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"]
-  });
-
-  // --- Parallax & Plane Animations ---
-
-  const smoothScroll = useSpring(scrollYProgress, { stiffness: 50, damping: 20 });
-
-  // ✈️ 비행기 동선 설계 (Flight Path Choreography)
-  // 1. Hero (0.0~0.2): 우측 상단 시작 -> 중앙 하강
-  // 2. Career (0.2~0.45): 좌측 상단(2025 Current)으로 이동하여 가리킴
-  // 3. About Text (0.45~0.6): 텍스트 따라 지그재그 (좌->우->좌)
-  // 4. About Stats (0.6~0.75): 숫자 주변 8자 비행 (30vw <-> 70vw)
-  // 5. Projects (0.75~1.0): 중앙 이동 -> 180도 회전(아래) -> 하강 -> 1.0에서 Loop Up
-
-  // X축 움직임 (vw)
-  const planeX = useTransform(smoothScroll,
-    [0, 0.2, 0.3, 0.45, 0.50, 0.55, 0.65, 0.70, 0.80, 0.90, 1.0],
-    ["80vw", "50vw", "18vw", "18vw", "80vw", "20vw", "30vw", "70vw", "50vw", "50vw", "50vw"]
-  );
-
-  // Y축 움직임 (vh - 뷰포트 기준)
-  const planeY = useTransform(smoothScroll,
-    [0, 0.2, 0.3, 0.45, 0.50, 0.55, 0.65, 0.70, 0.80, 0.95, 1.0],
-    ["10vh", "60vh", "35vh", "35vh", "45vh", "55vh", "75vh", "75vh", "20vh", "90vh", "80vh"]
-  );
-
-  // 회전 (Rotate) - 0.80(Projects 시작)에서 180도로 전환하여 아래로 향함
-  const planeRotate = useTransform(smoothScroll,
-    [0, 0.15, 0.2, 0.25, 0.45, 0.50, 0.55, 0.65, 0.75, 0.80, 0.95, 1.0],
-    [0, 45, 135, 0, 10, 160, 20, -20, 20, 180, 180, 0]
-  );
-
-  // 배경 요소 패럴랙스
-  const starsY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
-  const textY = useTransform(scrollYProgress, [0, 0.2], ["0%", "50%"]); // Hero 섹션 텍스트
-
   return (
-    <div ref={containerRef} className="bg-black text-slate-300 selection:bg-blue-500/30 overflow-x-hidden perspective-1000 relative">
+    <main className="min-h-screen bg-[#f5f0e6] text-zinc-950 selection:bg-[#d7ff4f] selection:text-zinc-950">
+      <div className="fixed inset-0 pointer-events-none opacity-[0.28] [background-image:linear-gradient(#18181b_1px,transparent_1px),linear-gradient(90deg,#18181b_1px,transparent_1px)] [background-size:24px_24px]" />
 
-      {/* --- Paper Plane (Fixed Layer) --- */}
-      <motion.div
-        style={{ x: planeX, top: planeY, rotate: planeRotate }}
-        className="fixed z-50 pointer-events-none drop-shadow-[0_0_15px_rgba(59,130,246,0.8)]"
-      >
-        <Send size={48} className="text-cyan-400 fill-cyan-400/20" strokeWidth={1.5} />
-        {/* Trail effect behind plane */}
-        <div className="absolute -top-4 -left-4 w-20 h-20 bg-blue-500/20 rounded-full blur-xl -z-10" />
-      </motion.div>
-
-
-      {/* --- Background Layers --- */}
-      <div className="fixed inset-0 z-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-900 via-black to-black" />
-
-      <motion.div style={{ y: starsY }} className="fixed inset-0 z-1 pointer-events-none opacity-60">
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:60px_60px]" />
-        {/* Stars */}
-        <div className="absolute top-20 left-10 w-1 h-1 bg-white rounded-full shadow-[0_0_8px_white]" />
-        <div className="absolute top-1/4 right-20 w-1.5 h-1.5 bg-blue-400 rounded-full blur-[1px]" />
-        <div className="absolute bottom-1/3 left-1/3 w-1 h-1 bg-white rounded-full opacity-50" />
-      </motion.div>
-
-      {/* --- Main Content --- */}
-      <div className="relative z-10">
-
-        {/* Hero Section */}
-        <section className="min-h-screen flex flex-col justify-center px-6 max-w-7xl mx-auto border-x border-white/5 relative overflow-hidden">
-          <motion.div
-            style={{ y: textY }}
-            initial={{ opacity: 0, y: 50, filter: "blur(10px)" }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            transition={{ duration: 1 }}
-            className="space-y-8 relative z-10"
+      <header className="sticky top-0 z-40 border-b-2 border-zinc-950 bg-[#f5f0e6]/90 backdrop-blur">
+        <div className="mx-auto grid max-w-7xl grid-cols-[1fr_auto] items-center gap-4 px-4 py-3 md:px-6">
+          <a href="#intro" className="flex items-center gap-3">
+            <span className="grid h-9 w-9 place-items-center bg-zinc-950 font-black text-[#d7ff4f]">
+              K
+            </span>
+            <span className="hidden font-mono text-xs uppercase tracking-[0.22em] text-zinc-700 sm:block">
+              Frontend / AI Product Engineering
+            </span>
+          </a>
+          <nav className="hidden items-center gap-1 md:flex">
+            {navItems.map(([label, href]) => (
+              <a
+                key={href}
+                href={href}
+                className="px-3 py-2 font-mono text-xs uppercase tracking-widest text-zinc-700 hover:bg-zinc-950 hover:text-[#d7ff4f]"
+              >
+                {label}
+              </a>
+            ))}
+          </nav>
+          <a
+            href={`mailto:${personalInfo.email}`}
+            className="border-2 border-zinc-950 px-3 py-2 font-mono text-xs uppercase tracking-widest hover:bg-zinc-950 hover:text-[#d7ff4f] md:hidden"
           >
-            <div className="flex items-center gap-4 text-blue-500 font-mono text-sm tracking-widest uppercase">
-              <span className="w-12 h-[2px] bg-blue-500 inline-block shadow-[0_0_10px_#3b82f6]" />
-              Architecting Web3 & AI Frontiers
+            Mail
+          </a>
+        </div>
+      </header>
+
+      <section id="intro" className="relative mx-auto max-w-7xl px-4 py-12 md:px-6 md:py-20">
+        <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="border-2 border-zinc-950 bg-[#f5f0e6]"
+          >
+            <div className="flex items-center justify-between border-b-2 border-zinc-950 px-4 py-3 font-mono text-xs uppercase tracking-[0.22em]">
+              <span>Resume parsed from DOCX</span>
+              <span>2026</span>
             </div>
-
-            <h1 className="text-7xl md:text-[10rem] font-black text-white leading-[0.85] tracking-tighter">
-              KYU-HYUN <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-cyan-400 to-purple-500 animate-gradient-x">
-                KIM
-              </span>
-            </h1>
-
-            <p className="text-xl md:text-3xl text-slate-400 max-w-3xl font-light leading-relaxed pl-2 border-l-4 border-slate-800">
-              <span className="text-white font-medium">{personalInfo.title}</span> <br />
-              bridging the gap between complex backend logic and intuitive user experiences.
-            </p>
-
-            <div className="flex flex-wrap gap-6 pt-12 mt-12 border-t border-white/10">
-              <div className="flex items-center gap-3 group">
-                <div className="bg-blue-900/20 p-3 border border-blue-500/30 group-hover:border-blue-500/80 transition-colors">
-                  <Phone className="text-blue-400 w-5 h-5" />
-                </div>
-                <div>
-                  <div className="text-[10px] text-slate-500 font-mono uppercase tracking-wider">Phone</div>
-                  <div className="text-white font-bold tracking-wider">{personalInfo.phone}</div>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3 group">
-                <div className="bg-blue-900/20 p-3 border border-blue-500/30 group-hover:border-blue-500/80 transition-colors">
-                  <Mail className="text-blue-400 w-5 h-5" />
-                </div>
-                <div>
-                  <div className="text-[10px] text-slate-500 font-mono uppercase tracking-wider">Email</div>
-                  <a href={`mailto:${personalInfo.email}`} className="text-white font-bold tracking-wider hover:text-blue-400 transition-colors">
-                    {personalInfo.email}
-                  </a>
-                </div>
-              </div>
-
-              <a
-                href={personalInfo.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 group"
-              >
-                <div className="bg-blue-900/20 p-3 border border-blue-500/30 group-hover:border-blue-500/80 transition-colors">
-                  <Github className="text-blue-400 w-5 h-5" />
-                </div>
-                <div>
-                  <div className="text-[10px] text-slate-500 font-mono uppercase tracking-wider">GitHub</div>
-                  <span className="text-white font-bold tracking-wider group-hover:text-blue-400 transition-colors">
-                    {personalInfo.github.replace(/^https?:\/\//, "")}
+            <div className="p-5 md:p-8">
+              <div className="mb-8 flex flex-wrap gap-2">
+                {["React", "Next.js", "Full Stack", "LLM Workflow"].map((tag) => (
+                  <span key={tag} className="bg-zinc-950 px-3 py-1 font-mono text-xs uppercase text-[#d7ff4f]">
+                    {tag}
                   </span>
-                </div>
-              </a>
-
-              <a
-                href="https://instagram.com/kimqh"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 group"
-              >
-                <div className="bg-blue-900/20 p-3 border border-blue-500/30 group-hover:border-blue-500/80 transition-colors">
-                  <Instagram className="text-blue-400 w-5 h-5" />
-                </div>
-                <div>
-                  <div className="text-[10px] text-slate-500 font-mono uppercase tracking-wider">Instagram</div>
-                  <span className="text-white font-bold tracking-wider group-hover:text-blue-400 transition-colors">
-                    @kimqh
-                  </span>
-                </div>
-              </a>
+                ))}
+              </div>
+              <h1 className="text-[4rem] font-black leading-[0.86] tracking-normal text-zinc-950 sm:text-[6.5rem] lg:text-[8.5rem]">
+                김규현
+              </h1>
+              <p className="mt-7 max-w-3xl text-2xl font-bold leading-tight text-zinc-950 md:text-4xl">
+                {personalInfo.title}
+              </p>
+              <p className="mt-5 max-w-3xl text-lg leading-relaxed text-zinc-700 md:text-xl">
+                {personalInfo.subtitle}. 복잡한 제품 요구사항을 UI, 데이터, 자동화 워크플로우로
+                분해해 실제로 배포되는 결과물까지 밀고 갑니다.
+              </p>
             </div>
           </motion.div>
-        </section>
 
-        {/* Experience Section (New Timeline) */}
-        <section className="py-40 px-6 max-w-7xl mx-auto border-x border-white/5 relative bg-gradient-to-b from-black via-slate-950 to-black">
-          <SectionHeading num="1">Career History</SectionHeading>
-
-          <div className="relative py-20">
-            {/* Mobile Timeline Line */}
-            <div className="absolute left-0 top-0 bottom-0 w-px bg-slate-800 md:hidden" />
-
-            {experience.map((exp, idx) => (
-              <TimelineItem key={idx} exp={exp} index={idx} />
-            ))}
-          </div>
-        </section>
-
-        {/* About & Skills */}
-        <section className="py-32 px-6 max-w-7xl mx-auto border-x border-white/5 relative z-10 bg-black/60 backdrop-blur-sm">
-          <SectionHeading num="2">About & Skills</SectionHeading>
-
-          <div className="grid md:grid-cols-5 gap-16 relative">
-            <div className="md:col-span-2 space-y-6 text-lg font-light leading-relaxed pr-8">
-              {personalInfo.summary.map((txt, i) => (
-                <p key={i} className="text-slate-300">
-                  <span className="text-blue-500/50 mr-2 font-mono text-sm">{`//`}</span>
-                  {txt}
-                </p>
-              ))}
-
-              <div className="grid grid-cols-2 gap-4 mt-8 pt-8 border-t border-white/10 font-mono">
-                {/* Stats */}
-                <div className="bg-slate-900/50 p-4 border border-slate-800 hover:border-blue-500 transition-colors">
-                  <h4 className="text-4xl font-bold text-white">8+</h4>
-                  <span className="text-xs text-slate-400 uppercase tracking-wider">Years</span>
+          <aside className="grid gap-4">
+            <div className="border-2 border-zinc-950 bg-zinc-950 p-5 text-[#f5f0e6]">
+              <div className="mb-8 flex items-center gap-3 font-mono text-xs uppercase tracking-[0.22em] text-[#d7ff4f]">
+                <Radar className="h-4 w-4" />
+                Current Focus
+              </div>
+              <p className="text-3xl font-black leading-tight">
+                Claude Code, MCP, Agent Skills를 제품 개발 루틴으로 가져오는 프론트엔드 엔지니어.
+              </p>
+            </div>
+            <div className="grid grid-cols-2 border-2 border-zinc-950 bg-[#d7ff4f]">
+              <div className="border-r-2 border-zinc-950 p-5">
+                <div className="font-mono text-xs uppercase">Career</div>
+                <div className="mt-8 text-5xl font-black">8y+</div>
+              </div>
+              <div className="p-5">
+                <div className="font-mono text-xs uppercase">Solo products</div>
+                <div className="mt-8 text-5xl font-black">5</div>
+              </div>
+            </div>
+            <div className="border-2 border-zinc-950 bg-[#f5f0e6] p-5">
+              <div className="grid gap-3 text-sm">
+                <a className="flex items-center gap-3 hover:underline" href={`mailto:${personalInfo.email}`}>
+                  <Mail className="h-4 w-4" /> {personalInfo.email}
+                </a>
+                <a className="flex items-center gap-3 hover:underline" href={personalInfo.github} target="_blank" rel="noreferrer">
+                  <Github className="h-4 w-4" /> github.com/kimk1029
+                </a>
+                <div className="flex items-center gap-3">
+                  <Phone className="h-4 w-4" /> {personalInfo.phone}
                 </div>
-                <div className="bg-slate-900/50 p-4 border border-slate-800 hover:border-blue-500 transition-colors">
-                  <h4 className="text-4xl font-bold text-blue-500">13+</h4>
-                  <span className="text-xs text-slate-400 uppercase tracking-wider">Projects</span>
+                <div className="flex items-center gap-3">
+                  <MapPin className="h-4 w-4" /> {personalInfo.location}
                 </div>
               </div>
             </div>
+          </aside>
+        </div>
 
-            <div className="md:col-span-3 grid gap-4">
-              {skills.map((skill, idx) => (
-                <motion.div
-                  initial={{ opacity: 0, x: 20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ margin: "-50px" }}
-                  transition={{ delay: idx * 0.1 }}
-                  key={idx}
-                  className="bg-slate-900/40 border border-slate-800 p-6 hover:border-blue-500/50 hover:shadow-[0_0_20px_rgba(59,130,246,0.1)] transition-all group"
-                >
-                  <div className="flex items-center gap-3 mb-4">
-                    <skill.icon className="text-slate-500 group-hover:text-blue-400 transition-colors w-6 h-6" />
-                    <h3 className="font-bold text-white uppercase text-sm tracking-widest group-hover:text-blue-400 transition-colors">{skill.category}</h3>
-                  </div>
-                  <div className="flex flex-wrap gap-x-4 gap-y-2">
-                    {skill.items.map((item, i) => (
-                      <span key={i} className="text-sm text-slate-400 font-mono flex items-center">
-                        <span className="w-1 h-1 bg-slate-600 rounded-full mr-2 group-hover:bg-blue-500 transition-colors"></span>
-                        {item}
-                      </span>
-                    ))}
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
+        <div className="mt-8 grid border-2 border-zinc-950 bg-[#f5f0e6] md:grid-cols-3">
+          {personalInfo.summary.map((text, index) => (
+            <p
+              key={text}
+              className="border-b-2 border-zinc-950 p-5 text-base leading-relaxed text-zinc-700 last:border-b-0 md:border-b-0 md:border-r-2 md:last:border-r-0"
+            >
+              <span className="mb-5 block font-mono text-xs text-zinc-500">
+                NOTE {String(index + 1).padStart(2, "0")}
+              </span>
+              {text}
+            </p>
+          ))}
+        </div>
+      </section>
 
-        {/* Featured Projects */}
-        <section className="py-40 px-6 max-w-7xl mx-auto border-x border-white/5 bg-slate-950/30 backdrop-blur-sm relative z-10">
-          <SectionHeading num="3">Projects Archive</SectionHeading>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 relative z-10">
-            {allProjects.map((project, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 50 }}
+      <section id="skills" className="relative mx-auto max-w-7xl px-4 py-14 md:px-6 md:py-20">
+        <SectionLabel index="01" eyebrow="Capabilities" title="AI와 제품 개발을 같은 테이블에 올립니다." />
+        <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+          <div className="grid gap-4">
+            {capabilityNotes.map((note, index) => (
+              <motion.article
+                key={note.title}
+                initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ delay: idx * 0.1, duration: 0.6 }}
+                viewport={{ once: true, margin: "-80px" }}
+                transition={{ delay: index * 0.06 }}
+                className="border-2 border-zinc-950 bg-[#f5f0e6] p-5"
               >
-                <ProjectCard project={project} />
-              </motion.div>
+                <div className="mb-5 flex items-center justify-between font-mono text-xs uppercase tracking-widest text-zinc-500">
+                  <span>Case {index + 1}</span>
+                  {index === 0 ? <Bot className="h-4 w-4" /> : <ScrollText className="h-4 w-4" />}
+                </div>
+                <h3 className="text-2xl font-black leading-tight">{note.title}</h3>
+                <p className="mt-4 leading-relaxed text-zinc-700">{note.body}</p>
+              </motion.article>
             ))}
           </div>
-        </section>
-
-        <footer className="py-20 border-t border-white/10 text-center bg-black relative z-10">
-          <div className="flex justify-center items-center gap-2 mb-4 text-blue-500 animate-pulse">
-            <div className="w-2 h-2 bg-blue-500 rounded-full" />
-            <span className="font-mono text-xs tracking-widest">SYSTEM ONLINE</span>
+          <div className="grid gap-4 md:grid-cols-2">
+            {skills.map((skill) => (
+              <div key={skill.category} className="border-2 border-zinc-950 bg-zinc-950 p-5 text-[#f5f0e6]">
+                <div className="mb-7 flex items-center gap-3">
+                  <skill.icon className="h-5 w-5 text-[#d7ff4f]" />
+                  <h3 className="font-mono text-xs uppercase tracking-[0.22em] text-[#d7ff4f]">
+                    {skill.category}
+                  </h3>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {skill.items.map((item) => (
+                    <span key={item} className="border border-[#f5f0e6]/30 px-2 py-1 text-sm text-[#f5f0e6]">
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
-          <p className="text-slate-600 font-mono text-xs">
-            © {new Date().getFullYear()} KYU-HYUN KIM. DESIGNED FOR THE FUTURE.
-          </p>
-        </footer>
-      </div>
-    </div>
+        </div>
+      </section>
+
+      <section id="work" className="relative mx-auto max-w-7xl px-4 py-14 md:px-6 md:py-20">
+        <SectionLabel index="02" eyebrow="Work Record" title="회사와 독립 개발 양쪽에서 남긴 작업 기록." />
+        <div className="grid gap-6 lg:grid-cols-[260px_1fr]">
+          <div className="border-2 border-zinc-950 bg-[#d7ff4f] p-5">
+            <BriefcaseBusiness className="mb-8 h-8 w-8" />
+            <p className="text-2xl font-black leading-tight">
+              리드 타이틀보다 먼저 병목을 보고, 구조를 바꾸고, 문서로 남겼습니다.
+            </p>
+          </div>
+          <div className="border-2 border-zinc-950 bg-[#f5f0e6]">
+            {experience.map((exp, index) => (
+              <article key={exp.company} className="grid gap-5 border-b-2 border-zinc-950 p-5 last:border-b-0 md:grid-cols-[170px_1fr]">
+                <div className="font-mono text-xs uppercase tracking-widest text-zinc-500">
+                  <div>{exp.period}</div>
+                  <div className="mt-2 text-zinc-950">{exp.role}</div>
+                </div>
+                <div>
+                  <h3 className="text-3xl font-black">{exp.company}</h3>
+                  <p className="mt-3 text-lg leading-relaxed text-zinc-700">{exp.description}</p>
+                  <ul className="mt-5 grid gap-2">
+                    {exp.details.map((detail) => (
+                      <li key={detail} className="flex gap-3 text-sm leading-relaxed text-zinc-700">
+                        <span className="mt-2 h-2 w-2 flex-none bg-zinc-950" />
+                        {detail}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="relative border-y-2 border-zinc-950 bg-zinc-950 py-8 text-[#f5f0e6]">
+        <div className="mx-auto grid max-w-7xl gap-3 px-4 md:grid-cols-3 md:px-6">
+          {proofNotes.map((note) => (
+            <div key={note} className="flex items-center gap-3 font-mono text-xs uppercase tracking-widest">
+              <Sparkles className="h-4 w-4 text-[#d7ff4f]" />
+              {note}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section id="projects" className="relative mx-auto max-w-7xl px-4 py-14 md:px-6 md:py-20">
+        <SectionLabel index="03" eyebrow="Selected Projects" title="개인 프로젝트 5종과 핵심 업무 프로젝트." />
+        <div className="border-t-2 border-zinc-950">
+          {featuredProjects.map((project, index) => (
+            <ProjectRow key={project.slug} project={project} index={index} />
+          ))}
+        </div>
+        <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {allProjects.slice(5).map((project, index) => (
+            <Link
+              key={project.slug}
+              href={`/projects/${project.slug}`}
+              className="group border-2 border-zinc-950 bg-[#f5f0e6] p-5 hover:bg-zinc-950 hover:text-[#f5f0e6]"
+            >
+              <div className="mb-8 flex items-center justify-between font-mono text-xs uppercase tracking-widest text-zinc-500 group-hover:text-[#d7ff4f]">
+                <span>A-{String(index + 1).padStart(2, "0")}</span>
+                <ArrowUpRight className="h-4 w-4" />
+              </div>
+              <h3 className="text-2xl font-black leading-tight">{project.title}</h3>
+              <p className="mt-3 text-sm leading-relaxed text-zinc-700 group-hover:text-[#f5f0e6]/75">
+                {project.shortDesc}
+              </p>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="relative mx-auto max-w-7xl px-4 py-14 md:px-6 md:py-20">
+        <SectionLabel index="04" eyebrow="Leadership" title="개인이 익힌 방식을 팀이 쓸 수 있게 바꿉니다." />
+        <div className="grid gap-4 md:grid-cols-2">
+          {leadership.map((item, index) => (
+            <div key={item} className="border-2 border-zinc-950 bg-[#f5f0e6] p-5">
+              <div className="mb-8 font-mono text-xs uppercase tracking-widest text-zinc-500">
+                L-{String(index + 1).padStart(2, "0")}
+              </div>
+              <p className="text-2xl font-black leading-tight">{item}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <footer id="contact" className="relative border-t-2 border-zinc-950 bg-[#d7ff4f]">
+        <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 md:grid-cols-[1fr_auto] md:px-6">
+          <div>
+            <div className="font-mono text-xs uppercase tracking-[0.22em] text-zinc-700">
+              Contact
+            </div>
+            <p className="mt-4 max-w-3xl text-4xl font-black leading-none md:text-6xl">
+              프로덕션 수준의 프론트엔드와 AI 워크플로우를 함께 다룹니다.
+            </p>
+          </div>
+          <div className="flex flex-col justify-end gap-3 font-mono text-sm">
+            <a className="flex items-center gap-3 underline" href={`mailto:${personalInfo.email}`}>
+              <Mail className="h-4 w-4" /> {personalInfo.email}
+            </a>
+            <a className="flex items-center gap-3 underline" href={personalInfo.github} target="_blank" rel="noreferrer">
+              <Github className="h-4 w-4" /> github.com/kimk1029
+            </a>
+            <div className="flex items-center gap-3">
+              <Phone className="h-4 w-4" /> {personalInfo.phone}
+            </div>
+          </div>
+        </div>
+      </footer>
+    </main>
   );
 }

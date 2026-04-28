@@ -1,26 +1,27 @@
 import { Code2, Layers, Smartphone, Bot, Database } from "lucide-react";
 export const experience = [
   {
-    company: "Personal Project (Self-Employed)",
-    role: "Full Stack Developer",
+    company: "독립 개발 / AI 기반 프로덕트 빌딩",
+    role: "Full Stack Maker",
     period: "2025.01 ~ 현재",
-    description: "AI 기반 개발 생산성 극대화 및 신규 서비스 런칭 준비 중",
+    description: "웹, 모바일, 게임 영역의 프로덕트 5종을 기획부터 배포까지 단독 진행",
     details: [
-      "Cursor AI 및 LLM을 활용한 개발 워크플로우 최적화 연구",
-      "dopamine.land 및 위치 기반 데이팅 앱 고도화",
-      "새로운 비즈니스 모델 발굴 및 MVP 빠른 검증"
+      "Claude Code를 주 작업 도구로 사용하고, 필요한 경우 커스텀 MCP 서버와 공개 Agent Skills를 도입",
+      "dopamine.land, 위치 기반 데이팅 앱, 교회 익명 커뮤니티, Cop vs Robbers, 피에스타를 단독 개발",
+      "디자이너, 인플루언서 섭외부터 NAS Stage 서버 구축, 앱스토어 배포 준비까지 제품 전 과정 주도"
     ]
   },
   {
     company: "NEOWIZ (네오위즈)",
-    role: "Frontend Developer (Blockchain Team)",
+    role: "Senior FE / Lead FE",
     period: "2020.03 ~ 2024.12",
     description: "블록체인 오픈 DeFi 플랫폼 'Neopin' 및 게임 플랫폼 개발",
     details: [
       "Neopin 지갑 익스텐션(Chrome) 아키텍처 설계 및 코어 기능 구현",
-      "React/SWR 기반 상태 관리 최적화 및 디자인 시스템 도입 주도",
+      "React/SWR 기반 상태 관리 최적화, Lighthouse 점수 20% 개선",
+      "디자인 시스템 도입으로 UI 반복 작업을 4~5회에서 1~2회로 축소",
       "하이브리드 앱(Webview)과 네이티브 간 양방향 통신 인터페이스 개발",
-      "레거시(Svelte) 관리자 페이지 React 마이그레이션 성공적 수행"
+      "레거시(Svelte) 관리자 페이지 React 마이그레이션 및 메인 데이터 페칭 34% 개선"
     ]
   },
   {
@@ -37,27 +38,27 @@ export const experience = [
   }
 ];
 export const personalInfo = {
-  // ... 기존 데이터
   name: "김규현 (Kyu-hyun Kim)",
-  title: "Frontend Engineer",
-  subtitle: "Web3 & Blockchain | AI-Assisted Dev",
+  title: "Frontend Developer · AI Product Engineering",
+  subtitle: "React·Next.js 기반 프론트엔드 + 풀스택 · AI 도구 활용 8년 차",
   email: "kimk1029@naver.com",
-  phone: "010-3244-0103", // 이력서 기반 번호
+  phone: "010-3244-0103",
   github: "https://github.com/kimk1029",
+  location: "서울 강남구",
+  portfolio: "kimk1029.github.io",
   summary: [
-    // About 섹션에서 비행기가 지나갈 문구들
-    "탄탄한 UI/UX 개발 역량 위에 블록체인(Web3) 도메인 지식을 더한 8년 차 개발자입니다.",
-    "기술적 구현을 넘어 프론트엔드가 '협업의 허브'임을 이해하며, 주도적으로 디자인 시스템을 도입하고 팀의 효율을 높여왔습니다.",
-    "최근에는 Cursor AI 등 AI 도구를 적극 활용하여 개발 생산성을 극대화하는 데 집중하고 있습니다."
+    "8년간 프론트엔드 개발을 해왔고, 최근 1년은 독립 개발자로 LLM 기반 도구를 실제 프로젝트에 녹여보는 시간을 보냈습니다.",
+    "네오위즈 Neopin에서는 Svelte에서 React로 관리자 페이지를 옮기고, 디자인 시스템을 만들어 디자인팀과의 반복 작업을 줄였습니다.",
+    "Claude Code, 커스텀 MCP 서버, Agent Skills, 간이 eval을 활용해 웹·모바일 프로덕트 5종을 혼자 기획부터 배포까지 끝냈습니다."
   ]
 };
 
 export const skills = [
-  { category: "Frontend", items: ["React.js", "Next.js 14+", "TypeScript", "Tailwind CSS", "Vue.js", "Shadcn/ui"], icon: Code2 },
+  { category: "AI Engineering", items: ["Claude Code", "OpenAI API", "Anthropic Claude API", "Custom MCP", "Agent Skills", "Agent Harness"], icon: Bot },
+  { category: "Frontend", items: ["React.js", "Next.js 14+", "TypeScript", "Tailwind CSS", "Vue.js", "shadcn/ui"], icon: Code2 },
   { category: "Web3", items: ["Web3.js", "Ethers.js", "WalletConnect", "Smart Contract"], icon: Layers },
-  { category: "Mobile/Game", items: ["Flutter", "React Native", "Phaser.js", "D3.js"], icon: Smartphone },
-  { category: "AI/Tools", items: ["Cursor AI", "OpenAI API", "Prompt Engineering"], icon: Bot },
-  { category: "Backend", items: ["Node.js", "Supabase", "PostgreSQL", "Java Spring", "Docker"], icon: Database },
+  { category: "Mobile/Game", items: ["Flutter", "React Native", "Phaser.js", "WebSocket", "WebRTC", "D3.js"], icon: Smartphone },
+  { category: "Backend", items: ["Node.js", "NestJS", "Supabase", "Prisma", "PostgreSQL", "Java Spring", "Docker"], icon: Database },
 ];
 
 // 이미지 플레이스홀더 (추후 실제 프로젝트 스크린샷으로 교체 권장)
@@ -88,14 +89,15 @@ export const allProjects: Project[] = [
     type: "Web Game Platform",
     image: placeholderTech(1),
     url: "https://dopamine.land",
-    tech: ["Next.js", "Phaser.js", "Supabase", "WebSockets", "Cursor AI"],
-    shortDesc: "웹 기반 멀티플레이 게임 플랫폼. Cursor AI를 활용해 개발 속도 2배 단축.",
+    tech: ["Next.js", "Phaser.js", "Supabase", "WebSockets", "Claude Code"],
+    shortDesc: "웹 기반 멀티플레이 게임 플랫폼. Claude Code와 커스텀 MCP로 게임 상태와 DB를 연결.",
     description: "네오위즈 재직 시 습득한 게임 엔진 기술을 웹 서비스에 접목하여 구축한 카지노 컨셉의 멀티플레이 게임 놀이터입니다.",
     details: [
       "Next.js 환경에 Phaser.js 게임 엔진을 최적화하여 탑재, 별도 설치 없는 고성능 웹 게임 환경 구축",
       "WebSockets을 활용하여 '텍사스 홀덤', '1:1 테트리스' 등의 실시간 멀티플레이 로직과 게임 상태 동기화 구현",
       "Vercel 배포 환경에 맞춰 백엔드 로직을 Serverless로 구성하고, Supabase를 이용해 포인트 시스템 및 유저 데이터 관리",
-      "Cursor AI의 바이브 코딩(Vibe Coding) 기능을 적극 활용하여 게임 로직 구현 속도를 2배 이상 단축하고, 도메인 연결 및 SSL 보안 적용 완료"
+      "Claude Code로 게임 로직 구현 속도를 높이고, Phaser/Supabase 관련 Skills와 게임 상태 조회용 MCP 서버를 도입",
+      "도메인 연결 및 SSL 보안 적용까지 완료"
     ]
   },
   {
@@ -114,6 +116,42 @@ export const allProjects: Project[] = [
       "Supabase를 메인 데이터베이스로 활용하여 사용자 프로필, 매칭 기록, 채팅 로그 등 복잡한 관계형 데이터를 효율적으로 관리",
       "직접 Stage 서버를 운용하기 위해 Nas 서버를 구축하고, Docker에 우분투 이미지를 올려 Stage 서버 구성",
       "직접 마케팅 인플루언서와 디자이너를 섭외하여 기획부터 개발, 마케팅까지 프로젝트 전 과정 주도"
+    ]
+  },
+  {
+    slug: "cop-vs-robbers",
+    title: "Cop vs Robbers",
+    company: "Personal Project",
+    period: "2025.01 ~ 진행중",
+    type: "Realtime Mobile Game",
+    image: placeholderTech(4),
+    tech: ["React Native", "WebSocket", "WebRTC", "Naver Map API", "Vision Camera"],
+    shortDesc: "실시간 위치 추적, PTT 무전, QR 방 참가가 엮인 위치 기반 멀티플레이 게임.",
+    description: "경찰과 도둑 역할을 나누고 GPS, 음성 통신, 지도 UI를 하나의 게임 플로우로 묶은 React Native 프로젝트입니다.",
+    details: [
+      "HIDING/CHASE 단계별 게임 플로우와 검거, 수감, 생존 조건을 포함한 승패 로직 구현",
+      "WebSocket 기반 위치 동기화와 서버 검증 로직으로 다수 플레이어 상태 일관성 확보",
+      "WebRTC P2P 시그널링 및 Push-to-Talk 무전을 도둑 팀 전용으로 연동",
+      "QR 코드 생성/스캔과 Naver Map API를 활용한 레이더형 지도 UI, 근접 경고, 감옥 마커 구현",
+      "WSL/Windows ADB, Metro 연동 스크립트로 실제 디바이스 빌드 및 실행 파이프라인 구축"
+    ]
+  },
+  {
+    slug: "piesta",
+    title: "피에스타 (Piesta)",
+    company: "Personal Project",
+    period: "2025.01 ~ 진행중",
+    type: "Job Platform",
+    image: placeholderTech(5),
+    tech: ["Next.js", "NestJS", "TypeScript", "Prisma", "PostgreSQL", "shadcn/ui"],
+    shortDesc: "구인자와 구직자를 연결하는 Next.js + NestJS 풀스택 매칭 플랫폼.",
+    description: "공고 리스트, 이력서 빌더, 지원자 트래킹, 역할별 권한을 직접 구현한 구인구직 플랫폼입니다.",
+    details: [
+      "Next.js App Router로 SSR/RSC 기반의 SEO와 초기 로딩 최적화 UI 구축",
+      "NestJS + Prisma ORM 기반 API를 모듈, 컨트롤러, 서비스, DTO 계층으로 분리",
+      "JWT 인증/인가와 구인자, 구직자, 관리자 역할별 권한 분리 구현",
+      "검색 필터링, 페이지네이션, 무한 스크롤 등 리스트형 UX에 필요한 서버/클라이언트 패턴 설계",
+      "Claude Code로 NestJS 모듈 생성과 CRUD 보일러플레이트 작성을 자동화"
     ]
   },
   {
