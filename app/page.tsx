@@ -8,10 +8,12 @@ import {
   Bot,
   BriefcaseBusiness,
   Github,
+  Layers,
   Mail,
   MapPin,
   Phone,
   Radar,
+  Rocket,
   ScrollText,
   Sparkles,
 } from "lucide-react";
@@ -26,24 +28,32 @@ const navItems = [
 ];
 
 const proofNotes = [
-  "Svelte -> React 마이그레이션",
-  "UI 반복 4~5회 -> 1~2회",
-  "메인 데이터 페칭 34% 개선",
+  "3년 Web3 프론트엔드",
   "Lighthouse 20% 개선",
+  "메인 데이터 페칭 34% 개선",
+  "UI 반복 4~5회 -> 1~2회",
   "독립 개발 프로덕트 6종",
-  "Harness Engineering",
+  "Claude Code · MCP · Harness",
 ];
 
 const capabilityNotes = [
   {
+    icon: Layers,
+    title: "Web3 프로덕트를 끝까지 책임집니다",
+    body: "네오위즈 Neopin에서 지갑 익스텐션, DEX(Swap/Pool/Stake), Smart Contract 연동을 3년간 담당하며 블록체인 프론트엔드 전 영역을 실무로 다뤘습니다.",
+  },
+  {
+    icon: Bot,
     title: "AI를 기능이 아니라 작업 흐름으로 다룹니다",
     body: "Claude Code, 커스텀 MCP 서버, 공개 Agent Skills, 하네스 엔지니어링, 간이 eval을 실제 개인 프로젝트에 붙여 PR 단위 작업과 반복 파싱 작업을 맡겼습니다.",
   },
   {
+    icon: ScrollText,
     title: "프론트엔드를 협업 인터페이스로 봅니다",
     body: "Neopin에서 디자인 시스템과 스타일 가이드를 만들고, 기획·디자인·개발 간 반복 비용을 줄이는 프로세스를 문서화했습니다.",
   },
   {
+    icon: Rocket,
     title: "끝까지 굴러가는 제품을 만듭니다",
     body: "Next.js, Flutter, React Native, NestJS, Supabase, Docker를 오가며 서버 구축, 앱 배포 준비, 마케팅 섭외까지 직접 진행했습니다.",
   },
@@ -233,7 +243,7 @@ export default function Portfolio() {
                 Current Focus
               </div>
               <p className="text-3xl font-black leading-tight">
-                Claude Code, MCP, Agent Skills, 하네스 엔지니어링을 제품 개발 루틴으로 가져오는 프론트엔드 엔지니어.
+                Web3 도메인 전문성과 AI 네이티브 개발 방식을 한 제품 안에서 결합하는 프론트엔드 엔지니어.
               </p>
             </div>
             <div className="grid grid-cols-2 border-2 border-zinc-950 bg-[#d7ff4f]">
@@ -281,7 +291,7 @@ export default function Portfolio() {
       </section>
 
       <section id="skills" className="relative mx-auto max-w-7xl px-4 py-14 md:px-6 md:py-20">
-        <SectionLabel index="01" eyebrow="Capabilities" title="AI와 제품 개발을 같은 테이블에 올립니다." />
+        <SectionLabel index="01" eyebrow="Capabilities" title="Web3 도메인과 AI 워크플로우를 같은 테이블에 올립니다." />
         <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
           <div className="grid gap-4">
             {capabilityNotes.map((note, index) => (
@@ -295,7 +305,7 @@ export default function Portfolio() {
               >
                 <div className="mb-5 flex items-center justify-between font-mono text-xs uppercase tracking-widest text-zinc-500">
                   <span>Case {index + 1}</span>
-                  {index === 0 ? <Bot className="h-4 w-4" /> : <ScrollText className="h-4 w-4" />}
+                  <note.icon className="h-4 w-4" />
                 </div>
                 <h3 className="text-2xl font-black leading-tight">{note.title}</h3>
                 <p className="mt-4 leading-relaxed text-zinc-700">{note.body}</p>

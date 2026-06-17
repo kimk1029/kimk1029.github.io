@@ -13,9 +13,9 @@ export const experience = [
   },
   {
     company: "NEOWIZ (네오위즈)",
-    role: "Senior FE / Lead FE",
+    role: "Senior FE / NEOPIN.io Lead FE",
     period: "2020.03 ~ 2024.12",
-    description: "블록체인 오픈 DeFi 플랫폼 'Neopin' 및 게임 플랫폼 개발",
+    description: "판교 기반 게임사 블록체인 사업부 Neopin(오픈 DeFi 플랫폼) 핵심 기여자 — 지갑 익스텐션부터 DEX DApp, 디자인 시스템, Admin까지 프로덕트 전 영역 담당",
     details: [
       "Neopin 지갑 익스텐션(Chrome) 아키텍처 설계 및 코어 기능 구현",
       "React/SWR 기반 상태 관리 최적화, Lighthouse 점수 20% 개선",
@@ -39,26 +39,26 @@ export const experience = [
 ];
 export const personalInfo = {
   name: "김규현 (Kyu-hyun Kim)",
-  title: "Frontend Developer · AI Product Engineering",
-  subtitle: "React·Next.js 기반 프론트엔드 + 풀스택 · AI 도구 활용 8년 차",
+  title: "Frontend Engineer · AI Product Engineering",
+  subtitle: "React·Next.js 8년 차 · 약 5년의 Web3 도메인 경험 · AI 네이티브 개발 워크플로우",
   email: "kimk1029@naver.com",
   phone: "010-3244-0103",
   github: "https://github.com/kimk1029",
   location: "서울 강남구",
   portfolio: "kimk1029.github.io",
   summary: [
-    "8년간 프론트엔드 개발을 해왔고, 최근 1년은 독립 개발자로 LLM 기반 도구를 실제 프로젝트에 녹여보는 시간을 보냈습니다.",
-    "네오위즈 Neopin에서는 Svelte에서 React로 관리자 페이지를 옮기고, 디자인 시스템을 만들어 디자인팀과의 반복 작업을 줄였습니다.",
-    "Claude Code, 커스텀 MCP 서버, Agent Skills, 하네스 엔지니어링, 간이 eval을 활용해 웹·모바일 프로덕트 6종을 혼자 기획부터 배포까지 끝냈습니다."
+    "네오위즈 Neopin에서 지갑 익스텐션·DEX·DeFi 플랫폼을 3년간 개발한 핵심 기여자입니다. Smart Contract 연동, WalletConnect, 트랜잭션 처리 등 블록체인 프론트엔드 전 영역을 실무로 다뤘습니다.",
+    "React·Next.js 기반 8년 차 프론트엔드 개발자로 Node.js/NestJS 풀스택까지 다룹니다. 디자인 시스템 구축, 레거시 마이그레이션, 성능 최적화를 주도했습니다.",
+    "최근 1년은 Claude Code·커스텀 MCP 서버·Agent Skills·하네스 엔지니어링·간이 eval로 웹·모바일 프로덕트를 기획부터 배포까지 단독 완수하며 AI 네이티브 워크플로우를 검증했습니다."
   ]
 };
 
 export const skills = [
-  { category: "AI Engineering", items: ["Claude Code", "OpenAI API", "Anthropic Claude API", "Custom MCP", "Agent Skills", "Harness Engineering"], icon: Bot },
-  { category: "Frontend", items: ["React.js", "Next.js 14+", "TypeScript", "Tailwind CSS", "Vue.js", "shadcn/ui"], icon: Code2 },
-  { category: "Web3", items: ["Web3.js", "Ethers.js", "WalletConnect", "Smart Contract"], icon: Layers },
-  { category: "Mobile/Game", items: ["Flutter", "React Native", "Phaser.js", "WebSocket", "WebRTC", "D3.js"], icon: Smartphone },
-  { category: "Backend", items: ["Node.js", "NestJS", "Supabase", "Prisma", "PostgreSQL", "Java Spring", "Docker"], icon: Database },
+  { category: "Web3 / Blockchain", items: ["Ethers.js", "Web3.js", "ERC20 ABI", "WalletConnect", "TronLink", "DEX (Swap/Pool/Stake)", "Chrome Extension Wallet"], icon: Layers },
+  { category: "AI Engineering", items: ["Claude Code", "Custom MCP", "Agent Skills", "Harness Engineering", "OpenAI API", "Anthropic Claude API", "LLM Eval", "v0.dev", "Lovable"], icon: Bot },
+  { category: "Frontend", items: ["React.js", "Next.js 14+ (App Router/RSC)", "TypeScript", "Vue.js", "Tailwind CSS", "shadcn/ui", "Framer Motion", "Lottie"], icon: Code2 },
+  { category: "State / Visualization", items: ["SWR", "React-Query", "Zustand", "Recoil", "D3.js", "C3.js", "Phaser.js", "WebSocket", "WebRTC"], icon: Smartphone },
+  { category: "Backend & Infra", items: ["Node.js", "Express", "NestJS", "Java Spring Boot", "Supabase", "Prisma", "PostgreSQL", "AWS", "Vercel", "Railway", "Docker", "GitHub Actions", "Jenkins"], icon: Database },
 ];
 
 // 이미지 플레이스홀더 (추후 실제 프로젝트 스크린샷으로 교체 권장)
@@ -89,7 +89,7 @@ export const allProjects: Project[] = [
     type: "Web Game Platform",
     image: placeholderTech(1),
     url: "https://dopamine.land",
-    tech: ["Next.js", "Phaser.js", "Supabase", "WebSockets", "Claude Code"],
+    tech: ["Next.js", "Phaser.js", "Supabase", "WebSockets", "Vercel", "Custom MCP"],
     shortDesc: "웹 기반 멀티플레이 게임 플랫폼. Claude Code와 커스텀 MCP로 게임 상태와 DB를 연결.",
     description: "네오위즈 재직 시 습득한 게임 엔진 기술을 웹 서비스에 접목하여 구축한 카지노 컨셉의 멀티플레이 게임 놀이터입니다.",
     details: [
@@ -105,17 +105,17 @@ export const allProjects: Project[] = [
     title: "datebase",
     company: "Personal Project",
     period: "2024.10 ~ 진행중",
-    type: "Date Course App",
+    type: "Location-based Dating App",
     image: placeholderTech(2),
-    tech: ["Flutter", "Node.js", "Prisma", "Docker", "Supabase", "Maps API"],
-    shortDesc: "데이트 코스를 저장하고 공유하는 앱. 장소, 동선, 코스 데이터를 모바일 UX로 정리.",
-    description: "커플과 지인이 다녀온 데이트 코스를 장소 단위로 모아 공유하고, 코스 추천과 기록을 자연스럽게 연결하는 모바일 앱입니다.",
+    tech: ["Flutter", "Node.js", "Express", "Prisma", "Supabase", "Railway", "Docker"],
+    shortDesc: "위치 기반 데이팅 앱. 기획부터 스토어 배포까지 앱 서비스 전 과정을 단독으로 검증.",
+    description: "웹 중심 스택에 모바일 네이티브를 더해, 위치 기반 데이팅 앱의 기획부터 스토어 배포까지 전 과정을 단독으로 검증한 크로스 플랫폼 프로젝트입니다.",
     details: [
-      "Flutter/Dart 기반으로 코스 탐색, 코스 상세, 장소 저장, 공유 플로우를 모바일 중심 UX로 구현",
-      "Node.js(Express)와 Prisma ORM을 사용하여 코스, 장소, 사용자 기록을 다루는 RESTful API 설계",
-      "Supabase를 메인 데이터베이스로 활용하여 사용자 프로필, 저장한 코스, 장소 메타데이터 등 관계형 데이터 관리",
-      "직접 Stage 서버를 운용하기 위해 Nas 서버를 구축하고, Docker에 우분투 이미지를 올려 Stage 서버 구성",
-      "디자이너와 마케팅 인플루언서를 섭외해 기획, 개발, 초기 마케팅 준비까지 프로젝트 전 과정 주도"
+      "Flutter/Dart를 Claude Code 페어 프로그래밍 방식으로 학습하며 구현 (에이전트 선구현 → 코드 리뷰로 습득)",
+      "Node.js(Express)와 Prisma ORM 기반 RESTful API를 설계하고 Railway로 배포",
+      "Supabase를 메인 데이터베이스로 활용해 사용자 프로필, 위치, 매칭 데이터 등 관계형 데이터 관리",
+      "Stage 환경을 직접 운용하기 위해 NAS 서버를 구축하고 Docker 기반 Stage 환경 구성",
+      "디자이너·마케팅 인플루언서를 직접 섭외하고, APK 생성·개발자 등록·스토어 배포까지 앱 서비스 전 과정 단독 완수"
     ]
   },
   {
@@ -157,13 +157,13 @@ export const allProjects: Project[] = [
   },
   {
     slug: "fiesta",
-    title: "Fiesta",
+    title: "Piesta (피에스타)",
     company: "Personal Project",
     period: "2025.01 ~ 진행중",
     type: "Job Platform",
     image: placeholderTech(5),
     tech: ["Next.js", "NestJS", "TypeScript", "Prisma", "PostgreSQL", "shadcn/ui"],
-    shortDesc: "구인자와 구직자를 연결하는 Next.js + NestJS 풀스택 매칭 플랫폼.",
+    shortDesc: "구인자와 구직자를 연결하는 Next.js + NestJS 풀스택 구인구직 매칭 플랫폼.",
     description: "공고 리스트, 이력서 빌더, 지원자 트래킹, 역할별 권한을 직접 구현한 구인구직 플랫폼입니다.",
     details: [
       "Next.js App Router로 SSR/RSC 기반의 SEO와 초기 로딩 최적화 UI 구축",
