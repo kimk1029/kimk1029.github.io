@@ -32,7 +32,7 @@ const proofNotes = [
   "Lighthouse 20% 개선",
   "메인 데이터 페칭 34% 개선",
   "UI 반복 4~5회 -> 1~2회",
-  "독립 개발 프로덕트 6종",
+  "독립 개발 6종 진행 · 5종 출시",
   "Claude Code · MCP · Harness",
 ];
 
@@ -45,7 +45,7 @@ const capabilityNotes = [
   {
     icon: Bot,
     title: "AI를 기능이 아니라 작업 흐름으로 다룹니다",
-    body: "Claude Code, 커스텀 MCP 서버, 공개 Agent Skills, 하네스 엔지니어링, 간이 eval을 실제 개인 프로젝트에 붙여 PR 단위 작업과 반복 파싱 작업을 맡겼습니다.",
+    body: "Claude Code, MCP 서버 연동, Agent Skills, Agent Harness, 간이 Eval을 실제 프로덕트 개발에 붙여 PR 단위 작업과 반복 파싱 작업을 맡겼고, 그 워크플로우로 5종을 출시했습니다.",
   },
   {
     icon: ScrollText,
@@ -55,7 +55,7 @@ const capabilityNotes = [
   {
     icon: Rocket,
     title: "끝까지 굴러가는 제품을 만듭니다",
-    body: "Next.js, Flutter, React Native, NestJS, Supabase, Docker를 오가며 서버 구축, 앱 배포 준비, 마케팅 섭외까지 직접 진행했습니다.",
+    body: "Next.js, Flutter, React Native, NestJS, Supabase, Docker를 오가며 시세 데이터 파이프라인, Stage 서버 구축, 앱스토어 출시, 마케팅 섭외까지 직접 진행했습니다.",
   },
 ];
 
@@ -212,7 +212,7 @@ export default function Portfolio() {
             className="border-2 border-zinc-950 bg-[#f5f0e6]"
           >
             <div className="flex items-center justify-between border-b-2 border-zinc-950 px-4 py-3 font-mono text-xs uppercase tracking-[0.22em]">
-              <span>Resume parsed from DOCX</span>
+              <span>Resume parsed from PDF</span>
               <span>2026</span>
             </div>
             <div className="p-5 md:p-8">
@@ -249,11 +249,11 @@ export default function Portfolio() {
             <div className="grid grid-cols-2 border-2 border-zinc-950 bg-[#d7ff4f]">
               <div className="border-r-2 border-zinc-950 p-5">
                 <div className="font-mono text-xs uppercase">Career</div>
-                <div className="mt-8 text-5xl font-black">8y+</div>
+                <div className="mt-8 text-5xl font-black">9y+</div>
               </div>
               <div className="p-5">
-                <div className="font-mono text-xs uppercase">Solo products</div>
-                <div className="mt-8 text-5xl font-black">6</div>
+                <div className="font-mono text-xs uppercase">Solo launches</div>
+                <div className="mt-8 text-5xl font-black">5</div>
               </div>
             </div>
             <div className="border-2 border-zinc-950 bg-[#f5f0e6] p-5">
@@ -380,7 +380,7 @@ export default function Portfolio() {
       </section>
 
       <section id="projects" className="relative mx-auto max-w-7xl px-4 py-14 md:px-6 md:py-20">
-        <SectionLabel index="03" eyebrow="Selected Projects" title="개인 프로젝트 6종과 핵심 업무 프로젝트." />
+        <SectionLabel index="03" eyebrow="Selected Projects" title="운영 중인 프로덕트 3종, 출시작, 그리고 핵심 업무 프로젝트." />
         <div className="border-t-2 border-zinc-950">
           {featuredProjects.map((project, index) => (
             <ProjectRow key={project.slug} project={project} index={index} />

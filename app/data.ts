@@ -2,63 +2,65 @@ import { Code2, Layers, Smartphone, Bot, Database } from "lucide-react";
 export const experience = [
   {
     company: "독립 개발 / AI 기반 프로덕트 빌딩",
-    role: "Full Stack Maker",
+    role: "풀스택 개발 (1인)",
     period: "2025.01 ~ 현재",
-    description: "웹, 모바일, 게임, 커뮤니티 영역의 프로덕트 6종을 기획부터 배포까지 단독 진행",
+    description: "웹·모바일·게임 프로덕트 6종을 기획부터 배포까지 단독 진행해 5종 출시. ARVO TCG, dopamine.land, DATEBASE 3종은 현재 운영 중",
     details: [
-      "Claude Code를 주 작업 도구로 사용하고, 커스텀 MCP 서버, 공개 Agent Skills, 하네스 엔지니어링을 도입",
-      "dopamine.land, datebase, 포케페스타30, Cop vs Robbers, Fiesta, 교회 익명 커뮤니티를 단독 개발",
-      "디자이너, 인플루언서 섭외부터 NAS Stage 서버 구축, 앱스토어 배포 준비까지 제품 전 과정 주도"
+      "ARVO TCG: TCG 시세 데이터 파이프라인 구축부터 Next.js 웹·React Native 앱스토어 출시까지 단독 수행, 웹·앱 양채널 운영",
+      "dopamine.land: Next.js + Phaser.js + WebSockets 기반 실시간 멀티플레이 게임 플랫폼 단독 런칭",
+      "DATEBASE: Flutter 앱, Node.js 백엔드, NAS Stage 인프라까지 전 구간 설계·구축, 디자이너·인플루언서 섭외까지 운영 주도",
+      "Claude Code를 주 작업 도구로 MCP 서버 연동, Agent Skills, Agent Harness, 간이 Eval을 개발 워크플로우로 정착"
     ]
   },
   {
     company: "NEOWIZ (네오위즈)",
-    role: "Senior FE / NEOPIN.io Lead FE",
+    role: "시니어 FE / Lead FE",
     period: "2020.03 ~ 2024.12",
-    description: "판교 기반 게임사 블록체인 사업부 Neopin(오픈 DeFi 플랫폼) 핵심 기여자 — 지갑 익스텐션부터 DEX DApp, 디자인 시스템, Admin까지 프로덕트 전 영역 담당",
+    description: "블록체인 사업부 Neopin(오픈 DeFi 플랫폼)·BETSPIDER.IO 담당 — 지갑 익스텐션, DeFi DApp(DEX), 통합 관리자 마이그레이션, 디자인 시스템까지 프론트엔드 전 영역 핵심 기여자",
     details: [
-      "Neopin 지갑 익스텐션(Chrome) 아키텍처 설계 및 코어 기능 구현",
-      "React/SWR 기반 상태 관리 최적화, Lighthouse 점수 20% 개선",
-      "디자인 시스템 도입으로 UI 반복 작업을 4~5회에서 1~2회로 축소",
-      "하이브리드 앱(Webview)과 네이티브 간 양방향 통신 인터페이스 개발",
-      "레거시(Svelte) 관리자 페이지 React 마이그레이션 및 메인 데이터 페칭 34% 개선"
+      "NEOPIN 지갑 익스텐션(Chrome) 아키텍처 설계, Ethers.js·Web3.js로 Smart Contract를 직접 호출하는 지갑 코어 기능 구현",
+      "SWR 도입으로 중복 API 요청을 캐시·재검증 흐름으로 정리, 메인 화면 Lighthouse 점수 약 20% 개선",
+      "app.neopin.io DEX의 Swap·Pool·Stake 구현, ERC20 ABI 연동 및 웹뷰 ↔ 네이티브 앱 양방향 통신 인터페이스 개발",
+      "통합 관리자 페이지 Svelte → React 전환 제안·실행, SWR + Zustand 재구성으로 메인 데이터 페칭 약 34% 개선",
+      "NEOPIN.io 디자인 시스템 리드 — 동일 UI 수정 커뮤니케이션 4~5회 → 1~2회로 감소",
+      "BETSPIDER.IO(Tron 블록체인 카지노) Vue 2 + TypeScript 점진 도입, TronLink 지갑 결제 흐름 구현"
     ]
   },
   {
     company: "Trumpia",
-    role: "Full Stack Developer (Base Team)",
+    role: "풀스택 개발자",
     period: "2016.01 ~ 2020.02",
-    description: "미국 실리콘밸리 소재 메시징 서비스 기업 (본사 협업)",
+    description: "미국 실리콘밸리 소재 B2B 메시징 서비스 기업 — 프론트엔드 + 백엔드 + 인프라 일부 담당",
     details: [
-      "대규모 데이터 시각화 차트 엔진(D3.js/C3.js) 리팩토링 (성능 30% 개선)",
-      "PHP 레거시 시스템 -> Java Spring Boot 마이그레이션 주도",
-      "글로벌 클라이언트(AT&T) 기술 지원 및 Jenkins CI/CD 구축",
-      "반응형 웹 리뉴얼 및 크로스 브라우징 이슈 해결"
+      "D3.js·C3.js 데이터 시각화 대시보드 구축, C3.js 단일 렌더링 엔진 + Factory 패턴 리팩토링으로 차트 성능 30% 이상 개선",
+      "PHP 레거시 시스템을 Java Spring Boot로 단계적 전환하고 반응형 웹 리뉴얼 리드 (Apache·Tomcat·CentOS 환경 구축 포함)",
+      "Jenkins 기반 Dev·Stage·Live CI/CD 파이프라인 구축, GitLab 코드 리뷰 프로세스 도입",
+      "Oracle 12g 쿼리 실행 계획 분석·튜닝, 미국 본사·AT&T 엔지니어와 영어로 OEM 서버 테스팅·이슈 트래킹"
     ]
   }
 ];
 export const personalInfo = {
   name: "김규현 (Kyu-hyun Kim)",
   title: "Frontend Engineer · AI Product Engineering",
-  subtitle: "React·Next.js 8년 차 · 약 5년의 Web3 도메인 경험 · AI 네이티브 개발 워크플로우",
+  subtitle: "React·Next.js 9년 차 · 약 5년의 Web3 도메인 경험 · AI 네이티브 개발 워크플로우",
   email: "kimk1029@naver.com",
   phone: "010-3244-0103",
   github: "https://github.com/kimk1029",
   location: "서울 강남구",
   portfolio: "kimk1029.github.io",
   summary: [
-    "네오위즈 Neopin에서 지갑 익스텐션·DEX·DeFi 플랫폼을 3년간 개발한 핵심 기여자입니다. Smart Contract 연동, WalletConnect, 트랜잭션 처리 등 블록체인 프론트엔드 전 영역을 실무로 다뤘습니다.",
-    "React·Next.js 기반 8년 차 프론트엔드 개발자로 Node.js/NestJS 풀스택까지 다룹니다. 디자인 시스템 구축, 레거시 마이그레이션, 성능 최적화를 주도했습니다.",
-    "최근 1년은 Claude Code·커스텀 MCP 서버·Agent Skills·하네스 엔지니어링·간이 eval로 웹·모바일 프로덕트를 기획부터 배포까지 단독 완수하며 AI 네이티브 워크플로우를 검증했습니다."
+    "React·Next.js 중심의 프론트엔드 역량에 Web3·대시보드·실시간 서비스 경험을 더한 9년 차 개발자입니다. 네오위즈 Neopin에서 지갑 익스텐션, DeFi DApp, 관리자 마이그레이션, 디자인 시스템을 담당했습니다.",
+    "Smart Contract 연동, WalletConnect, 트랜잭션 처리 등 블록체인 프론트엔드 전 영역을 실무로 다뤘고, 디자인 시스템 구축·레거시 마이그레이션·성능 최적화를 주도했습니다.",
+    "독립 개발 기간에는 Claude Code·MCP·Agent Skills·Agent Harness·간이 Eval 워크플로우로 웹·모바일·게임 프로덕트 6종을 진행해 5종을 출시했고, ARVO TCG·dopamine.land·DATEBASE 3종을 운영 중입니다."
   ]
 };
 
 export const skills = [
-  { category: "Web3 / Blockchain", items: ["Ethers.js", "Web3.js", "ERC20 ABI", "WalletConnect", "TronLink", "DEX (Swap/Pool/Stake)", "Chrome Extension Wallet"], icon: Layers },
-  { category: "AI Engineering", items: ["Claude Code", "Custom MCP", "Agent Skills", "Harness Engineering", "OpenAI API", "Anthropic Claude API", "LLM Eval", "v0.dev", "Lovable"], icon: Bot },
-  { category: "Frontend", items: ["React.js", "Next.js 14+ (App Router/RSC)", "TypeScript", "Vue.js", "Tailwind CSS", "shadcn/ui", "Framer Motion", "Lottie"], icon: Code2 },
-  { category: "State / Visualization", items: ["SWR", "React-Query", "Zustand", "Recoil", "D3.js", "C3.js", "Phaser.js", "WebSocket", "WebRTC"], icon: Smartphone },
-  { category: "Backend & Infra", items: ["Node.js", "Express", "NestJS", "Java Spring Boot", "Supabase", "Prisma", "PostgreSQL", "AWS", "Vercel", "Railway", "Docker", "GitHub Actions", "Jenkins"], icon: Database },
+  { category: "Web3 / Blockchain", items: ["Ethers.js", "Web3.js", "Smart Contract ABI", "WalletConnect", "TronLink", "DEX (Swap/Pool/Stake)", "Chrome Extension Wallet"], icon: Layers },
+  { category: "AI Engineering", items: ["Claude Code", "MCP", "Agent Skills", "Agent Harness", "LLM Eval", "Anthropic Claude API", "OpenAI API", "Prompt Engineering", "Cursor AI", "Lovable", "v0.dev"], icon: Bot },
+  { category: "Frontend & Mobile", items: ["TypeScript", "React.js", "Next.js 14+ (App Router/RSC)", "Vue.js", "React Native", "Flutter", "Tailwind CSS", "shadcn/ui", "Chakra UI", "Framer Motion"], icon: Code2 },
+  { category: "State / Realtime / Viz", items: ["SWR", "Zustand", "React-Query", "Recoil", "Phaser.js", "WebSocket", "WebRTC", "D3.js", "C3.js"], icon: Smartphone },
+  { category: "Backend & Infra", items: ["Node.js", "Express", "NestJS", "Java Spring Boot", "Supabase", "Prisma", "PostgreSQL", "Vercel", "Railway", "AWS", "Docker", "GitHub Actions", "Jenkins"], icon: Database },
 ];
 
 // 이미지 플레이스홀더 (추후 실제 프로젝트 스크린샷으로 교체 권장)
@@ -82,6 +84,26 @@ export interface Project {
 export const allProjects: Project[] = [
   // --- Personal Projects ---
   {
+    slug: "arvo-tcg",
+    title: "ARVO TCG (arvotcg.com)",
+    company: "Personal Project",
+    period: "2025 ~ 운영 중",
+    type: "TCG Community · Web + RN App",
+    image: placeholderTech(14),
+    url: "https://arvotcg.com",
+    tech: ["Next.js", "TypeScript", "React Native", "PostgreSQL", "Data Pipeline", "Vercel"],
+    shortDesc: "포켓몬·원피스·유희왕 TCG 실시간 시세·거래 커뮤니티. 시세 데이터 파이프라인부터 RN 앱스토어 출시까지 단독 수행.",
+    description: "포켓몬·원피스·유희왕 TCG의 실시간 시세 검색, 박스별 힛카드 가격, 카드 거래·컬렉션 관리를 제공하는 커뮤니티 플랫폼입니다. 시세 데이터 파이프라인 구축부터 React Native 앱스토어 출시까지 프로덕트 전 과정을 단독으로 수행하며 웹·앱 양채널로 운영하고 있습니다.",
+    details: [
+      "해외 시세 소스를 집계하는 자체 데이터 파이프라인을 구축해 박스·싱글카드 단위 가격 시계열 데이터를 자체 보유",
+      "수집 → 정규화 → 저장 → 서빙 흐름을 분리해 소스 추가·장애 시에도 서비스 영향 최소화",
+      "박스별 힛카드 가격, 카드별 시세 추이 차트 등 시세 데이터를 사용자용 화면으로 시각화",
+      "커뮤니티 피드, 카드샵, 실시간 경매(베타), 쪽지·알림 등 거래·소셜 기능과 보유 카드 시세 변동을 추적하는 컬렉션 관리 구현",
+      "Next.js App Router 기반 SSR 구조로 시세·게시글 페이지의 검색 노출과 초기 로딩 최적화",
+      "웹과 동일 API를 공유하는 React Native 앱을 앱스토어에 출시해 기능 추가 시 웹·앱 양채널 동시 반영 (지속 배포 v1.1.x)"
+    ]
+  },
+  {
     slug: "dopamine-land",
     title: "dopamine.land",
     company: "Personal Project",
@@ -89,29 +111,30 @@ export const allProjects: Project[] = [
     type: "Web Game Platform",
     image: placeholderTech(1),
     url: "https://dopamine.land",
-    tech: ["Next.js", "Phaser.js", "Supabase", "WebSockets", "Vercel", "Custom MCP"],
-    shortDesc: "웹 기반 멀티플레이 게임 플랫폼. Claude Code와 커스텀 MCP로 게임 상태와 DB를 연결.",
-    description: "네오위즈 재직 시 습득한 게임 엔진 기술을 웹 서비스에 접목하여 구축한 카지노 컨셉의 멀티플레이 게임 놀이터입니다.",
+    tech: ["Next.js", "Phaser.js", "Supabase", "WebSockets", "Vercel", "MCP"],
+    shortDesc: "브라우저에서 바로 동작하는 실시간 멀티플레이 게임 플랫폼. MCP 기반 개발 환경으로 단독 런칭.",
+    description: "별도 설치 없이 브라우저에서 바로 동작하는 멀티플레이 게임 플랫폼입니다. 텍사스 홀덤, 1:1 테트리스 등 실시간 대전 게임과 포인트 시스템·커뮤니티 기능을 결합했으며, MCP 기반 개발 환경을 구성해 LLM이 게임 상태와 DB 스키마를 직접 조회하며 개발을 보조하는 워크플로우로 완성했습니다.",
     details: [
-      "Next.js 환경에 Phaser.js 게임 엔진을 최적화하여 탑재, 별도 설치 없는 고성능 웹 게임 환경 구축",
-      "WebSockets을 활용하여 '텍사스 홀덤', '1:1 테트리스' 등의 실시간 멀티플레이 로직과 게임 상태 동기화 구현",
-      "Vercel 배포 환경에 맞춰 백엔드 로직을 Serverless로 구성하고, Supabase를 이용해 포인트 시스템 및 유저 데이터 관리",
-      "Claude Code로 게임 로직 구현 속도를 높이고, Phaser/Supabase 관련 Skills와 게임 상태 조회용 MCP 서버를 도입",
-      "도메인 연결 및 SSL 보안 적용까지 완료"
+      "Next.js 환경에 Phaser.js 게임 엔진을 탑재해 URL 접속만으로 동작하는 웹 게임 환경 구축, 게임 캔버스와 React UI 레이어(로비·랭킹·포인트) 분리",
+      "WebSockets 기반 텍사스 홀덤, 1:1 테트리스 등 실시간 멀티플레이 로직과 게임 상태 동기화 구현",
+      "턴 진행·베팅·승패 판정 등 게임 룰을 서버 기준으로 검증해 클라이언트 조작 여지 차단",
+      "Vercel Serverless + Supabase 조합으로 포인트 시스템과 유저 데이터 관리, 모바일 브라우저 포함 반응형 대응",
+      "Supabase 등 공개 MCP 서버를 연동해 LLM이 DB 스키마·게임 상태를 직접 조회하는 개발 환경 구성, Phaser·Supabase Agent Skills로 반복 코드 생성 자동화"
     ]
   },
   {
     slug: "datebase",
-    title: "datebase",
+    title: "DATEBASE (datebase.site)",
     company: "Personal Project",
-    period: "2024.10 ~ 진행중",
+    period: "2024.10 ~ 운영 중",
     type: "Location-based Dating App",
     image: placeholderTech(2),
+    url: "https://datebase.site",
     tech: ["Flutter", "Node.js", "Express", "Prisma", "Supabase", "Railway", "Docker"],
-    shortDesc: "위치 기반 데이팅 앱. 기획부터 스토어 배포까지 앱 서비스 전 과정을 단독으로 검증.",
+    shortDesc: "Flutter 위치 기반 데이팅 앱. 기획·개발·운영에 디자이너·인플루언서 섭외까지 앱 서비스 전 과정 수행.",
     description: "웹 중심 스택에 모바일 네이티브를 더해, 위치 기반 데이팅 앱의 기획부터 스토어 배포까지 전 과정을 단독으로 검증한 크로스 플랫폼 프로젝트입니다.",
     details: [
-      "Flutter/Dart를 Claude Code 페어 프로그래밍 방식으로 학습하며 구현 (에이전트 선구현 → 코드 리뷰로 습득)",
+      "Flutter·Dart 러닝 커브를 Claude Code 기반 페어 프로그래밍 방식으로 극복하고, 위치 기반 매칭·프로필·채팅 등 핵심 플로우를 단일 코드베이스로 iOS·Android 대응",
       "Node.js(Express)와 Prisma ORM 기반 RESTful API를 설계하고 Railway로 배포",
       "Supabase를 메인 데이터베이스로 활용해 사용자 프로필, 위치, 매칭 데이터 등 관계형 데이터 관리",
       "Stage 환경을 직접 운용하기 위해 NAS 서버를 구축하고 Docker 기반 Stage 환경 구성",
@@ -122,7 +145,7 @@ export const allProjects: Project[] = [
     slug: "poke-30",
     title: "포케페스타30 (poke-30.com)",
     company: "Personal Project",
-    period: "2025.04 ~ 진행중",
+    period: "2025.04 ~ 운영 중",
     type: "Fan Community",
     image: placeholderTech(6),
     url: "https://www.poke-30.com",
@@ -139,13 +162,13 @@ export const allProjects: Project[] = [
   },
   {
     slug: "cop-vs-robbers",
-    title: "Cop vs Robbers",
+    title: "경찰과 도둑 (Cop vs Robbers)",
     company: "Personal Project",
-    period: "2025.01 ~ 진행중",
-    type: "Realtime Mobile Game",
+    period: "2025.01 ~ 출시",
+    type: "Realtime Mobile Game · React Native",
     image: placeholderTech(4),
     tech: ["React Native", "WebSocket", "WebRTC", "Naver Map API", "Vision Camera"],
-    shortDesc: "실시간 위치 추적, PTT 무전, QR 방 참가가 엮인 위치 기반 멀티플레이 게임.",
+    shortDesc: "실시간 위치 동기화, WebRTC PTT 무전, QR 방 참가를 하나의 RN 코드베이스로 통합한 위치 기반 멀티플레이 게임.",
     description: "경찰과 도둑 역할을 나누고 GPS, 음성 통신, 지도 UI를 하나의 게임 플로우로 묶은 React Native 프로젝트입니다.",
     details: [
       "HIDING/CHASE 단계별 게임 플로우와 검거, 수감, 생존 조건을 포함한 승패 로직 구현",
@@ -157,10 +180,10 @@ export const allProjects: Project[] = [
   },
   {
     slug: "fiesta",
-    title: "Piesta (피에스타)",
+    title: "FIESTA (피에스타)",
     company: "Personal Project",
-    period: "2025.01 ~ 진행중",
-    type: "Job Platform",
+    period: "2025.01 ~ 출시",
+    type: "Job Platform · Next.js + NestJS",
     image: placeholderTech(5),
     tech: ["Next.js", "NestJS", "TypeScript", "Prisma", "PostgreSQL", "shadcn/ui"],
     shortDesc: "구인자와 구직자를 연결하는 Next.js + NestJS 풀스택 구인구직 매칭 플랫폼.",
