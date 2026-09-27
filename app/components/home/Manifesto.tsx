@@ -28,7 +28,7 @@ const ManifestoText = () => {
   const progress = useTransform(raw, (value) => value ?? 0);
 
   return (
-    <p className="mx-auto max-w-5xl text-[2rem] font-bold leading-[1.25] tracking-tight text-apple-white md:text-6xl md:leading-[1.15]">
+    <p className="mx-auto max-w-5xl text-[2rem] font-semibold leading-[1.25] tracking-[-0.02em] text-apple-white md:text-[3.5rem] md:leading-[1.2]">
       {words.map((word, index) => {
         const start = 0.08 + (index / words.length) * 0.8;
         return (
@@ -46,7 +46,7 @@ const ManifestoText = () => {
 
 export default function Manifesto() {
   return (
-    <Scroll.Section className="relative h-[300vh]">
+    <Scroll.Section className="relative h-[300vh] bg-black">
       <div className="sticky top-0 flex h-[100dvh] items-center px-6">
         <ManifestoText />
       </div>

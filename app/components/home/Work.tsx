@@ -11,20 +11,17 @@ const pushBackRange = ({ section, container }: KeyframesContext, index: number, 
   return { from: stuckAt + container.height * 0.4, to: stuckAt + container.height };
 };
 
-const cardTints = ["from-[#232d10]", "from-[#0c2336]", "from-[#211838]"];
-
 // 카드가 차례로 화면 위에 쌓이고, 뒤로 밀린 카드는 작아지며 어두워진다.
 export default function Work() {
   const count = experience.length;
 
   return (
-    <section id="work" className="px-4 md:px-6">
+    <section id="work" className="bg-black px-4 pt-32 md:px-6 md:pt-48">
       <Reveal className="mx-auto mb-10 max-w-6xl px-2 md:mb-0">
-        <p className="text-sm font-semibold uppercase tracking-[0.3em] text-apple-gray">Work</p>
-        <h2 className="mt-3 text-4xl font-bold leading-tight tracking-tight text-apple-white md:text-7xl">
-          병목을 보고, 구조를 바꾸고,
+        <h2 className="text-[40px] font-semibold leading-tight tracking-[-0.03em] text-apple-white md:text-[64px]">
+          <span className="text-apple-dim">병목을 보고, 구조를 바꾸고,</span>
           <br />
-          <span className="text-gradient">문서로 남겼습니다.</span>
+          문서로 남겼습니다.
         </h2>
       </Reveal>
 
@@ -47,7 +44,7 @@ export default function Work() {
               })}
             >
               <article
-                className={`relative overflow-hidden rounded-[2rem] border border-white/10 bg-gradient-to-br ${cardTints[index % cardTints.length]} to-apple-card to-60% p-7 md:p-12`}
+                className="relative overflow-hidden rounded-[18px] bg-apple-card p-7 md:p-14"
               >
                 {/* 투명도 대신 검은 막을 덮어 어둡게 해야 뒤 카드가 비치지 않는다 */}
                 <Scroll.Item
@@ -61,20 +58,18 @@ export default function Work() {
                     };
                   })}
                 />
-                <div className="flex flex-wrap items-center justify-between gap-3 text-sm font-semibold text-apple-gray">
-                  <span>{exp.period}</span>
-                  <span className="rounded-full border border-white/15 px-3 py-1">{exp.role}</span>
-                </div>
-                <h3 className="mt-6 text-3xl font-bold tracking-tight text-apple-white md:text-5xl">
+                <p className="text-[15px] font-semibold text-apple-gray md:text-[17px]">
+                  {exp.period} · {exp.role}
+                </p>
+                <h3 className="mt-3 text-[32px] font-semibold tracking-[-0.03em] text-apple-white md:text-[48px]">
                   {exp.company}
                 </h3>
-                <p className="mt-4 max-w-3xl text-lg leading-relaxed text-apple-white/80 md:text-xl">
+                <p className="mt-4 max-w-3xl text-[17px] leading-relaxed text-apple-white md:text-[21px]">
                   {exp.description}
                 </p>
-                <ul className="mt-8 grid gap-3 md:grid-cols-2 md:gap-x-10">
+                <ul className="mt-10 grid gap-x-12 gap-y-4 md:grid-cols-2">
                   {exp.details.map((detail) => (
-                    <li key={detail} className="flex gap-3 text-sm leading-relaxed text-apple-gray md:text-[15px]">
-                      <span className="mt-2 h-1.5 w-1.5 flex-none rounded-full bg-apple-white/60" />
+                    <li key={detail} className="border-t border-white/10 pt-4 text-[14px] leading-relaxed text-apple-gray md:text-[15px]">
                       {detail}
                     </li>
                   ))}

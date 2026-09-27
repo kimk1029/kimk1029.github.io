@@ -11,7 +11,7 @@ const rows = [
 // 스크롤 방향에 맞춰 두 줄의 문장이 서로 반대로 흘러간다.
 export default function Marquee() {
   return (
-    <Scroll.Section className="relative overflow-hidden py-24 md:py-40">
+    <Scroll.Section className="relative overflow-hidden bg-black py-24 md:py-40">
       {rows.map((row, index) => {
         const direction = index % 2 === 0 ? -1 : 1;
         const line = [...row, ...row, ...row].join("  ·  ");
@@ -29,8 +29,8 @@ export default function Marquee() {
             }))}
           >
             <p
-              className={`text-6xl font-extrabold tracking-tight md:text-9xl ${
-                index % 2 === 0 ? "text-apple-white" : "text-outline"
+              className={`text-6xl font-semibold tracking-[-0.04em] md:text-9xl ${
+                index % 2 === 0 ? "text-apple-white" : "text-[#424245]"
               }`}
             >
               {line}

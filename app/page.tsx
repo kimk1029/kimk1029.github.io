@@ -17,7 +17,7 @@ export default function Portfolio() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   return (
-    <main className="bg-black text-apple-white selection:bg-[#d7ff4f] selection:text-black">
+    <main className="bg-black text-apple-white selection:bg-apple-blue selection:text-white">
       <SiteNav containerRef={containerRef} />
       <Scroll.Container ref={containerRef} scrollAxis="y" className="h-[100dvh]">
         <Hero />

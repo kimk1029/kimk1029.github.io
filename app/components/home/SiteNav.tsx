@@ -22,7 +22,7 @@ export default function SiteNav({ containerRef }: { containerRef: RefObject<HTML
   const scaleX = useSpring(scrollYProgress, { stiffness: 200, damping: 30 });
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-white/[0.08] bg-black/70 backdrop-blur-xl backdrop-saturate-150">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-white/[0.08] bg-black/80 backdrop-blur-xl backdrop-saturate-150">
       <div className="mx-auto flex h-12 max-w-6xl items-center justify-between px-5">
         <button
           onClick={() => scrollToSection("intro")}
@@ -43,14 +43,14 @@ export default function SiteNav({ containerRef }: { containerRef: RefObject<HTML
         </nav>
         <a
           href={`mailto:${personalInfo.email}`}
-          className="rounded-full bg-apple-blue px-3 py-1 text-xs font-medium text-white"
+          className="rounded-full bg-apple-blue px-3 py-1 text-xs text-white"
         >
           연락하기
         </a>
       </div>
       <motion.div
         style={{ scaleX }}
-        className="absolute bottom-0 left-0 h-px w-full origin-left bg-gradient-to-r from-[#d7ff4f] via-sky-400 to-violet-400"
+        className="absolute bottom-0 left-0 h-px w-full origin-left bg-apple-white/60"
       />
     </header>
   );

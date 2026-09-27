@@ -14,10 +14,10 @@ export default function Stats() {
   const segment = 1 / stats.length;
 
   return (
-    <Scroll.Section className="relative h-[420vh]">
+    <Scroll.Section className="relative h-[420vh] bg-black">
       <div className="sticky top-0 flex h-[100dvh] items-center justify-center overflow-hidden">
-        <p className="absolute top-[14vh] text-sm font-semibold uppercase tracking-[0.3em] text-apple-gray">
-          By the numbers
+        <p className="absolute top-[14vh] text-lg font-semibold text-apple-gray md:text-2xl">
+          숫자로 보면.
         </p>
 
         {stats.map((stat, index) => {
@@ -40,10 +40,10 @@ export default function Stats() {
                 };
               })}
             >
-              <div className="text-gradient text-[34vw] font-extrabold leading-none tracking-tighter md:text-[16rem]">
+              <div className="text-[34vw] font-semibold leading-none tracking-[-0.05em] text-apple-white md:text-[15rem]">
                 {stat.value}
               </div>
-              <p className="mt-6 max-w-xl text-xl font-semibold text-apple-white md:text-3xl">
+              <p className="mt-6 max-w-xl text-xl font-semibold text-apple-gray md:text-[28px] md:leading-snug">
                 {stat.label}
               </p>
             </Scroll.Item>
@@ -54,7 +54,7 @@ export default function Stats() {
           {stats.map((stat, index) => (
             <Scroll.Item
               key={stat.value}
-              className="h-1.5 w-8 rounded-full bg-white"
+              className="h-[3px] w-8 bg-apple-white"
               keyframes={kf((ctx) => {
                 const pin = pinRange(ctx);
                 const start = index * segment;
