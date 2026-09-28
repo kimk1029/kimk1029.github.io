@@ -63,10 +63,6 @@ export const skills = [
   { category: "Backend & Infra", items: ["Node.js", "Express", "NestJS", "Java Spring Boot", "Supabase", "Prisma", "PostgreSQL", "Vercel", "Railway", "AWS", "Docker", "GitHub Actions", "Jenkins"], icon: Database },
 ];
 
-// 이미지 플레이스홀더 (추후 실제 프로젝트 스크린샷으로 교체 권장)
-const placeholderSpace = (id: number) => `https://picsum.photos/seed/space${id}/800/600?grayscale&blur=2`;
-const placeholderTech = (id: number) => `https://picsum.photos/seed/tech${id}/800/600?grayscale`;
-
 export interface Project {
   slug: string;
   title: string;
@@ -77,7 +73,7 @@ export interface Project {
   shortDesc: string;
   description: string;
   details: string[];
-  image?: string;
+  image?: string; // 실제 스크린샷 경로를 넣으면 목업 대신 표시된다
   url?: string;
 }
 
@@ -89,7 +85,6 @@ export const allProjects: Project[] = [
     company: "Personal Project",
     period: "2025 ~ 운영 중",
     type: "TCG Community · Web + RN App",
-    image: placeholderTech(14),
     url: "https://arvotcg.com",
     tech: ["Next.js", "TypeScript", "React Native", "PostgreSQL", "Data Pipeline", "Vercel"],
     shortDesc: "포켓몬·원피스·유희왕 TCG 실시간 시세·거래 커뮤니티. 시세 데이터 파이프라인부터 RN 앱스토어 출시까지 단독 수행.",
@@ -109,7 +104,6 @@ export const allProjects: Project[] = [
     company: "Personal Project",
     period: "2025.09 ~ 2025.12",
     type: "Web Game Platform",
-    image: placeholderTech(1),
     url: "https://dopamine.land",
     tech: ["Next.js", "Phaser.js", "Supabase", "WebSockets", "Vercel", "MCP"],
     shortDesc: "브라우저에서 바로 동작하는 실시간 멀티플레이 게임 플랫폼. MCP 기반 개발 환경으로 단독 런칭.",
@@ -128,7 +122,6 @@ export const allProjects: Project[] = [
     company: "Personal Project",
     period: "2024.10 ~ 운영 중",
     type: "Location-based Dating App",
-    image: placeholderTech(2),
     url: "https://datebase.site",
     tech: ["Flutter", "Node.js", "Express", "Prisma", "Supabase", "Railway", "Docker"],
     shortDesc: "Flutter 위치 기반 데이팅 앱. 기획·개발·운영에 디자이너·인플루언서 섭외까지 앱 서비스 전 과정 수행.",
@@ -147,7 +140,6 @@ export const allProjects: Project[] = [
     company: "Personal Project",
     period: "2025.04 ~ 운영 중",
     type: "Fan Community",
-    image: placeholderTech(6),
     url: "https://www.poke-30.com",
     tech: ["Next.js", "TypeScript", "Mobile Web", "Community Feed", "Realtime UX"],
     shortDesc: "포켓몬 팬 커뮤니티. 사용자 제보 기반 장소 혼잡도, 카드 거래, 시세, 지도, 오리파 기능 제공.",
@@ -166,7 +158,6 @@ export const allProjects: Project[] = [
     company: "Personal Project",
     period: "2025.01 ~ 출시",
     type: "Realtime Mobile Game · React Native",
-    image: placeholderTech(4),
     tech: ["React Native", "WebSocket", "WebRTC", "Naver Map API", "Vision Camera"],
     shortDesc: "실시간 위치 동기화, WebRTC PTT 무전, QR 방 참가를 하나의 RN 코드베이스로 통합한 위치 기반 멀티플레이 게임.",
     description: "경찰과 도둑 역할을 나누고 GPS, 음성 통신, 지도 UI를 하나의 게임 플로우로 묶은 React Native 프로젝트입니다.",
@@ -184,7 +175,6 @@ export const allProjects: Project[] = [
     company: "Personal Project",
     period: "2025.01 ~ 출시",
     type: "Job Platform · Next.js + NestJS",
-    image: placeholderTech(5),
     tech: ["Next.js", "NestJS", "TypeScript", "Prisma", "PostgreSQL", "shadcn/ui"],
     shortDesc: "구인자와 구직자를 연결하는 Next.js + NestJS 풀스택 구인구직 매칭 플랫폼.",
     description: "공고 리스트, 이력서 빌더, 지원자 트래킹, 역할별 권한을 직접 구현한 구인구직 플랫폼입니다.",
@@ -202,7 +192,6 @@ export const allProjects: Project[] = [
     company: "Personal Project",
     period: "2024.11 ~ 2025.10",
     type: "Web Service",
-    image: placeholderTech(3),
     tech: ["Next.js", "TypeScript", "shadcn/ui", "Playwright", "Lovable AI"],
     shortDesc: "데이터 자동 수집 기능을 포함한 익명 소통 플랫폼.",
     description: "교회 내 정보 공유 및 소통을 위한 익명 커뮤니티 서비스로, 데이터 자동화 수집 기능을 포함한 웹 플랫폼입니다.",
@@ -219,7 +208,6 @@ export const allProjects: Project[] = [
     company: "NEOWIZ",
     period: "2021.12 ~ 2024.12",
     type: "Blockchain",
-    image: placeholderSpace(4),
     tech: ["React.js", "Web3.js", "Ethers.js", "Chrome Extension"],
     shortDesc: "크롬 익스텐션 기반 블록체인 지갑 아키텍처 설계 및 개발.",
     description: "다양한 디스플레이 환경을 지원하는 크롬 익스텐션 지갑으로, 아키텍처 설계부터 블록체인 코어 기능 구현까지 담당했습니다.",
@@ -238,7 +226,6 @@ export const allProjects: Project[] = [
     company: "NEOWIZ",
     period: "2021.12 ~ 2024.12",
     type: "Web Frontend",
-    image: placeholderSpace(5),
     tech: ["React.js", "Tailwind CSS", "Framer Motion", "Chakra UI"],
     shortDesc: "프론트엔드 리드로서 디자인 시스템 구축 및 인터랙션 고도화.",
     description: "서비스 브랜딩을 위한 랜딩 페이지 및 토큰 소개 사이트로, 디자인 시스템을 구축하고 고품질 인터랙션을 구현했습니다.",
@@ -255,7 +242,6 @@ export const allProjects: Project[] = [
     company: "NEOWIZ",
     period: "2021.12 ~ 2024.12",
     type: "Blockchain / Hybrid",
-    image: placeholderSpace(6),
     tech: ["Next.js", "Tailwind CSS", "Hybrid App", "Smart Contract"],
     shortDesc: "DEX 핵심 기능 개발 및 하이브리드 앱(Webview) 양방향 통신 구현.",
     description: "Swap, Pool, Stake 등 핵심 DeFi 비즈니스 로직을 처리하는 DApp으로, 하이브리드 앱 환경 최적화를 수행했습니다.",
@@ -273,7 +259,6 @@ export const allProjects: Project[] = [
     company: "NEOWIZ",
     period: "2021.12 ~ 2024.12",
     type: "Internal Tool",
-    image: placeholderTech(7),
     tech: ["React.js", "React-Query", "Zustand", "Material-UI"],
     shortDesc: "레거시(Svelte) 마이그레이션 및 상태 관리 최적화.",
     description: "사내 운영을 위한 통합 관리자 페이지로, 기존 레거시 시스템을 React로 전환하고 상태 관리를 최적화했습니다.",
@@ -290,7 +275,6 @@ export const allProjects: Project[] = [
     company: "NEOWIZ",
     period: "2020.03 ~ 2021.12",
     type: "Blockchain Game",
-    image: placeholderSpace(8),
     tech: ["Vue.js", "TypeScript", "TronLink", "SCSS"],
     shortDesc: "블록체인 기반 카지노 웹앱 개발 및 트론 네트워크 연동.",
     description: "트론(Tron) 블록체인을 기반으로 한 실시간 베팅 서비스로, 지갑 연동 및 결제 로직을 구현했습니다.",
@@ -308,7 +292,6 @@ export const allProjects: Project[] = [
     company: "Trumpia",
     period: "2018.11 ~ 2019.05",
     type: "Data Visualization",
-    image: placeholderTech(9),
     tech: ["D3.js", "C3.js", "JavaScript"],
     shortDesc: "차트 렌더링 엔진 단일화 및 성능 30% 개선.",
     description: "대규모 데이터 시각화 리포트의 핵심 차트 모듈을 리팩토링하고 렌더링 성능을 개선했습니다.",
@@ -324,7 +307,6 @@ export const allProjects: Project[] = [
     company: "Trumpia",
     period: "2016.10 ~ 2018.11",
     type: "Full Stack",
-    image: placeholderTech(10),
     tech: ["D3.js", "Java", "Jenkins", "RequireJS"],
     shortDesc: "대규모 데이터 집계 및 시각화 대시보드 풀스택 구축.",
     description: "복잡한 집계 데이터를 시각화하여 고객 분석 효율을 높인 대시보드로, 프론트엔드부터 백엔드까지 풀스택으로 수행했습니다.",
@@ -341,7 +323,6 @@ export const allProjects: Project[] = [
     company: "Trumpia",
     period: "2016.01 ~ 2020.02",
     type: "Full Stack / Migration",
-    image: placeholderTech(11),
     tech: ["Java Spring Boot", "Bootstrap", "PHP", "Linux"],
     shortDesc: "PHP 레거시 시스템을 Spring Boot로 재구축 및 반응형 리뉴얼.",
     description: "노후화된 PHP 기반 시스템을 Java Spring Boot 아키텍처로 전면 재구축하고 반응형 웹으로 리뉴얼했습니다.",
@@ -358,7 +339,6 @@ export const allProjects: Project[] = [
     company: "Trumpia",
     period: "2016.01 ~ 2016.08",
     type: "Backend / Infra",
-    image: placeholderTech(12),
     tech: ["PHP", "Apache", "ORM"],
     shortDesc: "글로벌 서비스 안정화 및 주요 고객사 기술 지원.",
     description: "미국 본사 및 AT&T 등 주요 고객사의 기술적 이슈를 해결하고 시스템 안정성을 확보했습니다.",
@@ -375,7 +355,6 @@ export const allProjects: Project[] = [
     company: "Trumpia",
     period: "2015.10 ~ 2016.04",
     type: "Internal Tool",
-    image: placeholderTech(13),
     tech: ["Oracle 12g", "PHP"],
     shortDesc: "커스텀 데이터 추출 툴 개발 및 쿼리 튜닝.",
     description: "비효율적인 쿼리를 개선하고 운영 업무를 자동화하는 툴을 개발했습니다.",

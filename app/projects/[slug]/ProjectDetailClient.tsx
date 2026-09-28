@@ -7,7 +7,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Scroll } from "scrollex";
 import type { Project } from "@/app/data";
 import { companyLabel } from "@/app/components/company";
-import { kf, pinRange, Reveal } from "@/app/components/scroll-utils";
+import { kf, MaskText, pinRange, Reveal } from "@/app/components/scroll-utils";
 
 export default function ProjectDetailClient({ project }: { project: Project }) {
   return (
@@ -45,9 +45,12 @@ export default function ProjectDetailClient({ project }: { project: Project }) {
                 <p className="text-[17px] font-semibold text-apple-gray md:text-[21px]">
                   {companyLabel(project.company)} · {project.period}
                 </p>
-                <h1 className="mt-4 max-w-5xl text-[48px] font-semibold leading-[1.02] tracking-[-0.04em] md:text-[96px]">
-                  {project.title}
-                </h1>
+                <MaskText
+                  as="h1"
+                  text={project.title}
+                  stagger={36}
+                  className="mt-4 max-w-5xl text-[48px] font-semibold leading-[1.02] tracking-[-0.04em] md:text-[96px]"
+                />
                 <p className="mt-8 max-w-2xl text-[19px] leading-relaxed text-apple-gray md:text-[24px] md:leading-snug">
                   {project.shortDesc}
                 </p>

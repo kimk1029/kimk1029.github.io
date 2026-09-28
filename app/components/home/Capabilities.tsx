@@ -2,8 +2,8 @@
 
 import { useEffect, useRef } from "react";
 import { motion, useSpring, useTransform } from "framer-motion";
-import { Scroll, useScrollValue } from "scrollex";
-import { kf, pinRange, prefersReducedMotion } from "../scroll-utils";
+import { Scroll } from "scrollex";
+import { kf, pinRange, usePinProgress, useVelocitySkew } from "../scroll-utils";
 
 const capabilities = [
   {
@@ -44,30 +44,38 @@ const Track = () => {
     };
   }, []);
 
-  const raw = useScrollValue(({ section, position }) =>
-    prefersReducedMotion() ? 0 : pinRange({ section }).progress(position)
-  );
-  const progress = useSpring(
-    useTransform(raw, (value) => value ?? 0),
-    { stiffness: 120, damping: 24, mass: 0.3 }
-  );
+  const progress = useSpring(usePinProgress(), { stiffness: 120, damping: 24, mass: 0.3 });
   const x = useTransform(progress, (value) => -value * distance.current);
+  // 빠르게 넘기면 패널 전체가 진행 방향으로 기울어진다
+  const skewX = useVelocitySkew(7, "x");
 
   return (
     <motion.div
       ref={trackRef}
-      style={{ x }}
+      style={{ x, skewX }}
       className="flex w-max px-6 motion-reduce:w-full motion-reduce:flex-col md:px-[8vw] motion-reduce:md:flex-row motion-reduce:md:flex-wrap"
     >
       {capabilities.map((item, index) => (
         <article
           key={item.title}
-          className="flex h-[52vh] w-[80vw] flex-none flex-col justify-between border-l border-apple-line py-2 pl-6 pr-10 motion-reduce:h-auto motion-reduce:py-10 sm:w-[56vw] md:pl-10 md:pr-16 lg:w-[34vw]"
+          className="relative flex h-[56vh] w-[80vw] flex-none flex-col justify-end border-l border-apple-line py-2 pl-6 pr-10 motion-reduce:h-auto motion-reduce:py-10 sm:w-[56vw] md:pl-10 md:pr-16 lg:w-[34vw]"
         >
-          <span className="text-[5rem] font-semibold leading-none tracking-[-0.04em] text-apple-line md:text-[7rem]">
-            {index + 1}
-          </span>
-          <div>
+          {/* 번호는 글보다 느리게 움직여 깊이감을 만든다 */}
+          <Scroll.Item
+            className="pointer-events-none absolute left-4 top-0 md:left-6"
+            keyframes={kf((ctx) => {
+              const pin = pinRange(ctx);
+              return {
+                [pin.at(0)]: { translateX: 40 + index * 30, translateY: 0 },
+                [pin.at(1)]: { translateX: -160 - index * 30, translateY: -20 },
+              };
+            })}
+          >
+            <span className="text-[9rem] font-semibold leading-none tracking-[-0.06em] text-apple-line md:text-[13rem]">
+              {index + 1}
+            </span>
+          </Scroll.Item>
+          <div className="relative">
             <h3 className="text-[28px] font-semibold leading-tight tracking-[-0.02em] text-apple-ink md:text-[40px]">
               {item.title}
             </h3>
@@ -81,15 +89,19 @@ const Track = () => {
 
 export default function Capabilities() {
   return (
-    <Scroll.Section id="skills" className="relative h-[400vh] bg-apple-white motion-reduce:h-auto">
+    <Scroll.Section
+      id="skills"
+      className="relative z-10 -mt-10 h-[420vh] rounded-t-[40px] bg-apple-white motion-reduce:h-auto"
+    >
       <div className="sticky top-0 flex h-[100dvh] flex-col justify-center gap-14 overflow-hidden motion-reduce:relative motion-reduce:h-auto motion-reduce:py-32">
         <Scroll.Item
           className="px-6 md:px-[8vw]"
           keyframes={kf(({ section, container }) => ({
-            [section.topAt("container-bottom")]: { opacity: 0, translateY: 60 },
-            [section.topAt("container-bottom") + container.height * 0.6]: {
+            [section.topAt("container-bottom")]: { opacity: 0, translateY: 80, translateX: -40 },
+            [section.topAt("container-bottom") + container.height * 0.7]: {
               opacity: 1,
               translateY: 0,
+              translateX: 0,
             },
           }))}
         >
