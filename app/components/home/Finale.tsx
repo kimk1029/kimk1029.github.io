@@ -4,6 +4,7 @@ import { ChevronRight } from "lucide-react";
 import { motion, useTransform } from "framer-motion";
 import { Scroll } from "scrollex";
 import { personalInfo } from "@/app/data";
+import { Sparkles } from "../Sparkles";
 import { kf, pinRange, usePinProgress } from "../scroll-utils";
 
 const leadership = [
@@ -68,7 +69,7 @@ const Headline = () => {
   return (
     <motion.h2
       style={{ letterSpacing, scale, opacity }}
-      className="text-[48px] font-semibold leading-[1.05] text-apple-white md:text-[96px]"
+      className="shimmer text-[48px] font-semibold leading-[1.05] md:text-[96px]"
     >
       함께 만들 제품이
       <br />
@@ -81,6 +82,7 @@ export default function Finale() {
   return (
     <Scroll.Section id="contact" className="relative z-10 -mt-10 h-[260vh] rounded-t-[40px] bg-black">
       <div className="sticky top-0 flex h-[100dvh] flex-col items-center justify-center overflow-hidden px-6 text-center">
+        <Sparkles count={120} className="absolute inset-0 h-full w-full" />
         {/* 파문: 가는 원이 시차를 두고 퍼져 나간다 */}
         {ripples.map((ripple) => (
           <Scroll.Item
@@ -113,7 +115,7 @@ export default function Finale() {
           <div className="flex flex-col items-center gap-6 sm:flex-row sm:gap-8">
             <a
               href={`mailto:${personalInfo.email}`}
-              className="rounded-full bg-apple-blue px-6 py-3 text-[17px] text-white transition-transform duration-300 hover:scale-105"
+              className="shine rounded-full bg-apple-blue px-6 py-3 text-[17px] text-white transition-transform duration-300 hover:scale-105"
             >
               메일 보내기
             </a>

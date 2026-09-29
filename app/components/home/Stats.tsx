@@ -87,7 +87,7 @@ const StatSlide = ({ index }: { index: number }) => {
         to={stat.to}
         suffix={stat.suffix}
         progress={count}
-        className="text-[34vw] font-semibold leading-none tracking-[-0.05em] tabular-nums text-apple-white md:text-[15rem]"
+        className="shimmer text-[34vw] font-semibold leading-none tracking-[-0.05em] tabular-nums md:text-[15rem]"
       />
       <p className="mt-6 max-w-xl text-xl font-semibold text-apple-gray md:text-[28px] md:leading-snug">
         {stat.label}

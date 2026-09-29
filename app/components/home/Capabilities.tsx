@@ -105,7 +105,7 @@ export default function Capabilities() {
             },
           }))}
         >
-          <h2 className="text-[40px] font-semibold leading-tight tracking-[-0.03em] text-apple-ink md:text-[64px]">
+          <h2 className="shimmer-dark text-[40px] font-semibold leading-tight tracking-[-0.03em] md:text-[64px]">
             무엇을 잘하는가.
           </h2>
         </Scroll.Item>

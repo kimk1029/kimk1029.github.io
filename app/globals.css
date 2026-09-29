@@ -29,3 +29,81 @@ span {
   word-break: keep-all;
   overflow-wrap: break-word;
 }
+
+/* 은빛 광택이 글자 위를 훑고 지나가는 shimmer. 색은 흰·회색만 쓴다. */
+.shimmer,
+.shimmer-dark {
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 3.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+.shimmer {
+  background-image: linear-gradient(
+    105deg,
+    #f5f5f7 0%,
+    #f5f5f7 40%,
+    #ffffff 47%,
+    #86868b 53%,
+    #f5f5f7 60%,
+    #f5f5f7 100%
+  );
+}
+.shimmer-dark {
+  background-image: linear-gradient(
+    105deg,
+    #1d1d1f 0%,
+    #1d1d1f 40%,
+    #6e6e73 47%,
+    #000000 53%,
+    #1d1d1f 60%,
+    #1d1d1f 100%
+  );
+}
+@keyframes shimmer {
+  0% { background-position: 120% 0; }
+  100% { background-position: -120% 0; }
+}
+
+/* 호버 시 빛줄기가 한 번 지나가는 표면 */
+.shine {
+  position: relative;
+  overflow: hidden;
+}
+.shine::after {
+  content: "";
+  position: absolute;
+  inset: -50% auto -50% -60%;
+  width: 40%;
+  background: linear-gradient(100deg, transparent 0%, rgba(255, 255, 255, 0.18) 50%, transparent 100%);
+  transform: skewX(-18deg) translateX(0);
+  transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+.shine:hover::after {
+  transform: skewX(-18deg) translateX(420%);
+}
+
+/* 필름 그레인 오버레이 */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain 0.6s steps(6) infinite;
+}
+@keyframes grain {
+  0% { background-position: 0 0; }
+  100% { background-position: 60px -40px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shimmer,
+  .shimmer-dark,
+  .grain {
+    animation: none;
+  }
+}

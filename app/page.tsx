@@ -5,6 +5,7 @@ import { Scroll } from "scrollex";
 import Capabilities from "./components/home/Capabilities";
 import Finale, { Leadership } from "./components/home/Finale";
 import Hero from "./components/home/Hero";
+import Intro from "./components/home/Intro";
 import Manifesto from "./components/home/Manifesto";
 import Marquee from "./components/home/Marquee";
 import Projects from "./components/home/Projects";
@@ -18,9 +19,11 @@ export default function Portfolio() {
 
   return (
     <main className="bg-black text-apple-white selection:bg-apple-blue selection:text-white">
+      <div className="grain" aria-hidden />
       <SiteNav containerRef={containerRef} />
       <Scroll.Container ref={containerRef} scrollAxis="y" className="h-[100dvh]">
         <Hero />
+        <Intro />
         <Manifesto />
         <Stats />
         <Capabilities />

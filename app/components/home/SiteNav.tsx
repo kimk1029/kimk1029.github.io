@@ -43,7 +43,7 @@ export default function SiteNav({ containerRef }: { containerRef: RefObject<HTML
         </nav>
         <a
           href={`mailto:${personalInfo.email}`}
-          className="rounded-full bg-apple-blue px-3 py-1 text-xs text-white"
+          className="shine rounded-full bg-apple-blue px-3 py-1 text-xs text-white"
         >
           연락하기
         </a>

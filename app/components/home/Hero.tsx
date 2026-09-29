@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { Scroll } from "scrollex";
 import { personalInfo } from "@/app/data";
+import { Sparkles } from "../Sparkles";
 import { kf, pinRange } from "../scroll-utils";
 
 const name = ["김", "규", "현"];
@@ -26,6 +27,8 @@ export default function Hero() {
         className="sticky top-0 flex h-[100dvh] items-center justify-center overflow-hidden"
         style={{ perspective: 1400 }}
       >
+        <Sparkles count={110} className="absolute inset-0 h-full w-full" />
+
         {/* 배경: 스크롤에 따라 회전·확대되는 동심원. 색 없이 가는 선만 */}
         <Scroll.Item
           className="pointer-events-none absolute inset-0 flex items-center justify-center"
@@ -98,8 +101,8 @@ export default function Hero() {
                   initial={{ opacity: 0, rotateX: 90, y: 60 }}
                   animate={{ opacity: 1, rotateX: 0, y: 0 }}
                   transition={{ duration: 1.3, delay: 0.1 + index * 0.12, ease }}
-                  className="inline-block"
-                  style={{ transformOrigin: "50% 100%" }}
+                  className="shimmer inline-block"
+                  style={{ transformOrigin: "50% 100%", animationDelay: `${index * 0.18}s` }}
                 >
                   {char}
                 </motion.span>
