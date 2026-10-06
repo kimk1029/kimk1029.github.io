@@ -8,22 +8,22 @@ import { allProjects, personalInfo, type Project } from "@/app/data";
 import { Patch, TRANSMITTING, patchName } from "@/app/Patch";
 
 const statusOf = (p: Project) =>
-  TRANSMITTING.includes(p.slug) ? "Transmitting" : p.company === "Personal Project" ? "Launched" : `Archive · ${p.company}`;
+  TRANSMITTING.includes(p.slug) ? "운영 중" : p.company === "Personal Project" ? "개인 프로젝트" : p.company;
 
 export default function ProjectDetailClient({ project }: { project: Project }) {
   const reduce = useReducedMotion();
   const index = allProjects.findIndex((p) => p.slug === project.slug);
-  const back = project.company === "Personal Project" ? "/#orbit" : "/#archive";
+  const back = project.company === "Personal Project" ? "/#projects" : "/#career";
 
   return (
     <main className="min-h-screen bg-pad text-ink">
       <header className="fixed inset-x-0 top-0 z-50 bg-ink text-pad">
         <div className="mx-auto flex h-12 max-w-7xl items-center justify-between px-5 md:px-6">
           <Link href={back} className="inline-flex items-center gap-2 font-display text-base font-black uppercase tracking-wide hover:text-nasa">
-            <ArrowLeft className="h-4 w-4" /> Back to flight
+            <ArrowLeft className="h-4 w-4" /> 포트폴리오로
           </Link>
           <Link href="/" className="font-stencil text-xl font-black uppercase tracking-[0.08em]">
-            KKH<span className="text-nasa">-1</span>
+            KKH<span className="text-nasa">.</span>
           </Link>
         </div>
       </header>
@@ -34,8 +34,9 @@ export default function ProjectDetailClient({ project }: { project: Project }) {
             <h1 className="max-w-[16ch] font-display text-[clamp(3rem,8vw,6rem)] font-black uppercase leading-[0.86]">
               {patchName(project.title)}
             </h1>
-            <p className="tabular mt-4 font-mono text-xs uppercase">
-              {statusOf(project)} · {project.period}
+            <p className="mt-4 text-sm">
+              <span className="font-hangul">{statusOf(project)}</span>
+              <span className="tabular font-mono"> · {project.period}</span>
             </p>
             <p className="mt-6 max-w-[60ch] text-lg leading-relaxed">{project.description}</p>
             {project.url && (
@@ -63,11 +64,11 @@ export default function ProjectDetailClient({ project }: { project: Project }) {
 
       <div className="mx-auto grid max-w-7xl gap-14 px-5 py-20 md:px-6 lg:grid-cols-[1fr_320px]">
         <section>
-          <h2 className="font-display text-4xl font-black uppercase md:text-5xl">Flight log</h2>
+          <h2 className="font-display text-4xl font-black uppercase md:text-5xl">주요 작업</h2>
           <ol className="mt-8 border-t-2 border-ink">
-            {project.details.map((detail, i) => (
-              <li key={detail} className="grid grid-cols-[56px_1fr] gap-4 border-b border-ink/25 py-5">
-                <span className="tabular font-mono text-sm text-nasa">{String(i + 1).padStart(2, "0")}</span>
+            {project.details.map((detail) => (
+              <li key={detail} className="flex gap-4 border-b border-ink/25 py-5">
+                <span aria-hidden className="mt-2 h-2.5 w-2.5 flex-none bg-nasa" />
                 <p className="max-w-[68ch] text-[17px] leading-relaxed">{detail}</p>
               </li>
             ))}
@@ -76,7 +77,7 @@ export default function ProjectDetailClient({ project }: { project: Project }) {
 
         <aside className="grid content-start gap-10">
           <div>
-            <h2 className="font-display text-2xl font-black uppercase">Systems</h2>
+            <h2 className="font-display text-2xl font-black uppercase">기술 스택</h2>
             <ul className="mt-4 grid gap-2">
               {project.tech.map((tech) => (
                 <li key={tech} className="flex items-center gap-2.5 text-[15px]">
@@ -89,7 +90,7 @@ export default function ProjectDetailClient({ project }: { project: Project }) {
             </ul>
           </div>
           <div>
-            <h2 className="font-display text-2xl font-black uppercase">Mission type</h2>
+            <h2 className="font-display text-2xl font-black uppercase">프로젝트 유형</h2>
             <p className="mt-2 text-[15px]">{project.type}</p>
           </div>
           <a

@@ -1,155 +1,193 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
   motion,
-  useMotionValueEvent,
   useReducedMotion,
+  useMotionValueEvent,
   useScroll,
   useTransform,
+  type MotionValue,
 } from "framer-motion";
 import { ArrowDown, ArrowUpRight, Github, Mail } from "lucide-react";
-import { allProjects, experience, personalInfo, skills } from "./data";
+import {
+  allProjects,
+  careerTotal,
+  careers,
+  education,
+  experience,
+  impacts,
+  leadershipNotes,
+  manifesto,
+  personalInfo,
+  skills,
+} from "./data";
 import { Patch, TRANSMITTING, patchName } from "./Patch";
 
+const EASE = [0.16, 1, 0.3, 1] as const;
+
 const navItems = [
-  ["Ascent", "#ascent"],
-  ["Orbit", "#orbit"],
-  ["Archive", "#archive"],
-  ["Systems", "#systems"],
-  ["Contact", "#contact"],
+  ["경력 여정", "#journey"],
+  ["성과", "#impact"],
+  ["경력", "#career"],
+  ["AI 워크플로우", "#ai"],
+  ["프로젝트", "#projects"],
+  ["스킬", "#skills"],
+  ["연락", "#contact"],
 ];
 
-// Oldest first: the career reads bottom-up like a launch.
+const aiStack = [
+  { title: "에이전틱 개발", tool: "Claude Code · Codex · Cursor", body: "자동완성이 아니라 PR 단위로 작업을 위임합니다. 에이전트가 파일·테스트·빌드를 직접 조작하고, 저는 리뷰와 방향을 잡습니다." },
+  { title: "커스텀 MCP 서버", tool: "Model Context Protocol", body: "Supabase 스키마와 게임 상태를 LLM이 직접 조회하도록 MCP 서버를 구현했습니다. 컨텍스트 복붙이 사라졌습니다." },
+  { title: "Agent Skills & Harness", tool: "Skills · Retry · Recovery", body: "공개 Skills를 선별 도입해 토큰을 아끼고, 툴 호출 실패 재시도·에러 복구·컨텍스트 관리를 Node 레이어에 직접 구성했습니다." },
+  { title: "LLM API & Eval", tool: "Anthropic · OpenAI", body: "프롬프트를 설계하고, 반복 작업에는 정답 세트 기반 간이 eval을 돌려 프롬프트 변경 시 품질 회귀를 잡습니다." },
+  { title: "AI UI 생성", tool: "Lovable · v0.dev · shadcn/ui", body: "프로토타입을 빠르게 생성한 뒤 손으로 정제합니다. 속도는 AI에게, 완성도는 사람이 책임집니다." },
+];
+const aiColors = ["bg-nasa text-white", "bg-flight text-white", "bg-ink text-pad", "bg-white text-ink", "bg-sky text-ink"];
+
+// Oldest first: the rocket climbs through the career.
 const stages = [...experience].reverse().map((exp, i) => ({
   ...exp,
-  name: ["Stage 1 · Booster", "Stage 2", "Payload"][i],
-  event: ["Liftoff 2016", "Stage sep 2020", "Payload deploy 2025"][i],
-  theme: [
-    "bg-sky text-ink",
-    "bg-flight text-white",
-    "bg-vacuum text-white",
-  ][i],
-}));
-
-const personal = allProjects.filter((p) => p.company === "Personal Project");
-const transmitting = personal.filter((p) => TRANSMITTING.includes(p.slug));
-const launched = personal.filter((p) => !TRANSMITTING.includes(p.slug));
-const archive = ["NEOWIZ", "Trumpia"].map((company) => ({
-  company,
-  projects: allProjects.filter((p) => p.company === company),
+  name: ["1단 부스터", "2단 엔진", "탑재체"][i],
+  event: ["2016 Trumpia", "2020 네오위즈", "2025 독립 개발"][i],
+  theme: ["bg-sky text-ink", "bg-flight text-white", "bg-vacuum text-white"][i],
 }));
 
 const PROFILE = "M 40 560 C 300 552, 500 430, 620 280 S 860 70, 960 52";
 
+const personal = allProjects.filter((p) => p.company === "Personal Project");
+const company = ["NEOWIZ", "Trumpia"].map((c) => ({ company: c, projects: allProjects.filter((p) => p.company === c) }));
+
 /* ------------------------------------------------------------------ */
 
-function Hud() {
-  const { scrollYProgress } = useScroll();
-  const [p, setP] = useState(0);
-  useMotionValueEvent(scrollYProgress, "change", setP);
-  const fill = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
-  const alt = Math.round(p * 408);
-
+function Reveal({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
+  const reduce = useReducedMotion();
   return (
-    <div className="pointer-events-none fixed right-5 top-1/2 z-40 hidden -translate-y-1/2 bg-ink/85 p-2.5 font-mono text-[11px] uppercase text-pad min-[1500px]:block">
-      <div className="tabular">ALT {String(alt).padStart(3, "0")} KM</div>
-      <div className="relative ml-auto mt-3 h-56 w-px bg-white/40">
-        <motion.div className="absolute bottom-0 left-[-3px] w-[7px] bg-white" style={{ height: fill }} />
-      </div>
-      <div className="tabular mt-3">T+{(2016 + p * 10).toFixed(1)}</div>
-    </div>
+    <motion.div
+      className={className}
+      initial={reduce ? false : { opacity: 0, y: 40, filter: "blur(8px)" }}
+      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+      viewport={{ once: true, margin: "-12% 0px" }}
+      transition={{ duration: 0.9, ease: EASE, delay }}
+    >
+      {children}
+    </motion.div>
   );
 }
+
+function SectionTitle({ en, ko, light = false }: { en: string; ko: string; light?: boolean }) {
+  return (
+    <Reveal>
+      <h2 className="font-display text-[clamp(3.25rem,9vw,6rem)] font-black uppercase leading-[0.85]">{en}</h2>
+      <p className={`mt-3 font-hangul text-2xl md:text-3xl ${light ? "text-white/80" : "text-steel"}`}>{ko}</p>
+    </Reveal>
+  );
+}
+
+/* ---------------- Hero ---------------- */
 
 function Hero() {
   const reduce = useReducedMotion();
   const { scrollY } = useScroll();
-  const lift = useTransform(scrollY, [0, 900], [0, reduce ? 0 : -420]);
-  const flame = useTransform(scrollY, [0, 300], [0, reduce ? 0 : 1]);
+  const lift = useTransform(scrollY, [0, 900], [0, reduce ? 0 : -360]);
+  const fade = useTransform(scrollY, [0, 600], [1, reduce ? 1 : 0.2]);
 
   return (
     <section id="top" className="relative grid min-h-[100svh] overflow-hidden bg-pad pt-12 lg:grid-cols-[1.35fr_1fr]">
       <div className="relative min-h-[62svh] overflow-hidden border-b-2 border-ink lg:border-b-0 lg:border-r-2">
-        <motion.div
-          initial={reduce ? false : { y: "100%" }}
-          animate={{ y: 0 }}
-          transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
-          className="absolute inset-0"
-        >
-          <motion.div style={{ y: lift }} className="fuselage absolute inset-x-0 top-0 bottom-[-420px] flex justify-center gap-6 px-6 pt-8 md:gap-10">
+        <motion.div initial={reduce ? false : { y: "100%" }} animate={{ y: 0 }} transition={{ duration: 1.1, ease: EASE }} className="absolute inset-0">
+          <motion.div style={{ y: lift }} className="fuselage absolute inset-x-0 top-0 bottom-[-360px] flex justify-center gap-6 px-6 pt-8 md:gap-10">
             <div className="flex flex-col items-center gap-6">
               <div className="roll-pattern h-16 w-16 border-2 border-ink" aria-hidden />
-              <h1 className="font-hangul leading-[0.92] text-pad [writing-mode:vertical-rl] text-[clamp(4.5rem,13svh,8rem)] md:text-[clamp(7rem,24svh,15rem)]">
+              <h1 className="font-hangul text-[clamp(4.5rem,13svh,8rem)] leading-[0.92] text-pad [writing-mode:vertical-rl] md:text-[clamp(7rem,24svh,15rem)]">
                 김규현
               </h1>
             </div>
-            <div className="hidden flex-col justify-between pb-[440px] pt-2 text-pad sm:flex">
-              <span className="font-stencil text-4xl font-black uppercase tracking-[0.12em] [writing-mode:vertical-rl] md:text-5xl">
-                Kim Kyu-hyun
-              </span>
-              <span className="font-mono text-xs [writing-mode:vertical-rl]">KKH-1 · SEOUL KR</span>
+            <div className="hidden flex-col pt-2 text-pad sm:flex">
+              <span className="font-stencil text-4xl font-black uppercase tracking-[0.12em] [writing-mode:vertical-rl] md:text-5xl">Kim Kyu-hyun</span>
             </div>
           </motion.div>
-          <motion.div
-            aria-hidden
-            style={{ opacity: flame, scaleY: flame }}
-            className="absolute inset-x-[20%] bottom-0 h-40 origin-bottom bg-[radial-gradient(ellipse_at_bottom,#f2f1ec_0%,#f7b42c_35%,transparent_70%)]"
-          />
         </motion.div>
       </div>
 
-      <div className="relative flex flex-col justify-between gap-10 px-5 py-8 md:px-10 md:py-12">
+      <motion.div style={{ opacity: fade }} className="relative flex flex-col justify-between gap-10 px-5 py-8 md:px-10 md:py-12">
         <div>
           <p className="font-display text-[clamp(3rem,6.2vw,5.75rem)] font-black uppercase leading-[0.88] tracking-[-0.01em]">
             AI Product
             <br />
             Engineer
           </p>
-          <p className="mt-6 max-w-[34ch] text-lg leading-relaxed text-ink md:text-xl">
-            React·Next.js 9년 차. AI 네이티브 워크플로우로 제품 6종을 만들어 5종을 출시했고, 그중 3종을 직접 운영하고 있습니다.
+          <p className="mt-6 max-w-[36ch] text-lg leading-relaxed md:text-xl">
+            React·Next.js 프론트엔드 9년 차. 네오위즈 Neopin에서 지갑·DEX·디자인 시스템을 만들었고, 최근엔 AI 네이티브 워크플로우로 제품 5종을 혼자 출시해 3종을 운영하고 있습니다.
           </p>
         </div>
 
-        <dl className="grid grid-cols-3 border-y-2 border-ink font-mono text-xs uppercase">
+        <dl className="grid grid-cols-3 border-y-2 border-ink">
           {[
-            ["Launched", "6"],
-            ["In orbit", "5"],
-            ["Transmitting", "3"],
+            ["경력", "8Y 8M"],
+            ["Web3", "≈5Y"],
+            ["단독 출시", "5"],
           ].map(([k, v], i) => (
             <div key={k} className={`py-3 ${i ? "border-l-2 border-ink pl-3" : ""}`}>
-              <dt className="text-steel">{k}</dt>
-              <dd className="tabular mt-1 font-display text-4xl font-black text-ink">{v}</dd>
+              <dt className="font-hangul text-sm text-steel">{k}</dt>
+              <dd className="tabular mt-1 font-display text-4xl font-black">{v}</dd>
             </div>
           ))}
         </dl>
 
         <div className="flex flex-wrap items-center gap-3">
-          <a
-            href={`mailto:${personalInfo.email}`}
-            className="group inline-flex items-center gap-3 bg-ink px-5 py-4 font-display text-xl font-black uppercase tracking-wide text-pad transition-colors duration-300 ease-expo hover:bg-nasa"
-          >
+          <a href={`mailto:${personalInfo.email}`} className="group inline-flex items-center gap-3 bg-ink px-5 py-4 font-display text-xl font-black uppercase tracking-wide text-pad transition-colors duration-300 ease-expo hover:bg-nasa">
             <Mail className="h-5 w-5" /> {personalInfo.email}
             <ArrowUpRight className="h-5 w-5 transition-transform duration-300 ease-expo group-hover:-translate-y-1 group-hover:translate-x-1" />
           </a>
-          <a
-            href={personalInfo.github}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-2 border-2 border-ink px-4 py-[14px] font-display text-xl font-black uppercase tracking-wide transition-colors duration-300 ease-expo hover:bg-ink hover:text-pad"
-          >
+          <a href={personalInfo.github} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 border-2 border-ink px-4 py-[14px] font-display text-xl font-black uppercase tracking-wide transition-colors duration-300 ease-expo hover:bg-ink hover:text-pad">
             <Github className="h-5 w-5" /> GitHub
           </a>
         </div>
 
-        <a href="#ascent" className="inline-flex w-fit items-center gap-2 font-mono text-xs uppercase text-steel hover:text-ink">
-          <ArrowDown className="h-4 w-4" /> Scroll to ascend
+        <a href="#journey" className="inline-flex w-fit items-center gap-2 font-hangul text-sm text-steel hover:text-ink">
+          <ArrowDown className="h-4 w-4" /> 스크롤해서 경력 보기
         </a>
+      </motion.div>
+    </section>
+  );
+}
+
+/* ---------------- Manifesto: words light up with scroll ---------------- */
+
+function Word({ word, i, total, progress }: { word: string; i: number; total: number; progress: MotionValue<number> }) {
+  const start = (i / total) * 0.85;
+  const opacity = useTransform(progress, [start, start + 0.85 / total], [0.14, 1]);
+  return <motion.span style={{ opacity }}>{word} </motion.span>;
+}
+
+function Manifesto() {
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
+  const words = manifesto.split(" ");
+  const bar = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+
+  return (
+    <section id="about" ref={ref} className="relative h-[260vh] bg-ink text-pad">
+      <div className="sticky top-0 flex h-screen flex-col justify-center px-5 pt-12 md:px-6">
+        <div className="mx-auto w-full max-w-6xl">
+          <h2 className="font-display text-xl font-black uppercase tracking-[0.15em] text-nasa">About</h2>
+          <p className="mt-6 font-hangul text-[clamp(1.6rem,3.6vw,3.25rem)] leading-[1.35]">
+            {words.map((w, i) => (
+              <Word key={i} word={w} i={i} total={words.length} progress={scrollYProgress} />
+            ))}
+          </p>
+          <div className="mt-10 h-[3px] w-full bg-pad/15">
+            <motion.div className="h-full bg-nasa" style={{ width: bar }} />
+          </div>
+        </div>
       </div>
     </section>
   );
 }
+
+/* ---------------- Journey: rocket climbs the career ---------------- */
 
 function Rocket({ stage }: { stage: number }) {
   const drop = (gone: boolean) =>
@@ -168,7 +206,7 @@ function Rocket({ stage }: { stage: number }) {
   );
 }
 
-function Ascent() {
+function Journey() {
   const ref = useRef<HTMLElement>(null);
   const pathRef = useRef<SVGPathElement>(null);
   const rocketRef = useRef<SVGGElement>(null);
@@ -204,11 +242,12 @@ function Ascent() {
   const s = stages[stage];
 
   return (
-    <section id="ascent" ref={ref} className="relative md:h-[420vh]">
+    <section id="journey" ref={ref} className="relative md:h-[420vh]">
       {/* Desktop: one sticky flight, scroll drives the profile */}
       <div className={`sticky top-0 hidden h-screen overflow-hidden pt-12 transition-colors duration-700 ease-expo md:block ${s.theme}`}>
         <div className="mx-auto grid h-full max-w-7xl grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-10 px-6 py-10 xl:pr-24">
           <div className="flex min-h-0 flex-col justify-center">
+            <p className="mb-6 font-hangul text-lg opacity-70">경력 여정 · {stage + 1} / 3</p>
             <motion.div key={stage} initial={{ opacity: 0, y: 24, filter: "blur(6px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}>
               <h2 className="font-display text-[clamp(2.75rem,5vw,5.5rem)] font-black uppercase leading-[0.9]">
                 {s.name}
@@ -230,7 +269,7 @@ function Ascent() {
           </div>
 
           <div className="relative flex min-h-0 items-center">
-            <svg viewBox="0 0 1000 600" className="h-auto w-full overflow-visible" aria-label="경력 고도 프로파일">
+            <svg viewBox="0 0 1000 600" className="h-auto w-full overflow-visible" aria-label="경력 여정 그래프">
               <g opacity="0.25" stroke="currentColor" strokeWidth="1">
                 {[100, 200, 300, 400, 500].map((y) => (
                   <line key={y} x1="40" x2="960" y1={y} y2={y} strokeDasharray="2 6" />
@@ -241,13 +280,15 @@ function Ascent() {
               {marks.map((m, i) => (
                 <g key={i} transform={`translate(${m.x} ${m.y})`}>
                   <circle r="7" fill="currentColor" />
-                  <text x={i === 3 ? -14 : 14} y={i === 0 || i === 3 ? 34 : -14} textAnchor={i === 3 ? "end" : "start"} fill="currentColor" className="font-mono text-[18px] uppercase">
-                    {i < 3 ? stages[i].event : "Orbit"}
+                  <text x={i === 3 ? -14 : 14} y={i === 0 || i === 3 ? 48 : -22} textAnchor={i === 3 ? "end" : "start"} fill="currentColor" className="font-hangul text-[22px]">
+                    {i < 3 ? stages[i].event : "현재"}
                   </text>
                 </g>
               ))}
               <g ref={rocketRef}>
-                <Rocket stage={stage} />
+                <g transform="scale(2)">
+                  <Rocket stage={stage} />
+                </g>
               </g>
             </svg>
           </div>
@@ -281,98 +322,240 @@ function Ascent() {
   );
 }
 
-function Orbit() {
+
+/* ---------------- Impact: horizontal pinned track ---------------- */
+
+function Impact() {
   const ref = useRef<HTMLElement>(null);
-  const reduce = useReducedMotion();
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const spin = useTransform(scrollYProgress, [0, 1], [-25, 25]);
-  const counter = useTransform(spin, (v) => -v * 1.4);
-  const rise = useTransform(scrollYProgress, [0, 0.5], ["30%", "0%"]);
+  const track = useRef<HTMLDivElement>(null);
+  const [distance, setDistance] = useState(0);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
+  const x = useTransform(scrollYProgress, [0.05, 0.95], [0, -distance]);
+
+  useLayoutEffect(() => {
+    const measure = () => track.current && setDistance(Math.max(0, track.current.scrollWidth - window.innerWidth));
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, []);
 
   return (
-    <section id="orbit" ref={ref} className="relative overflow-hidden bg-vacuum px-5 pb-24 pt-24 text-white md:px-6 md:pt-32">
-      <motion.div
-        aria-hidden
-        style={reduce ? undefined : { y: rise }}
-        className="pointer-events-none absolute -bottom-[118vw] left-1/2 h-[140vw] w-[140vw] -translate-x-1/2 rounded-full bg-flight shadow-[0_-30px_120px_rgba(29,63,191,0.55)] md:-bottom-[124vw]"
-      />
-      <div className="relative mx-auto max-w-7xl">
-        <h2 className="font-display text-[clamp(3.5rem,9vw,6rem)] font-black uppercase leading-[0.85]">In orbit</h2>
-        <p className="mt-5 max-w-[56ch] text-lg leading-relaxed text-white/80">
-          혼자 기획하고 만들어 띄운 제품들. 가장 큰 패치 셋은 지금도 운영하며 신호를 보내고 있습니다.
-        </p>
+    <section id="impact" ref={ref} className="relative h-[380vh] bg-flight text-white">
+      <div className="sticky top-0 flex h-screen flex-col justify-center overflow-hidden pt-12">
+        <div className="mx-auto w-full max-w-7xl px-5 md:px-6">
+          <h2 className="font-display text-[clamp(3rem,8vw,6rem)] font-black uppercase leading-[0.85]">Impact</h2>
+          <p className="mt-3 font-hangul text-2xl text-white/80 md:text-3xl">숫자로 남은 결과</p>
+        </div>
+        <motion.div ref={track} style={{ x }} className="mt-10 flex w-max gap-6 px-5 md:px-[max(1.5rem,calc((100vw-80rem)/2+1.5rem))]">
+          {impacts.map((m, i) => (
+            <div key={m.label} className="flex w-[78vw] flex-none flex-col justify-between border-2 border-white p-6 sm:w-[46vw] md:p-8 lg:w-[30rem]">
+              <span className="tabular font-mono text-sm text-white/70">
+                {String(i + 1).padStart(2, "0")} / {String(impacts.length).padStart(2, "0")}
+              </span>
+              <p className={`tabular mt-10 whitespace-nowrap font-display font-black leading-[0.85] ${m.value.length > 4 ? "text-[clamp(3rem,6.5vw,5.5rem)]" : "text-[clamp(4rem,10vw,8.5rem)]"}`}>{m.value}</p>
+              <div className="mt-8 border-t-2 border-white/40 pt-4">
+                <p className="font-hangul text-2xl">{m.label}</p>
+                <p className="mt-2 text-[15px] leading-relaxed text-white/85">{m.note}</p>
+              </div>
+            </div>
+          ))}
+        </motion.div>
+      </div>
+    </section>
+  );
+}
 
-        <div className="orbit relative mt-16">
-          <svg aria-hidden viewBox="0 0 1200 260" className="pointer-events-none absolute inset-x-0 top-[90px] hidden w-full md:block" preserveAspectRatio="none">
-            <ellipse cx="600" cy="130" rx="590" ry="110" fill="none" stroke="white" strokeOpacity="0.3" strokeDasharray="3 9" />
-          </svg>
+/* ---------------- Career: sticky company, scrolling cases ---------------- */
 
-          <div className="relative grid gap-12 md:grid-cols-3">
-            {transmitting.map((p, i) => (
-              <Link key={p.slug} href={`/projects/${p.slug}`} className="group flex flex-col items-center text-center transition-[opacity,filter] duration-500 ease-expo">
-                <div className="relative h-56 w-56 lg:h-64 lg:w-64">
-                  <span aria-hidden className="transmit-ring absolute inset-0 rounded-full border-2 border-nasa" />
-                  <motion.div style={reduce ? undefined : { rotate: i % 2 ? counter : spin }} className="h-full w-full transition-transform duration-500 ease-expo group-hover:scale-105">
-                    <Patch project={p} index={i} className="h-full w-full drop-shadow-[0_12px_24px_rgba(0,0,0,0.5)]" />
-                  </motion.div>
-                </div>
-                <h3 className="mt-6 font-display text-3xl font-black uppercase">{patchName(p.title)}</h3>
-                <p className="mt-1 font-mono text-[11px] uppercase">
-                  <span className="mr-2 inline-block h-2 w-2 animate-pulse rounded-full bg-[#ff6a55] align-middle motion-reduce:animate-none" />
-                  <span className="text-[#ff8a78]">Transmitting</span> · {p.period}
-                </p>
-                <p className="mt-2 max-w-[40ch] text-[15px] leading-relaxed text-white/75">{p.shortDesc}</p>
-                <span className="mt-3 inline-flex items-center gap-1 font-mono text-xs uppercase text-white underline decoration-white/30 group-hover:decoration-white">
-                  Mission file <ArrowUpRight className="h-3.5 w-3.5" />
-                </span>
-              </Link>
-            ))}
+function CareerBlock({ c, index }: { c: (typeof careers)[number]; index: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 70%", "end 60%"] });
+  const fill = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+
+  return (
+    <div ref={ref} className="grid gap-10 border-t-2 border-ink py-16 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:gap-14 md:py-24">
+      <div className="md:sticky md:top-24 md:self-start">
+        <p className="tabular font-mono text-sm">{c.period}</p>
+        <h3 className="mt-3 font-hangul text-[clamp(2.25rem,4vw,3.5rem)] leading-[1.05]">{c.company}</h3>
+        <p className="mt-4 inline-block bg-ink px-3 py-1 font-hangul text-base text-pad">{c.role}</p>
+        <p className="mt-6 max-w-[48ch] text-[17px] leading-relaxed text-ink/85">{c.summary}</p>
+        <div className="mt-8 hidden items-center gap-3 md:flex">
+          <span className="tabular font-mono text-xs">{String(index + 1).padStart(2, "0")}</span>
+          <div className="h-[3px] flex-1 bg-ink/15">
+            <motion.div className="h-full bg-nasa" style={{ width: fill }} />
           </div>
+          <span className="tabular font-mono text-xs">{c.cases.length} cases</span>
+        </div>
+      </div>
 
-          <div className="relative mt-24 grid grid-cols-2 gap-10 md:grid-cols-4">
-            {launched.map((p, i) => (
-              <Link key={p.slug} href={`/projects/${p.slug}`} className="group flex flex-col items-center text-center transition-[opacity,filter] duration-500 ease-expo">
-                <motion.div style={reduce ? undefined : { rotate: i % 2 ? spin : counter }} className="h-28 w-28 md:h-32 md:w-32">
-                  <Patch project={p} index={i + 3} className="h-full w-full" />
-                </motion.div>
-                <h3 className="mt-4 font-display text-xl font-black uppercase">{patchName(p.title)}</h3>
-                <p className="tabular mt-1 font-mono text-[11px] uppercase text-white/60">{p.period}</p>
-              </Link>
-            ))}
-          </div>
+      <ol className="grid gap-6">
+        {c.cases.map((k, i) => (
+          <Reveal key={k.title}>
+            <li className="border-2 border-ink bg-pad p-6 transition-colors duration-500 ease-expo hover:bg-white md:p-8">
+              <div className="flex flex-wrap items-baseline justify-between gap-3">
+                <h4 className="font-hangul text-2xl leading-snug md:text-[1.75rem]">{k.title}</h4>
+                <span className="tabular font-mono text-xs text-steel">{k.period ?? String(i + 1).padStart(2, "0")}</span>
+              </div>
+              <dl className="mt-6 grid gap-x-6 gap-y-3 text-[15px] leading-relaxed md:grid-cols-[104px_1fr]">
+                {k.background && (
+                  <>
+                    <dt className="font-display text-sm font-black uppercase tracking-[0.12em] text-steel">Background</dt>
+                    <dd>{k.background}</dd>
+                  </>
+                )}
+                <dt className="font-display text-sm font-black uppercase tracking-[0.12em] text-steel">Action</dt>
+                <dd>{k.action}</dd>
+                <dt className="font-display text-sm font-black uppercase tracking-[0.12em] text-nasa">Impact</dt>
+                <dd className="font-semibold">{k.impact}</dd>
+              </dl>
+            </li>
+          </Reveal>
+        ))}
+      </ol>
+    </div>
+  );
+}
+
+function Career() {
+  return (
+    <section id="career" className="bg-pad px-5 pt-24 md:px-6 md:pt-32">
+      <div className="mx-auto max-w-7xl">
+        <div className="flex flex-wrap items-end justify-between gap-6 pb-12">
+          <SectionTitle en="Career" ko="경력 사항" />
+          <Reveal>
+            <p className="font-hangul text-xl text-steel">{careerTotal}</p>
+          </Reveal>
+        </div>
+        {careers.map((c, i) => (
+          <CareerBlock key={c.company} c={c} index={i} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* ---------------- AI workflow: stacking cards ---------------- */
+
+function StackCard({ item, i, total, progress }: { item: (typeof aiStack)[number]; i: number; total: number; progress: MotionValue<number> }) {
+  const reduce = useReducedMotion();
+  const scale = useTransform(progress, [i / total, 1], [1, reduce ? 1 : 1 - (total - i) * 0.035]);
+  return (
+    <div className="sticky h-[72vh] md:h-[66vh]" style={{ top: `calc(5rem + ${i * 28}px)` }}>
+      <motion.article style={{ scale }} className={`flex h-full origin-top flex-col justify-between border-2 border-ink p-6 md:p-12 ${aiColors[i]}`}>
+        <div className="flex items-start justify-between gap-6">
+          <span className="tabular font-mono text-sm opacity-80">{String(i + 1).padStart(2, "0")}</span>
+          <span className="text-right font-display text-sm font-black uppercase tracking-[0.15em] opacity-80">{item.tool}</span>
+        </div>
+        <div>
+          <h3 className="font-hangul text-[clamp(2.25rem,6vw,5rem)] leading-[1.05]">{item.title}</h3>
+          <p className="mt-6 max-w-[52ch] text-lg leading-relaxed md:text-xl">{item.body}</p>
+        </div>
+      </motion.article>
+    </div>
+  );
+}
+
+function AiWorkflow() {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
+  return (
+    <section id="ai" className="bg-pad px-5 pb-32 pt-24 md:px-6 md:pt-32">
+      <div className="mx-auto max-w-7xl">
+        <SectionTitle en="AI Native" ko="AI 네이티브 개발 워크플로우" />
+        <div ref={ref} className="relative mt-16 grid gap-10">
+          {aiStack.map((item, i) => (
+            <StackCard key={item.title} item={item} i={i} total={aiStack.length} progress={scrollYProgress} />
+          ))}
         </div>
       </div>
     </section>
   );
 }
 
-function Archive() {
+/* ---------------- Personal projects: parallax rows ---------------- */
+
+function ProjectRow({ p, i }: { p: (typeof personal)[number]; i: number }) {
+  const ref = useRef<HTMLElement>(null);
+  const reduce = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const y = useTransform(scrollYProgress, [0, 1], reduce ? [0, 0] : [80, -80]);
+  const rotate = useTransform(scrollYProgress, [0, 1], reduce ? [0, 0] : [-8, 8]);
+  const live = TRANSMITTING.includes(p.slug);
+  const flip = i % 2 === 1;
+
   return (
-    <section id="archive" className="bg-vacuum px-5 py-24 text-white md:px-6">
+    <article ref={ref} className="grid items-center gap-10 border-t border-white/25 py-16 md:grid-cols-2 md:gap-16 md:py-24">
+      <motion.div style={{ y, rotate }} className={`mx-auto w-56 md:w-80 ${flip ? "md:order-2" : ""}`}>
+        <Patch project={p} index={i} className="h-auto w-full" />
+      </motion.div>
+      <Reveal>
+        <div className="flex flex-wrap items-center gap-3">
+          <span className="tabular font-mono text-sm text-white/70">{p.period}</span>
+          {live && <span className="bg-nasa px-2 py-0.5 font-hangul text-sm">운영 중</span>}
+        </div>
+        <h3 className="mt-3 font-display text-[clamp(2.5rem,5vw,4.5rem)] font-black uppercase leading-[0.9]">{patchName(p.title)}</h3>
+        <p className="mt-2 font-display text-lg font-black uppercase tracking-[0.1em] text-white/60">{p.type}</p>
+        <p className="mt-5 max-w-[56ch] text-lg leading-relaxed text-white/90">{p.description}</p>
+        <ul className="mt-6 grid gap-2.5 text-[15px] leading-relaxed text-white/80">
+          {p.details.slice(0, 3).map((d) => (
+            <li key={d} className="flex gap-3">
+              <span className="mt-[9px] h-2 w-2 flex-none bg-nasa" aria-hidden />
+              {d}
+            </li>
+          ))}
+        </ul>
+        <p className="mt-6 font-mono text-xs uppercase text-white/60">{p.tech.join(" · ")}</p>
+        <div className="mt-7 flex flex-wrap gap-3">
+          <Link href={`/projects/${p.slug}`} className="inline-flex items-center gap-2 bg-pad px-4 py-3 font-hangul text-lg text-ink transition-colors duration-300 ease-expo hover:bg-nasa hover:text-white">
+            자세히 보기 <ArrowUpRight className="h-4 w-4" />
+          </Link>
+          {p.url && (
+            <a href={p.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 border-2 border-pad px-4 py-[10px] font-display text-lg font-black uppercase tracking-wide transition-colors duration-300 ease-expo hover:bg-pad hover:text-ink">
+              {p.url.replace(/^https?:\/\/(www\.)?/, "")} <ArrowUpRight className="h-4 w-4" />
+            </a>
+          )}
+        </div>
+      </Reveal>
+    </article>
+  );
+}
+
+function Projects() {
+  return (
+    <section id="projects" className="bg-vacuum px-5 pt-24 text-white md:px-6 md:pt-32">
       <div className="mx-auto max-w-7xl">
-        <h2 className="font-display text-[clamp(3rem,7vw,6rem)] font-black uppercase leading-[0.85]">Mission archive</h2>
-        <p className="mt-5 max-w-[56ch] text-lg leading-relaxed text-white/75">
-          네오위즈 Neopin과 Trumpia에서 맡았던 프로젝트 기록. 지갑, DEX, 디자인 시스템, 데이터 시각화.
-        </p>
+        <SectionTitle en="Projects" ko="개인 프로젝트 — 기획부터 배포까지 단독 수행" light />
+        <div className="mt-12">
+          {personal.map((p, i) => (
+            <ProjectRow key={p.slug} p={p} i={i} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function CompanyProjects() {
+  return (
+    <section className="bg-vacuum px-5 pb-24 pt-16 text-white md:px-6">
+      <div className="mx-auto max-w-7xl">
+        <SectionTitle en="At work" ko="회사 프로젝트" light />
         <div className="mt-14 grid gap-14">
-          {archive.map(({ company, projects }) => (
-            <div key={company}>
-              <h3 className="border-b-2 border-white pb-3 font-display text-3xl font-black uppercase">{company}</h3>
+          {company.map(({ company: name, projects }) => (
+            <div key={name}>
+              <h3 className="border-b-2 border-white pb-3 font-display text-3xl font-black uppercase">{name}</h3>
               <ul>
-                {projects.map((p) => (
-                  <li key={p.slug}>
-                    <Link
-                      href={`/projects/${p.slug}`}
-                      className="group grid gap-2 border-b border-white/20 py-5 transition-colors duration-300 ease-expo hover:bg-white hover:text-ink md:grid-cols-[1.1fr_1.6fr_auto] md:items-baseline md:gap-8 md:px-3"
-                    >
+                {projects.map((p, i) => (
+                  <motion.li key={p.slug} initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.7, ease: EASE, delay: i * 0.06 }}>
+                    <Link href={`/projects/${p.slug}`} className="group grid gap-2 border-b border-white/20 py-5 transition-colors duration-300 ease-expo hover:bg-white hover:text-ink md:grid-cols-[1.1fr_1.6fr_auto] md:items-baseline md:gap-8 md:px-3">
                       <span className="font-display text-2xl font-black uppercase leading-none">{p.title}</span>
                       <span className="text-[15px] leading-relaxed text-white/70 group-hover:text-ink/80">{p.shortDesc}</span>
                       <span className="tabular inline-flex items-center gap-2 font-mono text-xs uppercase text-white/60 group-hover:text-ink">
                         {p.period}
-                        <ArrowUpRight className="h-4 w-4 transition-transform duration-300 ease-expo group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                        <ArrowUpRight className="h-4 w-4" />
                       </span>
                     </Link>
-                  </li>
+                  </motion.li>
                 ))}
               </ul>
             </div>
@@ -383,77 +566,135 @@ function Archive() {
   );
 }
 
-function Systems() {
+/* ---------------- Leadership: clip reveal ---------------- */
+
+function Leadership() {
+  const reduce = useReducedMotion();
   return (
-    <section id="systems" className="bg-pad px-5 py-24 md:px-6">
+    <section className="bg-sky px-5 py-24 md:px-6 md:py-32">
       <div className="mx-auto max-w-7xl">
-        <h2 className="font-display text-[clamp(3rem,7vw,6rem)] font-black uppercase leading-[0.85]">Flight systems</h2>
-        <p className="mt-5 max-w-[56ch] text-lg leading-relaxed text-steel">
-          발사마다 실제로 점검표에 올랐던 스택.
-        </p>
-        <div className="mt-14 grid gap-[2px] border-2 border-ink bg-ink md:grid-cols-2 lg:grid-cols-5">
-          {skills.map((group) => (
-            <div key={group.category} className="bg-pad p-5 md:last:col-span-2 lg:last:col-span-1">
-              <h3 className="font-display text-xl font-black uppercase leading-tight">{group.category}</h3>
-              <ul className="mt-5 grid gap-2">
-                {group.items.map((item) => (
-                  <li key={item} className="flex items-center gap-2.5 text-[15px]">
-                    <span aria-hidden className="grid h-3.5 w-3.5 flex-none place-items-center border-2 border-ink">
-                      <span className="h-1.5 w-1.5 bg-nasa" />
-                    </span>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
+        <SectionTitle en="Leadership" ko="리더십 & 협업" />
+        <div className="mt-14 grid gap-[2px] border-2 border-ink bg-ink md:grid-cols-2">
+          {leadershipNotes.map((n, i) => (
+            <motion.div
+              key={n.title}
+              initial={reduce ? false : { clipPath: "inset(0 0 100% 0)" }}
+              whileInView={{ clipPath: "inset(0 0 0% 0)" }}
+              viewport={{ once: true, margin: "-15% 0px" }}
+              transition={{ duration: 1, ease: EASE, delay: (i % 2) * 0.12 }}
+              className="bg-sky p-6 md:p-10"
+            >
+              <h3 className="font-hangul text-3xl">{n.title}</h3>
+              <p className="mt-4 max-w-[52ch] text-[17px] leading-relaxed">{n.body}</p>
+            </motion.div>
           ))}
         </div>
       </div>
     </section>
   );
 }
+
+/* ---------------- Skills: scroll-driven marquee ---------------- */
+
+function SkillRow({ group, i, progress }: { group: (typeof skills)[number]; i: number; progress: MotionValue<number> }) {
+  const reduce = useReducedMotion();
+  const right = i % 2 === 1;
+  const x = useTransform(progress, [0, 1], reduce ? ["0%", "0%"] : right ? ["-30%", "0%"] : ["0%", "-30%"]);
+  const items = [...group.items, ...group.items, ...group.items];
+  return (
+    <div className="overflow-hidden border-b-2 border-ink py-5">
+      <motion.div style={{ x }} className="flex w-max items-center gap-6 whitespace-nowrap">
+        <span className="bg-ink px-3 py-1 font-display text-xl font-black uppercase tracking-wide text-pad">{group.category}</span>
+        {items.map((it, k) => (
+          <span key={k} className="flex items-center gap-6 font-display text-[clamp(2rem,5vw,4rem)] font-black uppercase leading-none">
+            {it}
+            <span aria-hidden className="h-3 w-3 bg-nasa" />
+          </span>
+        ))}
+      </motion.div>
+    </div>
+  );
+}
+
+function Skills() {
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  return (
+    <section id="skills" ref={ref} className="overflow-hidden bg-pad py-24 md:py-32">
+      <div className="mx-auto max-w-7xl px-5 md:px-6">
+        <SectionTitle en="Skills" ko="핵심 보유 역량" />
+      </div>
+      <div className="mt-14 border-t-2 border-ink">
+        {skills.map((g, i) => (
+          <SkillRow key={g.category} group={g} i={i} progress={scrollYProgress} />
+        ))}
+      </div>
+      <div className="mx-auto mt-20 grid max-w-7xl gap-10 px-5 md:grid-cols-[1fr_2fr] md:px-6">
+        <Reveal>
+          <h3 className="font-display text-4xl font-black uppercase">Education</h3>
+          <p className="mt-2 font-hangul text-xl text-steel">학력 · 교육 · 외국어</p>
+        </Reveal>
+        <ul className="border-t-2 border-ink">
+          {education.map((e) => (
+            <li key={e.title} className="flex flex-wrap items-baseline justify-between gap-3 border-b border-ink/25 py-5">
+              <span className="font-hangul text-xl">{e.title}</span>
+              <span className="tabular font-mono text-sm text-steel">{e.period}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------- Contact ---------------- */
 
 function Contact() {
+  const ref = useRef<HTMLElement>(null);
+  const reduce = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "center center"] });
+  const scale = useTransform(scrollYProgress, [0, 1], reduce ? [1, 1] : [0.7, 1]);
+
   return (
-    <footer id="contact" className="fuselage px-5 py-24 text-white md:px-6 md:py-32">
+    <footer id="contact" ref={ref} className="fuselage overflow-hidden px-5 py-24 text-white md:px-6 md:py-36">
       <div className="mx-auto max-w-7xl">
-        <h2 className="font-display text-[clamp(3.5rem,10vw,6rem)] font-black uppercase leading-[0.85]">Open channel</h2>
+        <h2 className="font-display text-[clamp(3.5rem,10vw,6rem)] font-black uppercase leading-[0.85]">Contact</h2>
         <p className="mt-5 max-w-[48ch] text-lg leading-relaxed">
-          프로덕션 수준의 프론트엔드와 AI 워크플로우를 함께 다룰 팀을 찾고 있다면, 메일 한 통이면 됩니다.
+          프로덕션 수준의 프론트엔드를 책임지면서 AI 워크플로우를 팀에 정착시킬 사람을 찾고 있다면, 메일 한 통이면 됩니다.
         </p>
-        <a
+        <motion.a
+          style={{ scale }}
           href={`mailto:${personalInfo.email}`}
-          className="group mt-12 flex w-fit max-w-full items-center gap-4 break-all font-stencil text-[clamp(2.25rem,7vw,5.5rem)] font-black leading-none decoration-4 underline-offset-8 hover:underline"
+          className="group mt-12 flex w-fit max-w-full origin-left items-center gap-4 break-all font-stencil text-[clamp(2.25rem,7vw,5.5rem)] font-black leading-none decoration-4 underline-offset-8 hover:underline"
         >
           {personalInfo.email}
           <ArrowUpRight className="h-[0.8em] w-[0.8em] flex-none transition-transform duration-300 ease-expo group-hover:-translate-y-2 group-hover:translate-x-2" />
-        </a>
-        <div className="mt-16 flex flex-wrap items-center justify-between gap-4 border-t-2 border-white/60 pt-6 font-mono text-xs uppercase">
+        </motion.a>
+        <div className="mt-16 flex flex-wrap items-center justify-between gap-4 border-t-2 border-white/60 pt-6 font-display text-sm font-black uppercase tracking-[0.15em]">
           <a href={personalInfo.github} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 hover:underline">
             <Github className="h-4 w-4" /> github.com/kimk1029
           </a>
-          <span>© 2026 Kim Kyu-hyun · KKH-1</span>
+          <span>© 2026 Kim Kyu-hyun</span>
         </div>
       </div>
     </footer>
   );
 }
 
+/* ---------------- Page ---------------- */
+
 export default function Portfolio() {
+  const { scrollYProgress } = useScroll();
   return (
     <main className="bg-pad text-ink">
       <header className="fixed inset-x-0 top-0 z-50 bg-ink text-pad">
         <div className="mx-auto flex h-12 max-w-7xl items-center justify-between gap-4 px-5 md:px-6">
           <a href="#top" className="font-stencil text-xl font-black uppercase tracking-[0.08em]">
-            KKH<span className="text-nasa">-1</span>
+            KKH<span className="text-nasa">.</span>
           </a>
           <nav className="hidden gap-1 md:flex">
             {navItems.map(([label, href]) => (
-              <a
-                key={href}
-                href={href}
-                className="px-3 py-1.5 font-display text-base font-black uppercase tracking-wide transition-colors duration-200 hover:bg-pad hover:text-ink"
-              >
+              <a key={href} href={href} className="px-3 py-1.5 font-hangul text-[15px] transition-colors duration-200 hover:bg-pad hover:text-ink">
                 {label}
               </a>
             ))}
@@ -462,13 +703,18 @@ export default function Portfolio() {
             Mail
           </a>
         </div>
+        <motion.div className="h-[3px] origin-left bg-nasa" style={{ scaleX: scrollYProgress }} />
       </header>
-      <Hud />
       <Hero />
-      <Ascent />
-      <Orbit />
-      <Archive />
-      <Systems />
+      <Journey />
+      <Manifesto />
+      <Impact />
+      <Career />
+      <AiWorkflow />
+      <Projects />
+      <CompanyProjects />
+      <Leadership />
+      <Skills />
       <Contact />
     </main>
   );

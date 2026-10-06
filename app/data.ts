@@ -364,3 +364,141 @@ export const allProjects: Project[] = [
     ]
   }
 ];
+
+// ---- Resume v2 기반 상세 경력 ----
+export interface CareerCase {
+  title: string;
+  period?: string;
+  background?: string;
+  action: string;
+  impact: string;
+}
+
+export interface Career {
+  company: string;
+  period: string;
+  role: string;
+  summary: string;
+  cases: CareerCase[];
+}
+
+export const careerTotal = "총 8년 8개월 + 독립 개발 1년 5개월";
+
+export const careers: Career[] = [
+  {
+    company: "독립 개발 / AI 기반 프로덕트 빌딩",
+    period: "2025.01 ~ 현재",
+    role: "풀스택 메이커",
+    summary:
+      "LLM 도구를 실제 프로덕트 개발에 녹이는 검증 기간. 기획 → 개발 → 디자이너·인플루언서 섭외 → 서버 구축 → 스토어 배포까지 프로덕트를 단독 완수하며, 개발 병목을 AI 워크플로우로 해결한 사례를 축적했습니다.",
+    cases: [
+      {
+        title: "1인 개발의 속도 한계",
+        action: "Claude Code를 자동완성이 아닌 PR 단위 작업 위임 도구로 운용 — 에이전트가 파일·테스트·빌드를 직접 조작하는 구조.",
+        impact: "구현 사이클 체감 약 2배 단축 (dopamine.land 게임 로직, Piesta NestJS CRUD 보일러플레이트 기준).",
+      },
+      {
+        title: "LLM이 프로젝트 컨텍스트를 모르는 문제",
+        action: "Supabase 스키마·게임 상태를 LLM이 직접 조회하는 커스텀 MCP 서버를 구현해 도입. 공개 Agent Skills(코드 리뷰·PR 정리 등)를 선별 도입해 토큰 사용 최적화.",
+        impact: "수동 컨텍스트 복붙 제거, 반복 작업 자동화로 운영 부담 감소.",
+      },
+      {
+        title: "에이전트의 반복 실패와 품질 저하",
+        action: "툴 호출 실패 시 재시도·에러 복구 로직을 Node 레이어에 직접 구성(Agent Harness). 주보 파싱 같은 반복 작업에는 정답 세트 기반 간이 eval로 프롬프트 변경 시 품질 회귀 감지.",
+        impact: "LLM이 같은 실수를 무한 반복하는 패턴 차단, 산출물 품질을 일정 수준으로 유지.",
+      },
+    ],
+  },
+  {
+    company: "㈜네오위즈 — 블록체인 사업부 Neopin",
+    period: "2020.03 ~ 2024.12",
+    role: "시니어 FE / NEOPIN.io FE 리드",
+    summary:
+      "판교 기반 게임 퍼블리싱·개발사의 블록체인 사업부 Neopin(Open DeFi 플랫폼) 핵심 기여자. 지갑 익스텐션 → 랜딩·디자인 시스템 → DEX DApp → Admin까지 프로덕트 전 영역을 담당했습니다.",
+    cases: [
+      {
+        title: "NEOPIN 지갑 익스텐션 — Chrome Extension Wallet",
+        period: "2021.12 ~ 2024.12",
+        background: "참고 레퍼런스가 거의 없던 초기 시점에 블록체인 지갑 익스텐션 아키텍처 설계를 단독으로 담당.",
+        action:
+          "테스트 베드를 직접 구축하며 React 기반 반응형 구조(팝업 ~ 전체 화면) 설계. Ethers.js·Web3.js로 Smart Contract 직접 호출, WalletConnect + Background Script로 웹 서비스 ↔ 지갑 실시간 연동. 여러 화면이 각자 요청하던 잔액·네트워크 정보를 SWR 캐시로 통합.",
+        impact: "메인 화면 Lighthouse 성능 점수 약 20% 향상. 팀이 참고하는 아키텍처 기반 제공, 주간 기술 세션으로 React·SWR 패턴 전파.",
+      },
+      {
+        title: "app.neopin.io — DeFi DApp (DEX)",
+        background: "Swap·Pool·Stake 등 복잡한 금융 로직을 웹·하이브리드 앱 양쪽에서 안정적으로 처리해야 하는 환경.",
+        action: "Next.js 기반 DEX 핵심 기능의 비즈니스 로직·UI 구현, ERC20 ABI 연동으로 트랜잭션 안정 처리. Native Connector로 웹뷰 ↔ 네이티브 앱 양방향 통신 인터페이스 개발.",
+        impact: "복잡한 컨트랙트 연동 기능을 빠른 프로토타입으로 경영진·디자인팀과 공유 — 의사결정 소요 시간 약 50% 단축.",
+      },
+      {
+        title: "NEOPIN.io — 서비스 랜딩 · 디자인 시스템 (FE 리드)",
+        background: "기획·디자인·개발 간 UI 수정이 4~5회 반복되는 비효율적 협업 구조.",
+        action: "Chakra UI(빠른 컴포넌트 베이스) + Tailwind CSS(브랜드 커스터마이징) 조합으로 디자인 시스템·타이포 가이드라인 구축. Lottie·Framer Motion으로 브랜드 인터랙션 구현, 협업 프로세스 문서화.",
+        impact: "UI 개발 반복 비용 4~5회 → 1~2회로 감소. 팀 표준 프로세스로 정착.",
+      },
+      {
+        title: "통합 관리자(Admin) 아키텍처 전환 · 성능 최적화",
+        background: "유지보수 인력 확보가 어려운 Svelte 레거시를 팀 표준 스택(React)으로 전환.",
+        action: "전역 상태가 적고 캐싱이 중요한 Admin 특성을 고려해 React-Query 대신 SWR + Zustand 조합으로 상태 관리 재설계.",
+        impact: "번들 크기 축소, 메인 페이지 데이터 페칭 속도 34% 개선. 마이그레이션·API 표준을 Notion Wiki로 문서화해 온보딩 자료로 활용.",
+      },
+      {
+        title: "BETSPIDER.IO — 블록체인 카지노 웹앱 (Tron)",
+        period: "2020.03 ~ 2021.12",
+        background: "트론 네트워크 기반 베팅 서비스의 프론트엔드 및 결제 플로우 전담.",
+        action: "TronLink 연동으로 지갑 연결·입출금 흐름 구현. 중간 서버 없이 노드에 sendTransaction을 직접 호출해 레이턴시를 줄이고 에러 핸들링을 정교화. Vue 2에 TypeScript 점진 도입.",
+        impact: "블록체인 베팅 서비스 런칭 및 초기 운영 안정화.",
+      },
+    ],
+  },
+  {
+    company: "Trumpia — 실리콘밸리 B2B 메시징",
+    period: "2016.01 ~ 2020.02",
+    role: "풀스택 개발자",
+    summary: "미국 본사·AT&T 고객사 엔지니어와 영어로 직접 커뮤니케이션하며 프론트엔드부터 백엔드·인프라까지 풀스택 개발을 수행했습니다.",
+    cases: [
+      {
+        title: "반응형 리포트 차트 리팩토링",
+        period: "2018.11 ~ 2019.05",
+        action: "D3.js·C3.js가 혼재된 시각화 모듈을 C3.js 단일 렌더링 엔진으로 재설계, 차트 타입을 Factory 패턴으로 동적 생성 — 신규 차트 추가 시 기존 코드 수정이 필요 없는 구조.",
+        impact: "차트 로딩·렌더링 성능 30% 이상 개선.",
+      },
+      {
+        title: "대규모 데이터 시각화 대시보드 & CI/CD",
+        period: "2016.10 ~ 2018.11",
+        action: "D3.js + C3.js 기반 집계 데이터 시각화 모듈 설계(Java Controller·DTO까지 직접 수정). Jenkins로 Dev·Stage·Live 3단계 CI/CD 구축, GitLab 코드 리뷰 프로세스 도입.",
+        impact: "고객사 데이터 분석 효율 개선, 배포 전 검증 단계 정착.",
+      },
+      {
+        title: "레거시 현대화 (PHP → Spring Boot) · 반응형 리뉴얼",
+        action: "PHP 레거시를 모듈 단위로 Spring Boot 마이그레이션, 데스크탑 전용 웹을 Bootstrap 반응형으로 리뉴얼. Apache·Tomcat·CentOS 인프라 설정 전담.",
+        impact: "레거시 부채 해소로 시스템 안정성·유지보수성 개선.",
+      },
+    ],
+  },
+];
+
+export const impacts = [
+  { value: "20%", label: "Lighthouse 성능 향상", note: "NEOPIN 지갑 — 중복 요청을 SWR 캐시로 통합" },
+  { value: "34%", label: "데이터 페칭 개선", note: "Admin Svelte → React, SWR + Zustand 재설계" },
+  { value: "4~5→1~2", label: "UI 수정 반복 횟수", note: "NEOPIN.io 디자인 시스템 리드" },
+  { value: "50%", label: "의사결정 시간 단축", note: "DEX 컨트랙트 기능 프로토타입 선공유" },
+  { value: "30%+", label: "차트 렌더링 성능", note: "Trumpia — C3.js 단일 엔진 + Factory 패턴" },
+  { value: "2×", label: "구현 사이클 단축(체감)", note: "Claude Code PR 단위 작업 위임" },
+];
+
+export const leadershipNotes = [
+  { title: "기술 리드 & 전파", body: "NEOPIN.io FE 리드로 디자인 시스템·협업 프로세스를 팀 표준으로 정착. 주간 기술 세션(React·SWR·상태 관리)을 운영하고, Svelte→React 전환을 직접 제안해 완수했습니다." },
+  { title: "직군 간 협업", body: "디자인 시스템으로 UI 수정 반복 4~5회 → 1~2회, 프로토타입 선공유로 의사결정 시간 약 50% 단축. Trumpia에서 미국 본사·AT&T 엔지니어와 영어로 직접 소통했습니다." },
+  { title: "End-to-End 오너십", body: "독립 개발 프로덕트를 단독 완주 — 디자이너·인플루언서 섭외, NAS 서버 구축, 앱스토어 등록까지. 레퍼런스 없던 지갑 익스텐션 초기 구조도 테스트 베드를 만들며 직접 설계했습니다." },
+  { title: "AI-Native Team Enablement", body: "개인 워크플로우(Claude Code·MCP·Skills·Harness)를 팀 단위로 전파할 수 있습니다. 네오위즈에서 주간 세션으로 기술을 팀에 정착시킨 경험이 있습니다." },
+];
+
+export const education = [
+  { title: "한남대학교 컴퓨터공학과 졸업", period: "2009.03 ~ 2015.02" },
+  { title: "애자일 기반 자바 개발자 과정 · 비트교육센터", period: "2015.03 ~ 2015.07" },
+  { title: "영어 — 비즈니스 업무 가능 · JLPT N5", period: "외국어" },
+];
+
+export const manifesto =
+  "8년간 React·Vue·Next.js로 프론트엔드를 해왔고, 그중 약 5년을 블록체인 도메인에서 보냈습니다. 최근에는 Claude Code·MCP·Agent Skills 워크플로우를 실제 프로덕트에 적용하며 AI 도구가 개발 병목을 어디까지 해결하는지 직접 검증했습니다. 이제 이 두 축을 회사에서 결합해, 프로덕션 수준의 프론트엔드를 책임지면서 검증된 AI 워크플로우를 팀에 정착시키고 싶습니다.";
