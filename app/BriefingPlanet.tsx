@@ -10,9 +10,6 @@ export interface PlanetLabel {
   short: string;
 }
 
-const TEX_W = 4096;
-const TEX_H = 2048;
-const BLOCK_W = 620; // ~55° of longitude per label; labels sit 72° apart
 const BANDS = ["#0a1240", "#1d3fbf", "#2f55d8", "#14287a", "#4462dc", "#1d3fbf", "#0f1b5c", "#3a5fe0", "#0a1240"];
 const RADIUS = 2.4;
 const EXPLODE_AT = 0.86; // progress where the planet bursts
@@ -34,51 +31,58 @@ function wrap(g: CanvasRenderingContext2D, text: string, width: number) {
   return lines;
 }
 
-// Equirectangular texture: label i is centred at u = 0.25 + i / n, so rotating
-// the sphere by -2πi/n brings it to face a camera on +Z.
-function drawTexture(labels: PlanetLabel[]) {
+function planetTexture() {
   const c = document.createElement("canvas");
-  c.width = TEX_W;
-  c.height = TEX_H;
+  c.width = 2048;
+  c.height = 1024;
   const g = c.getContext("2d")!;
   BANDS.forEach((col, i) => {
     g.fillStyle = col;
-    g.fillRect(0, (i * TEX_H) / BANDS.length, TEX_W, TEX_H / BANDS.length + 1);
+    g.fillRect(0, (i * c.height) / BANDS.length, c.width, c.height / BANDS.length + 1);
   });
-  for (let i = 0; i < 2600; i++) {
+  for (let i = 0; i < 1400; i++) {
     g.fillStyle = `rgba(255,255,255,${Math.random() * 0.05})`;
-    g.fillRect(Math.random() * TEX_W, Math.random() * TEX_H, 80 + Math.random() * 300, 2 + Math.random() * 6);
+    g.fillRect(Math.random() * c.width, Math.random() * c.height, 40 + Math.random() * 160, 1 + Math.random() * 3);
   }
+  return c;
+}
+
+// One transparent "hologram" sheet per step: text only, soft dark halo for legibility.
+const LABEL_W = 1024;
+const LABEL_H = 512;
+function labelTexture(l: PlanetLabel, i: number, n: number) {
+  const c = document.createElement("canvas");
+  c.width = LABEL_W;
+  c.height = LABEL_H;
+  const g = c.getContext("2d")!;
+  const halo = g.createRadialGradient(LABEL_W / 2, LABEL_H / 2, 40, LABEL_W / 2, LABEL_H / 2, LABEL_W / 2);
+  halo.addColorStop(0, "rgba(5,6,10,0.55)");
+  halo.addColorStop(1, "rgba(5,6,10,0)");
+  g.fillStyle = halo;
+  g.fillRect(0, 0, LABEL_W, LABEL_H);
 
   const hangul = cssFont("--font-hangul", "sans-serif");
   const mono = cssFont("--font-mono", "monospace");
   const body = '"Pretendard Variable", Pretendard, sans-serif';
-  const n = labels.length;
+  g.textAlign = "center";
+  g.shadowColor = "rgba(0,0,0,0.6)";
+  g.shadowBlur = 12;
 
-  labels.forEach((l, i) => {
-    const cx = ((0.25 + i / n) % 1) * TEX_W;
-    const x0 = cx - BLOCK_W / 2;
-    const top = TEX_H * 0.36;
+  g.fillStyle = "#ff8a78";
+  g.font = `500 28px ${mono}`;
+  g.fillText(`${String(i + 1).padStart(2, "0")} / ${String(n).padStart(2, "0")}`, LABEL_W / 2, 96);
 
-    g.fillStyle = "rgba(5,6,10,0.55)";
-    g.fillRect(x0 - 40, top - 70, BLOCK_W + 80, TEX_H * 0.34);
+  g.fillStyle = "#ffffff";
+  g.font = `80px ${hangul}`;
+  g.fillText(l.title, LABEL_W / 2, 186);
 
-    g.fillStyle = "#ff8a78";
-    g.font = `500 30px ${mono}`;
-    g.fillText(`${String(i + 1).padStart(2, "0")} / ${String(n).padStart(2, "0")}`, x0, top);
+  g.fillStyle = "rgba(242,241,236,0.8)";
+  g.font = `500 26px ${mono}`;
+  g.fillText(l.tools.join("  ·  "), LABEL_W / 2, 238);
 
-    g.fillStyle = "#f2f1ec";
-    g.font = `64px ${hangul}`;
-    g.fillText(l.title, x0, top + 90);
-
-    g.font = `500 24px ${mono}`;
-    g.fillStyle = "rgba(242,241,236,0.75)";
-    g.fillText(l.tools.join("  ·  "), x0, top + 145);
-
-    g.font = `600 40px ${body}`;
-    g.fillStyle = "#f2f1ec";
-    wrap(g, l.short, BLOCK_W).forEach((line, k) => g.fillText(line, x0, top + 215 + k * 56));
-  });
+  g.fillStyle = "#ffffff";
+  g.font = `600 40px ${body}`;
+  wrap(g, l.short, 820).forEach((line, k) => g.fillText(line, LABEL_W / 2, 318 + k * 56));
   return c;
 }
 
@@ -121,9 +125,8 @@ export default function BriefingPlanet({
       sun.position.set(-3, 2, 8);
       scene.add(sun);
 
-      const tex = new THREE.CanvasTexture(drawTexture(labels));
+      const tex = new THREE.CanvasTexture(planetTexture());
       tex.colorSpace = THREE.SRGBColorSpace;
-      tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
       const planetMat = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.9, emissive: new THREE.Color(0xff5a2a), emissiveIntensity: 0 });
       const planet = new THREE.Mesh(new THREE.SphereGeometry(RADIUS, 96, 96), planetMat);
       scene.add(planet);
@@ -132,6 +135,22 @@ export default function BriefingPlanet({
         new THREE.MeshBasicMaterial({ color: 0x4f7bff, transparent: true, opacity: 0.15, side: THREE.BackSide }),
       );
       scene.add(atmo);
+
+      // Curved sheets hugging the planet's front face, one per step.
+      const n = labels.length;
+      const ARC = 1.25;
+      const sheets = labels.map((l, i) => {
+        const t = new THREE.CanvasTexture(labelTexture(l, i, n));
+        t.colorSpace = THREE.SRGBColorSpace;
+        t.anisotropy = renderer.capabilities.getMaxAnisotropy();
+        const r = RADIUS * 1.03;
+        const mesh = new THREE.Mesh(
+          new THREE.CylinderGeometry(r, r, (r * ARC) / 2, 48, 1, true, -ARC / 2, ARC),
+          new THREE.MeshBasicMaterial({ map: t, transparent: true, depthWrite: false, opacity: 0 }),
+        );
+        scene.add(mesh);
+        return mesh;
+      });
 
       // Shallow orbit: the ship crosses in front of the planet, then disappears behind it.
       const orbit = new THREE.Group();
@@ -211,7 +230,6 @@ export default function BriefingPlanet({
       const ro = new ResizeObserver(resize);
       ro.observe(el);
 
-      const n = labels.length;
       const smooth = (x: number) => x * x * (3 - 2 * x);
       const clamp = (x: number) => Math.min(1, Math.max(0, x));
 
@@ -230,6 +248,12 @@ export default function BriefingPlanet({
         const grow = clamp((p - 0.8) / (EXPLODE_AT - 0.8));
         const burst = clamp((p - EXPLODE_AT) / (1 - EXPLODE_AT));
         const swell = 1 + smooth(grow) * 0.35;
+        sheets.forEach((m, k) => {
+          const d = k - step;
+          (m.material as InstanceType<typeof THREE.MeshBasicMaterial>).opacity = burst > 0 ? 0 : Math.max(0, 1 - Math.abs(d) * 2.2) * (1 - grow);
+          m.rotation.y = d * 0.9; // slides with the planet's spin
+          m.scale.setScalar(swell);
+        });
         planet.scale.setScalar(swell);
         atmo.scale.setScalar(swell);
         planetMat.emissiveIntensity = grow * 0.9;
