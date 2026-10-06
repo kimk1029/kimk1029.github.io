@@ -240,27 +240,40 @@ function Briefing() {
   const [active, setActive] = useState(0);
   useMotionValueEvent(scrollYProgress, "change", (v) => setActive(Math.min(n - 1, Math.round(Math.min(1, v / 0.8) * (n - 1)))));
   const chrome = useTransform(scrollYProgress, [0.8, 0.86], [1, 0]);
+  const driftL = useTransform(scrollYProgress, [0, 0.86], ["6%", "-18%"]);
+  const driftR = useTransform(scrollYProgress, [0, 0.86], ["-18%", "6%"]);
   const row = buildLog[active];
 
   return (
     <section id="briefing" ref={ref} className="relative h-[700vh]">
       <div className="sticky top-0 h-screen overflow-hidden">
-        <BriefingPlanet progress={scrollYProgress} labels={planetLabels} flash={flash} />
+        {/* Giant type sits behind the transparent 3D canvas, so the planet passes in front of it. */}
+        <motion.div aria-hidden style={{ opacity: chrome }} className="pointer-events-none absolute inset-0 flex flex-col justify-start gap-2 overflow-hidden pt-[13vh] font-hangul leading-none md:justify-between md:gap-0 md:py-[13vh]">
+          <motion.p style={{ x: driftL }} className="whitespace-nowrap text-[clamp(3.5rem,11vw,11rem)] text-pad/90">
+            AI는 누가 쓰느냐에 따라
+          </motion.p>
+          <motion.p style={{ x: driftR }} className="whitespace-nowrap text-[clamp(3.5rem,11vw,11rem)] text-transparent [-webkit-text-stroke:1.5px_rgba(255,138,120,0.9)]">
+            다른 결과물을 만듭니다
+          </motion.p>
+        </motion.div>
+        <div className="absolute inset-0 z-10">
+          <BriefingPlanet progress={scrollYProgress} labels={planetLabels} flash={flash} />
+        </div>
         <div
           ref={flash}
           aria-hidden
           className="pointer-events-none absolute inset-0 z-20 bg-[radial-gradient(circle_at_50%_50%,#fff7e6_0%,#ffb347_30%,#d4291a_60%,transparent_85%)] opacity-0"
         />
 
-        <motion.div style={{ opacity: chrome }} className="pointer-events-none relative z-10 flex h-full flex-col justify-between px-5 pb-6 pt-16 text-center md:px-6 md:pb-8">
-          <div>
-            <p className="font-hangul text-sm text-[#ff8a78] md:text-base">미션 브리핑 — 이 페이지를 만든 방법</p>
-            <h2 className="mt-2 font-hangul text-[clamp(1.4rem,2.6vw,2.4rem)] leading-[1.2]">
-              AI는 <span className="text-[#ff8a78]">누가 쓰느냐</span>에 따라 다른 결과물을 만듭니다.
-            </h2>
+        <motion.div style={{ opacity: chrome }} className="pointer-events-none relative z-10 flex h-full flex-col justify-between px-5 pb-6 pt-16 md:px-6 md:pb-8">
+          <div className="mx-auto flex w-full max-w-7xl items-baseline justify-between">
+            <h2 className="font-hangul text-sm text-[#ff8a78] md:text-base">미션 브리핑 — 이 페이지를 만든 방법<span className="sr-only">: AI는 누가 쓰느냐에 따라 다른 결과물을 만듭니다.</span></h2>
+            <span className="tabular font-mono text-xs text-pad/60">
+              {String(active + 1).padStart(2, "0")} / {String(n).padStart(2, "0")}
+            </span>
           </div>
 
-          <div className="mx-auto w-full max-w-2xl">
+          <div className="mx-auto w-full max-w-2xl text-center">
             <motion.div key={active} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease: EASE }}>
               <p className="text-[15px] leading-relaxed md:hidden">
                 <span className="mr-2 inline-block bg-pad px-1.5 py-0.5 font-hangul text-xs text-ink">내가 한 것</span>

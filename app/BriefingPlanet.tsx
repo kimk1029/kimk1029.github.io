@@ -133,11 +133,11 @@ export default function BriefingPlanet({
       );
       scene.add(atmo);
 
-      // Ship on a steeply tilted orbit so it crosses below the text block.
+      // Shallow orbit: the ship crosses in front of the planet, then disappears behind it.
       const orbit = new THREE.Group();
-      orbit.rotation.set(0.95, 0, -0.35);
+      orbit.rotation.set(0.3, 0, -0.2);
       scene.add(orbit);
-      const R = RADIUS * 1.45;
+      const R = RADIUS * 1.6;
       const ring = new THREE.Line(
         new THREE.BufferGeometry().setFromPoints(
           Array.from({ length: 161 }, (_, i) => {
