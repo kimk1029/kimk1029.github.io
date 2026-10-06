@@ -2,15 +2,12 @@ import Link from 'next/link';
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen bg-black flex flex-col items-center justify-center text-white gap-6 px-6">
-      <h1 className="text-4xl font-bold text-slate-100">404</h1>
-      <p className="text-slate-400">페이지를 찾을 수 없습니다.</p>
-      <Link
-        href="/"
-        className="px-6 py-3 bg-white text-black font-bold hover:bg-blue-400 transition-colors"
-      >
-        홈으로
+    <main className="flex min-h-screen flex-col items-start justify-center gap-6 bg-vacuum px-6 text-white md:px-16">
+      <h1 className="font-display text-[clamp(3rem,10vw,6rem)] font-black uppercase leading-[0.85]">Off trajectory</h1>
+      <p className="text-lg text-white/80">404 · 신호가 끊겼습니다. 페이지를 찾을 수 없습니다.</p>
+      <Link href="/" className="bg-nasa px-5 py-3 font-display text-xl font-black uppercase tracking-wide hover:bg-pad hover:text-ink">
+        발사대로 돌아가기
       </Link>
-    </div>
+    </main>
   );
 }

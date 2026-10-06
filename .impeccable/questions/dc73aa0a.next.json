@@ -1,0 +1,221 @@
+{
+ "title": "포트폴리오의 비주얼 월드 선택",
+ "question": "배정된 방향은 'Launch Manifest' — 경력을 다단 로켓 발사로, 스크롤을 고도로 읽는 사이트입니다. 유지, 대안 선택, 또는 다시 굴리기.",
+ "options": [
+  {
+   "id": "assigned",
+   "label": "Launch Manifest",
+   "kicker": "THE ROLL",
+   "lineage": "1975 NASA Graphics Standards Manual + 발사 고도 프로파일 차트 + 자수 미션 패치",
+   "thesis": "스크롤이 곧 고도: 9년 경력을 3단 로켓으로 쏘아 올려, 궤도에 5개의 제품을 올려놓는 발사 기록.",
+   "palette": [
+    "#f2f1ec",
+    "#e8321b",
+    "#111214",
+    "#1d3fbf",
+    "#05060a"
+   ],
+   "materials": [
+    "NASA 레드 단색 필드",
+    "고도 프로파일 그래프 선",
+    "자수 미션 패치",
+    "스텐실 카운트다운 숫자"
+   ],
+   "viewport": "지면 위 발사대: 거대한 '김규현' 레터링이 기체 측면 스텐실처럼 세로로 서 있고, 우측 레일에 T-minus 카운트다운·고도 0 m, 하단에 'AI PRODUCT ENGINEER — 6 LAUNCHES / 5 IN ORBIT / 3 TRANSMITTING'과 이메일 버튼.",
+   "risk": "배경이 우주(어둠)로 끝나므로 '다크 + 네온' 기본값처럼 보일 위험 — 어둠은 스크롤로 얻는 결과이고, 시작은 밝은 대낮과 레드 필드여야 합니다.",
+   "raised": [
+    {
+     "from": "challenger-event-display",
+     "raise": "제품 패치에 호버하면 그 궤도만 남고 나머지는 흐려지는 단일 트랙 격리 상태."
+    },
+    {
+     "from": "challenger-one-bit",
+     "raise": "모든 상태는 하나의 명확한 시각 변화(반전)로만 표현 — 상태 문법의 엄격함."
+    },
+    {
+     "from": "challenger-bollywood",
+     "raise": "크기가 곧 빌링: 운영 중인 3개 제품의 패치가 가장 크고, 아카이브 작업은 작게."
+    },
+    {
+     "from": "challenger-torn-flyer",
+     "raise": "깊이가 곧 달력: 아래로 내려갈수록(고도↑) 더 최근 — 시간 축과 공간 축을 하나로."
+    }
+   ]
+  },
+  {
+   "id": "model-pick",
+   "label": "Career Metro Map",
+   "kicker": "IMPECCABLE’S PICK",
+   "lineage": "서울 지하철 노선도 + 역 플랫폼 사인 시스템",
+   "thesis": "Web3·Full-stack·AI 세 노선이 환승역(제품)에서 만나는 경력 노선도.",
+   "palette": [
+    "#ffffff",
+    "#00a84d",
+    "#ef7c1c",
+    "#996cac",
+    "#1a1a1a"
+   ],
+   "materials": [
+    "노선 색 띠",
+    "역 번호 원형 배지",
+    "플랫폼 사인 패널"
+   ],
+   "viewport": "화면을 가로지르는 굵은 3색 노선, 종착역 '현재 — AI Product Engineer'에 큰 역명판과 이메일.",
+   "risk": "인포그래픽 포트폴리오로 자주 쓰이는 친숙한 메타포 — 새롭지 않다는 인상."
+  },
+  {
+   "id": "challenger-event-display",
+   "label": "Collider Event Display",
+   "verdict": "declined",
+   "lineage": "입자 검출기 이벤트 디스플레이",
+   "thesis": "하나의 충돌에서 뻗어나가는 트랙으로 제품을 보여주기.",
+   "palette": [
+    "#05060a",
+    "#5b7a99",
+    "#f5d000",
+    "#20d0e0",
+    "#e02020"
+   ],
+   "materials": [
+    "동심원 검출기 링",
+    "곡선 입자 트랙"
+   ],
+   "viewport": "중앙 충돌점에서 6개 트랙이 뻗어나가는 단면.",
+   "case": "채용 담당자가 자신을 투영하기 어렵고, 30초 스캔에서 메시지가 묻힘.",
+   "risk": "어두운 과학 시각화 — 다크+네온 기본값과 가까움.",
+   "kept": "트랙 선택 시 나머지를 흐리는 격리 상태.",
+   "hero": "https://impeccable.style/worlds/cards/scientific-notation-particle-detector-event-display-hero.webp"
+  },
+  {
+   "id": "challenger-one-bit",
+   "label": "One-bit Desktop",
+   "verdict": "declined",
+   "lineage": "초기 1비트 데스크톱 OS",
+   "thesis": "프로젝트마다 창 하나.",
+   "palette": [
+    "#ffffff",
+    "#000000"
+   ],
+   "materials": [
+    "디더 패턴",
+    "마칭 앤츠"
+   ],
+   "viewport": "겹친 창들이 놓인 데스크톱.",
+   "case": "레트로 OS 포트폴리오는 흔한 트로프이고 AI 제품 엔지니어 포지셔닝과 무관.",
+   "risk": "노벨티로 읽힘.",
+   "kept": "상태 = 반전 하나라는 엄격한 상태 문법.",
+   "hero": "https://impeccable.style/worlds/cards/medium-native-one-bit-desktop-hero.webp"
+  },
+  {
+   "id": "challenger-bollywood",
+   "label": "Painted Film Poster",
+   "verdict": "declined",
+   "lineage": "봄베이 수작업 영화 포스터",
+   "thesis": "한 장의 포스터에 장면을 몽타주.",
+   "palette": [
+    "#c8102e",
+    "#f2b705",
+    "#1b1f5c",
+    "#e0a96d"
+   ],
+   "materials": [
+    "에어브러시",
+    "외곽선 디스플레이 레터"
+   ],
+   "viewport": "거대한 초상과 주변 비네트.",
+   "case": "개인 히어로 숭배 톤이 테크 리드 청중과 어긋남.",
+   "risk": "과장으로 읽힘.",
+   "kept": "크기가 곧 중요도(빌링).",
+   "hero": "https://impeccable.style/worlds/cards/pop-culture-shelf-bollywood-painted-poster-hero.webp"
+  },
+  {
+   "id": "challenger-torn-flyer",
+   "label": "Torn Flyer Wall",
+   "verdict": "declined",
+   "lineage": "클럽 벽 플라이어 레이어",
+   "thesis": "찢으면 과거 경력이 드러나는 벽.",
+   "palette": [
+    "#111111",
+    "#ff2fa0",
+    "#c6ff00",
+    "#f0e8d8"
+   ],
+   "materials": [
+    "복사기 잉크",
+    "스테이플 구멍"
+   ],
+   "viewport": "최신 제품 플라이어가 위에 붙은 벽.",
+   "case": "정보 밀도가 높은 경력 기록을 읽기 어렵게 만듦.",
+   "risk": "가독성 손실.",
+   "kept": "깊이 = 시간.",
+   "hero": "https://impeccable.style/worlds/cards/posters-covers-sleeves-torn-flyer-photocopy-wall-hero.webp"
+  },
+  {
+   "id": "challenger-silk",
+   "label": "Silk Canopy Chords",
+   "verdict": "declined",
+   "lineage": "생성 예술 색 화음",
+   "thesis": "겹치는 색 배너로 역량 교집합 표현.",
+   "palette": [
+    "#2b3a8f",
+    "#a4282e",
+    "#f2a900",
+    "#ffffff"
+   ],
+   "materials": [
+    "반투명 실크"
+   ],
+   "viewport": "가로 실크 배너가 교차하는 밝은 마당.",
+   "case": "추상적이라 제품·수치 증거가 전달되지 않음.",
+   "risk": "장식으로 읽힘.",
+   "kept": "겹침을 하나의 계산된 상태로 다루기."
+  },
+  {
+   "id": "challenger-kiln",
+   "label": "Glaze River Shelf",
+   "verdict": "declined",
+   "lineage": "도자기 유약 흐름",
+   "thesis": "프로젝트를 유약 샘플처럼 진열.",
+   "palette": [
+    "#f4f4f2",
+    "#1f4fa8",
+    "#0b2a6b"
+   ],
+   "materials": [
+    "유약 흐름",
+    "가마 선반"
+   ],
+   "viewport": "선반 위 컵 한 줄.",
+   "case": "소프트웨어 출시 이야기와 연결점이 약함.",
+   "risk": "공예 톤 부조화.",
+   "kept": "중력이 읽기 순서를 정한다는 수직 규율."
+  }
+ ],
+ "reroll": {
+  "registers": [
+   "safer",
+   "bolder"
+  ]
+ },
+ "buildPath": {
+  "value": "code"
+ },
+ "canon": true,
+ "canonCard": {
+  "label": "The category standard",
+  "thesis": "개발자 포트폴리오의 정석을 최고 완성도로.",
+  "palette": [
+   "#0b0b0f",
+   "#f5f5f5",
+   "#7c5cff"
+  ],
+  "materials": [
+   "다크 그리드",
+   "프로젝트 카드",
+   "그라디언트 글로우"
+  ],
+  "viewport": "큰 이름과 한 줄 소개, 아래 프로젝트 카드 그리드.",
+  "risk": "다른 개발자 포트폴리오와 구분되지 않음."
+ },
+ "steer": true
+}

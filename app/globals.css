@@ -2,22 +2,91 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: system-ui, -apple-system, sans-serif;
-  word-break: keep-all;
-  overflow-wrap: break-word;
+html {
+  scroll-behavior: smooth;
+  scrollbar-color: #d4291a #111214;
 }
 
-p,
-li,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-a,
-span {
+body {
+  background: #f2f1ec;
+  color: #111214;
   word-break: keep-all;
   overflow-wrap: break-word;
+  caret-color: #d4291a;
+  font-synthesis: none;
+}
+
+::selection {
+  background: #d4291a;
+  color: #f2f1ec;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #111214;
+}
+::-webkit-scrollbar-thumb {
+  background: #d4291a;
+}
+
+:focus-visible {
+  outline: 2px solid #111214;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 5px #f2f1ec;
+}
+
+a {
+  text-underline-offset: 0.2em;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Fuselage panel seams */
+.fuselage {
+  background-color: #d4291a;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0 159px,
+    rgba(17, 18, 20, 0.22) 159px 160px
+  );
+}
+
+/* Saturn-style roll pattern */
+.roll-pattern {
+  background: conic-gradient(#111214 0 25%, #f2f1ec 0 50%, #111214 0 75%, #f2f1ec 0) 0 0 / 50% 100%;
+}
+
+/* Hovering one patch isolates its orbit */
+.orbit:has(a:hover) a:not(:hover),
+.orbit:has(a:focus-visible) a:not(:focus-visible) {
+  opacity: 0.22;
+  filter: saturate(0.2);
+}
+
+@keyframes transmit {
+  from {
+    transform: scale(0.85);
+    opacity: 0.7;
+  }
+  to {
+    transform: scale(1.35);
+    opacity: 0;
+  }
+}
+.transmit-ring {
+  animation: transmit 2.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .transmit-ring {
+    animation: none;
+    opacity: 0;
+  }
 }
