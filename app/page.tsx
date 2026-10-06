@@ -24,6 +24,7 @@ import {
   skills,
 } from "./data";
 import { Patch, TRANSMITTING, patchName } from "./Patch";
+import OrbitScene from "./OrbitScene";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -59,24 +60,34 @@ const PROFILE = "M 40 560 C 300 552, 500 430, 620 280 S 860 70, 960 52";
 
 const buildLog = [
   {
-    step: "기획",
-    me: "채용 담당자가 2분 안에 판단할 수 있도록 무엇을 먼저 보여줄지, 이력서의 어떤 사실을 쓸지 정했습니다.",
-    ai: "이력서를 읽고 섹션별 문장과 데이터 구조로 정리했습니다.",
+    step: "관심사를 컨셉으로",
+    tools: ["우주", "개인 관심사"],
+    me: "우주는 제가 원래 좋아하는 관심사입니다. 경력이 '발사 → 궤도 → 교신'으로 읽히게 하자는 컨셉을 잡고, 결과를 보며 '로켓은 살리고, 우주 용어엔 한국어 경력 라벨을 붙이자'고 방향을 다듬었습니다.",
+    ai: "디자인 스킬이 방향 후보를 제안했고, 고른 방향을 구현했습니다.",
   },
   {
-    step: "컨셉 · 디자인",
-    me: "AI가 제안한 방향 중 하나를 골랐고, \"우주 내용이 뭔지 모르겠다\", \"로켓 부분은 좋다\"처럼 결과를 보고 계속 방향을 틀었습니다.",
-    ai: "디자인 스킬(impeccable)로 방향 후보를 만들고, 매 수정마다 스크린샷으로 화면을 검증했습니다.",
+    step: "프롬프트보다 환경 먼저",
+    tools: ["Claude Code", "Plugins", "impeccable", "ponytail"],
+    me: "Claude Code에 플러그인으로 디자인 스킬(impeccable)과 과잉 설계를 막는 스킬(ponytail)을 설치했습니다. AI가 뻔한 템플릿과 불필요한 코드를 내놓는 기본 습관부터 교정한 것입니다.",
+    ai: "스킬이 정한 품질 기준(대비·타이포·모션 규칙)과 '최소 코드' 원칙을 매 작업에 적용했습니다.",
   },
   {
-    step: "스택 · 개발",
-    me: "Next.js 정적 배포, 스크롤 연동 인터랙션, GitHub Pages 자동 배포라는 틀을 정했습니다.",
-    ai: "Claude Code가 Next.js 14 · Tailwind · Framer Motion · Canvas로 구현하고 빌드까지 돌렸습니다.",
+    step: "맥락을 문서로 고정",
+    tools: ["PRODUCT.md", "이력서 v2", "방향 계약"],
+    me: "누가 보는지(채용 담당자·테크 리드), 무엇을 믿게 할지(AI 제품 엔지니어), 무엇을 숨길지(전화번호·주소)를 정해 PRODUCT.md에 고정했습니다. 세션이 바뀌어도 AI가 같은 기준으로 판단합니다.",
+    ai: "이력서를 데이터 구조로 옮기고, 디자인 방향을 계약 문서로 남겨 이후 작업이 따르게 했습니다.",
   },
   {
-    step: "검증 · 배포",
-    me: "완성본을 직접 보고 승인하거나 다시 시도하라고 판단했습니다.",
-    ai: "리뷰 에이전트가 계약 대비 결함을 찾고, GitHub Actions가 배포했습니다.",
+    step: "스택과 인터랙션 결정",
+    tools: ["Next.js 14", "Framer Motion", "Three.js", "GitHub Pages"],
+    me: "서버 없이 빠르게 뜨는 정적 사이트(Next.js export + GitHub Pages)로 정하고, 인터랙션은 스크롤 연동과 3D로 가자고 정했습니다. 지금 행성을 도는 이 우주선도 그 결정입니다.",
+    ai: "Claude Code가 컴포넌트와 3D 장면을 구현하고, 빌드·배포 파이프라인을 돌렸습니다.",
+  },
+  {
+    step: "결과로 판단하기",
+    tools: ["Playwright", "Review agent", "Git"],
+    me: "AI가 찍은 데스크톱·모바일 스크린샷과 리뷰 에이전트의 지적을 보고 무엇을 반영할지 골랐습니다. '페이지가 짧다', '경력이 안 보인다'처럼 결과물 기준으로 다시 시키는 것이 제 역할이었습니다.",
+    ai: "Playwright로 화면을 캡처해 겹침·잘림을 찾고, 리뷰 에이전트가 방향 계약 대비 결함을 정리했습니다.",
   },
 ];
 
@@ -211,53 +222,70 @@ function Manifesto() {
   );
 }
 
-/* ---------------- Briefing: how this page was made ---------------- */
-
-function BuildStep({ row, i, total, progress }: { row: (typeof buildLog)[number]; i: number; total: number; progress: MotionValue<number> }) {
-  const start = 0.3 + (i / total) * 0.6;
-  const opacity = useTransform(progress, [start, start + 0.08], [0.12, 1]);
-  const x = useTransform(progress, [start, start + 0.08], [40, 0]);
-  return (
-    <motion.li style={{ opacity, x }} className="grid gap-3 border-t border-pad/20 py-4 md:grid-cols-[150px_1fr_1fr] md:gap-8 md:py-5">
-      <span className="font-hangul text-xl text-[#ff8a78] md:text-2xl">{row.step}</span>
-      <p className="text-[15px] leading-relaxed">
-        <span className="mr-2 inline-block bg-pad px-1.5 py-0.5 font-hangul text-xs text-ink">내가</span>
-        {row.me}
-      </p>
-      <p className="text-[15px] leading-relaxed text-pad/75">
-        <span className="mr-2 inline-block border border-pad/50 px-1.5 py-0.5 font-hangul text-xs">AI가</span>
-        {row.ai}
-      </p>
-    </motion.li>
-  );
-}
+/* ---------------- Briefing: how this page was made (3D orbit) ---------------- */
 
 function Briefing() {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
-  const lineA = useTransform(scrollYProgress, [0, 0.12], [0.15, 1]);
-  const lineB = useTransform(scrollYProgress, [0.08, 0.22], [0.15, 1]);
-  const closing = useTransform(scrollYProgress, [0.88, 0.97], [0, 1]);
+  const n = buildLog.length;
+  const [active, setActive] = useState(0);
+  useMotionValueEvent(scrollYProgress, "change", (v) => setActive(Math.min(n - 1, Math.max(0, Math.floor(((v - 0.06) / 0.94) * n)))));
+  const lineA = useTransform(scrollYProgress, [0, 0.04], [0.2, 1]);
+  const lineB = useTransform(scrollYProgress, [0.02, 0.07], [0.2, 1]);
+  const row = buildLog[active];
 
   return (
-    <section id="briefing" ref={ref} className="relative md:h-[420vh]">
-      <div className="flex flex-col justify-center overflow-hidden px-5 py-24 md:sticky md:top-0 md:h-screen md:px-6 md:py-0 md:pt-14">
-        <div className="mx-auto w-full max-w-7xl">
-          <p className="font-hangul text-lg text-[#ff8a78]">미션 브리핑 — 이 페이지를 만든 방법</p>
-          <h2 className="mt-4 font-hangul text-[clamp(2rem,5.2vw,4.75rem)] leading-[1.12]">
-            <motion.span style={{ opacity: lineA }} className="block">AI는</motion.span>
-            <motion.span style={{ opacity: lineB }} className="block">
-              <span className="text-[#ff8a78]">누가 쓰느냐</span>에 따라 다른 결과물을 만듭니다.
-            </motion.span>
-          </h2>
-          <ol className="mt-6 md:mt-10">
-            {buildLog.map((row, i) => (
-              <BuildStep key={row.step} row={row} i={i} total={buildLog.length} progress={scrollYProgress} />
-            ))}
-          </ol>
-          <motion.p style={{ opacity: closing }} className="mt-6 max-w-[60ch] border-t border-pad/20 pt-5 text-base leading-relaxed md:text-lg">
-            같은 도구라도 무엇을 만들지 정하고, 결과를 보고 판단하는 사람이 결과물을 결정합니다. 지금 보고 계신 이 포트폴리오가 그 기록입니다.
-          </motion.p>
+    <section id="briefing" ref={ref} className="relative h-[600vh]">
+      <div className="sticky top-0 h-screen overflow-hidden">
+        <div className="absolute inset-x-0 top-12 h-[44vh] md:inset-y-0 md:left-auto md:right-0 md:top-0 md:h-full md:w-[62%]">
+          <OrbitScene progress={scrollYProgress} />
+        </div>
+        <div className="relative z-10 mx-auto flex h-full max-w-7xl flex-col justify-end px-5 pb-8 pt-14 md:justify-center md:px-6 md:pb-0">
+          <div className="max-w-xl">
+            <p className="font-hangul text-base text-[#ff8a78] md:text-lg">미션 브리핑 — 이 페이지를 만든 방법</p>
+            <h2 className="mt-3 font-hangul text-[clamp(1.6rem,3.4vw,3.25rem)] leading-[1.15]">
+              <motion.span style={{ opacity: lineA }} className="block">AI는</motion.span>
+              <motion.span style={{ opacity: lineB }} className="block">
+                <span className="text-[#ff8a78]">누가 쓰느냐</span>에 따라 다른 결과물을 만듭니다.
+              </motion.span>
+            </h2>
+
+            <motion.div
+              key={active}
+              initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              transition={{ duration: 0.7, ease: EASE }}
+              className="mt-6 border border-pad/20 bg-vacuum/60 p-5 backdrop-blur-md md:mt-10 md:p-7"
+            >
+              <div className="flex items-baseline justify-between gap-4">
+                <h3 className="font-hangul text-2xl md:text-3xl">{row.step}</h3>
+                <span className="tabular font-mono text-xs text-pad/60">
+                  {String(active + 1).padStart(2, "0")} / {String(n).padStart(2, "0")}
+                </span>
+              </div>
+              <ul className="mt-3 flex flex-wrap gap-1.5">
+                {row.tools.map((t) => (
+                  <li key={t} className="border border-pad/30 px-2 py-0.5 font-mono text-[11px]">
+                    {t}
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-4 text-[15px] leading-relaxed md:text-[17px]">
+                <span className="mr-2 inline-block bg-pad px-1.5 py-0.5 font-hangul text-xs text-ink">내가 한 것</span>
+                {row.me}
+              </p>
+              <p className="mt-3 text-sm leading-relaxed text-pad/70">
+                <span className="mr-2 inline-block border border-pad/50 px-1.5 py-0.5 font-hangul text-xs">AI가 한 것</span>
+                {row.ai}
+              </p>
+            </motion.div>
+
+            <div className="mt-5 flex gap-2">
+              {buildLog.map((r, i) => (
+                <span key={r.step} className={`h-1.5 w-8 transition-colors duration-500 ${i === active ? "bg-[#ff8a78]" : "bg-pad/20"}`} />
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -755,6 +783,28 @@ function Skills() {
   );
 }
 
+/* ---------------- Landing: ship spirals down to the contact planet ---------------- */
+
+function Landing() {
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
+  const lineA = useTransform(scrollYProgress, [0.05, 0.3], [0, 1]);
+  const lineB = useTransform(scrollYProgress, [0.45, 0.7], [0, 1]);
+  const lineC = useTransform(scrollYProgress, [0.8, 0.95], [0, 1]);
+  return (
+    <section ref={ref} className="relative h-[320vh]">
+      <div className="sticky top-0 h-screen overflow-hidden">
+        <OrbitScene progress={scrollYProgress} variant="descent" />
+        <div className="pointer-events-none relative z-10 mx-auto flex h-full max-w-7xl flex-col justify-end gap-3 px-5 pb-16 font-hangul md:px-6">
+          <motion.p style={{ opacity: lineA }} className="text-xl text-pad/80 md:text-3xl">경력 여정, 성과, 프로젝트까지 — 탐사를 마쳤습니다.</motion.p>
+          <motion.p style={{ opacity: lineB }} className="text-xl text-pad/80 md:text-3xl">이제 귀환 궤도로 진입합니다.</motion.p>
+          <motion.p style={{ opacity: lineC }} className="text-3xl text-[#ff8a78] md:text-5xl">교신 채널을 엽니다.</motion.p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* ---------------- Contact ---------------- */
 
 function Contact() {
@@ -830,6 +880,7 @@ export default function Portfolio() {
       <CompanyProjects />
       <Leadership />
       <Skills />
+      <Landing />
       <Contact />
     </main>
   );
