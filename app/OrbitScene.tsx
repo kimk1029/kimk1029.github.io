@@ -31,7 +31,7 @@ function planetTexture(THREE: typeof import("three"), bands: string[]) {
   return tex;
 }
 
-function buildShip(THREE: typeof import("three")) {
+export function buildShip(THREE: typeof import("three")) {
   const ship = new THREE.Group();
   const white = new THREE.MeshStandardMaterial({ color: 0xf2f1ec, roughness: 0.4, metalness: 0.3 });
   const red = new THREE.MeshStandardMaterial({ color: 0xd4291a, roughness: 0.5 });
