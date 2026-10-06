@@ -28,6 +28,7 @@ import { Patch, TRANSMITTING, patchName } from "./Patch";
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 const navItems = [
+  ["제작기", "#briefing"],
   ["경력 여정", "#journey"],
   ["성과", "#impact"],
   ["경력", "#career"],
@@ -55,6 +56,29 @@ const stages = [...experience].reverse().map((exp, i) => ({
 }));
 
 const PROFILE = "M 40 560 C 300 552, 500 430, 620 280 S 860 70, 960 52";
+
+const buildLog = [
+  {
+    step: "기획",
+    me: "채용 담당자가 2분 안에 판단할 수 있도록 무엇을 먼저 보여줄지, 이력서의 어떤 사실을 쓸지 정했습니다.",
+    ai: "이력서를 읽고 섹션별 문장과 데이터 구조로 정리했습니다.",
+  },
+  {
+    step: "컨셉 · 디자인",
+    me: "AI가 제안한 방향 중 하나를 골랐고, \"우주 내용이 뭔지 모르겠다\", \"로켓 부분은 좋다\"처럼 결과를 보고 계속 방향을 틀었습니다.",
+    ai: "디자인 스킬(impeccable)로 방향 후보를 만들고, 매 수정마다 스크린샷으로 화면을 검증했습니다.",
+  },
+  {
+    step: "스택 · 개발",
+    me: "Next.js 정적 배포, 스크롤 연동 인터랙션, GitHub Pages 자동 배포라는 틀을 정했습니다.",
+    ai: "Claude Code가 Next.js 14 · Tailwind · Framer Motion · Canvas로 구현하고 빌드까지 돌렸습니다.",
+  },
+  {
+    step: "검증 · 배포",
+    me: "완성본을 직접 보고 승인하거나 다시 시도하라고 판단했습니다.",
+    ai: "리뷰 에이전트가 계약 대비 결함을 찾고, GitHub Actions가 배포했습니다.",
+  },
+];
 
 const personal = allProjects.filter((p) => p.company === "Personal Project");
 const company = ["NEOWIZ", "Trumpia"].map((c) => ({ company: c, projects: allProjects.filter((p) => p.company === c) }));
@@ -146,7 +170,7 @@ function Hero() {
           </a>
         </div>
 
-        <a href="#journey" className="inline-flex w-fit items-center gap-2 font-hangul text-sm text-pad/65 hover:text-pad">
+        <a href="#briefing" className="inline-flex w-fit items-center gap-2 font-hangul text-sm text-pad/65 hover:text-pad">
           <ArrowDown className="h-4 w-4" /> 스크롤해서 발사하기
         </a>
       </motion.div>
@@ -181,6 +205,59 @@ function Manifesto() {
           <div className="mt-10 h-[3px] w-full bg-pad/15">
             <motion.div className="h-full bg-nasa" style={{ width: bar }} />
           </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------- Briefing: how this page was made ---------------- */
+
+function BuildStep({ row, i, total, progress }: { row: (typeof buildLog)[number]; i: number; total: number; progress: MotionValue<number> }) {
+  const start = 0.3 + (i / total) * 0.6;
+  const opacity = useTransform(progress, [start, start + 0.08], [0.12, 1]);
+  const x = useTransform(progress, [start, start + 0.08], [40, 0]);
+  return (
+    <motion.li style={{ opacity, x }} className="grid gap-3 border-t border-pad/20 py-4 md:grid-cols-[150px_1fr_1fr] md:gap-8 md:py-5">
+      <span className="font-hangul text-xl text-[#ff8a78] md:text-2xl">{row.step}</span>
+      <p className="text-[15px] leading-relaxed">
+        <span className="mr-2 inline-block bg-pad px-1.5 py-0.5 font-hangul text-xs text-ink">내가</span>
+        {row.me}
+      </p>
+      <p className="text-[15px] leading-relaxed text-pad/75">
+        <span className="mr-2 inline-block border border-pad/50 px-1.5 py-0.5 font-hangul text-xs">AI가</span>
+        {row.ai}
+      </p>
+    </motion.li>
+  );
+}
+
+function Briefing() {
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
+  const lineA = useTransform(scrollYProgress, [0, 0.12], [0.15, 1]);
+  const lineB = useTransform(scrollYProgress, [0.08, 0.22], [0.15, 1]);
+  const closing = useTransform(scrollYProgress, [0.88, 0.97], [0, 1]);
+
+  return (
+    <section id="briefing" ref={ref} className="relative md:h-[420vh]">
+      <div className="flex flex-col justify-center overflow-hidden px-5 py-24 md:sticky md:top-0 md:h-screen md:px-6 md:py-0 md:pt-14">
+        <div className="mx-auto w-full max-w-7xl">
+          <p className="font-hangul text-lg text-[#ff8a78]">미션 브리핑 — 이 페이지를 만든 방법</p>
+          <h2 className="mt-4 font-hangul text-[clamp(2rem,5.2vw,4.75rem)] leading-[1.12]">
+            <motion.span style={{ opacity: lineA }} className="block">AI는</motion.span>
+            <motion.span style={{ opacity: lineB }} className="block">
+              <span className="text-[#ff8a78]">누가 쓰느냐</span>에 따라 다른 결과물을 만듭니다.
+            </motion.span>
+          </h2>
+          <ol className="mt-6 md:mt-10">
+            {buildLog.map((row, i) => (
+              <BuildStep key={row.step} row={row} i={i} total={buildLog.length} progress={scrollYProgress} />
+            ))}
+          </ol>
+          <motion.p style={{ opacity: closing }} className="mt-6 max-w-[60ch] border-t border-pad/20 pt-5 text-base leading-relaxed md:text-lg">
+            같은 도구라도 무엇을 만들지 정하고, 결과를 보고 판단하는 사람이 결과물을 결정합니다. 지금 보고 계신 이 포트폴리오가 그 기록입니다.
+          </motion.p>
         </div>
       </div>
     </section>
@@ -743,6 +820,7 @@ export default function Portfolio() {
         <motion.div className="h-[3px] origin-left bg-nasa" style={{ scaleX: scrollYProgress }} />
       </header>
       <Hero />
+      <Briefing />
       <Journey />
       <Manifesto />
       <Impact />
