@@ -16,8 +16,8 @@ export default function ProjectDetailClient({ project }: { project: Project }) {
   const back = project.company === "Personal Project" ? "/#projects" : "/#career";
 
   return (
-    <main className="min-h-screen bg-pad text-ink">
-      <header className="fixed inset-x-0 top-0 z-50 bg-ink text-pad">
+    <main className="min-h-screen text-pad">
+      <header className="fixed inset-x-0 top-0 z-50 bg-vacuum/70 text-pad backdrop-blur-md">
         <div className="mx-auto flex h-12 max-w-7xl items-center justify-between px-5 md:px-6">
           <Link href={back} className="inline-flex items-center gap-2 font-display text-base font-black uppercase tracking-wide hover:text-nasa">
             <ArrowLeft className="h-4 w-4" /> 포트폴리오로
@@ -65,9 +65,9 @@ export default function ProjectDetailClient({ project }: { project: Project }) {
       <div className="mx-auto grid max-w-7xl gap-14 px-5 py-20 md:px-6 lg:grid-cols-[1fr_320px]">
         <section>
           <h2 className="font-display text-4xl font-black uppercase md:text-5xl">주요 작업</h2>
-          <ol className="mt-8 border-t-2 border-ink">
+          <ol className="mt-8 border-t-2 border-pad">
             {project.details.map((detail) => (
-              <li key={detail} className="flex gap-4 border-b border-ink/25 py-5">
+              <li key={detail} className="flex gap-4 border-b border-pad/20 py-5">
                 <span aria-hidden className="mt-2 h-2.5 w-2.5 flex-none bg-nasa" />
                 <p className="max-w-[68ch] text-[17px] leading-relaxed">{detail}</p>
               </li>
@@ -81,7 +81,7 @@ export default function ProjectDetailClient({ project }: { project: Project }) {
             <ul className="mt-4 grid gap-2">
               {project.tech.map((tech) => (
                 <li key={tech} className="flex items-center gap-2.5 text-[15px]">
-                  <span aria-hidden className="grid h-3.5 w-3.5 flex-none place-items-center border-2 border-ink">
+                  <span aria-hidden className="grid h-3.5 w-3.5 flex-none place-items-center border-2 border-pad">
                     <span className="h-1.5 w-1.5 bg-nasa" />
                   </span>
                   {tech}
@@ -95,7 +95,7 @@ export default function ProjectDetailClient({ project }: { project: Project }) {
           </div>
           <a
             href={`mailto:${personalInfo.email}`}
-            className="inline-flex items-center justify-between gap-3 bg-ink px-5 py-4 font-display text-lg font-black uppercase tracking-wide text-pad transition-colors duration-300 ease-expo hover:bg-nasa"
+            className="inline-flex items-center justify-between gap-3 bg-nasa px-5 py-4 font-display text-lg font-black uppercase tracking-wide text-white transition-colors duration-300 ease-expo hover:bg-pad hover:text-ink"
           >
             <span className="inline-flex items-center gap-2">
               <Mail className="h-5 w-5" /> 자세히 묻기

@@ -8,8 +8,8 @@ html {
 }
 
 body {
-  background: #f2f1ec;
-  color: #111214;
+  background: #05060a;
+  color: #f2f1ec;
   word-break: keep-all;
   overflow-wrap: break-word;
   caret-color: #d4291a;
@@ -61,7 +61,19 @@ a {
 }
 
 
+@keyframes orbit-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.satellite-orbit {
+  animation: orbit-spin 14s linear infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .satellite-orbit {
+    animation: none;
+  }
   html {
     scroll-behavior: auto;
   }

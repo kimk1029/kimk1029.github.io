@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
   motion,
@@ -44,14 +44,14 @@ const aiStack = [
   { title: "LLM API & Eval", tool: "Anthropic · OpenAI", body: "프롬프트를 설계하고, 반복 작업에는 정답 세트 기반 간이 eval을 돌려 프롬프트 변경 시 품질 회귀를 잡습니다." },
   { title: "AI UI 생성", tool: "Lovable · v0.dev · shadcn/ui", body: "프로토타입을 빠르게 생성한 뒤 손으로 정제합니다. 속도는 AI에게, 완성도는 사람이 책임집니다." },
 ];
-const aiColors = ["bg-nasa text-white", "bg-flight text-white", "bg-ink text-pad", "bg-white text-ink", "bg-sky text-ink"];
+const aiColors = ["bg-nasa text-white", "bg-flight text-white", "bg-[#1b1f3b] text-pad", "bg-[#2a1240] text-pad", "bg-pad text-ink"];
 
 // Oldest first: the rocket climbs through the career.
 const stages = [...experience].reverse().map((exp, i) => ({
   ...exp,
-  name: ["1단 부스터", "2단 엔진", "탑재체"][i],
+  name: ["1단 부스터", "2단 엔진", "궤도 진입"][i],
   event: ["2016 Trumpia", "2020 네오위즈", "2025 독립 개발"][i],
-  theme: ["bg-sky text-ink", "bg-flight text-white", "bg-vacuum text-white"][i],
+  theme: ["bg-flight/90 text-white", "bg-[#0b1240]/85 text-white", "bg-transparent text-white"][i],
 }));
 
 const PROFILE = "M 40 560 C 300 552, 500 430, 620 280 S 860 70, 960 52";
@@ -80,7 +80,7 @@ function SectionTitle({ en, ko, light = false }: { en: string; ko: string; light
   return (
     <Reveal>
       <h2 className="font-display text-[clamp(3.25rem,9vw,6rem)] font-black uppercase leading-[0.85]">{en}</h2>
-      <p className={`mt-3 font-hangul text-2xl md:text-3xl ${light ? "text-white/80" : "text-steel"}`}>{ko}</p>
+      <p className={`mt-3 font-hangul text-2xl md:text-3xl ${light ? "text-white/80" : "text-pad/70"}`}>{ko}</p>
     </Reveal>
   );
 }
@@ -94,12 +94,12 @@ function Hero() {
   const fade = useTransform(scrollY, [0, 600], [1, reduce ? 1 : 0.2]);
 
   return (
-    <section id="top" className="relative grid min-h-[100svh] overflow-hidden bg-pad pt-12 lg:grid-cols-[1.35fr_1fr]">
-      <div className="relative min-h-[62svh] overflow-hidden border-b-2 border-ink lg:border-b-0 lg:border-r-2">
+    <section id="top" className="relative grid min-h-[100svh] overflow-hidden pt-12 lg:grid-cols-[1.35fr_1fr]">
+      <div className="relative min-h-[62svh] overflow-hidden border-b-2 border-pad/25 lg:border-b-0 lg:border-r-2">
         <motion.div initial={reduce ? false : { y: "100%" }} animate={{ y: 0 }} transition={{ duration: 1.1, ease: EASE }} className="absolute inset-0">
           <motion.div style={{ y: lift }} className="fuselage absolute inset-x-0 top-0 bottom-[-360px] flex justify-center gap-6 px-6 pt-8 md:gap-10">
             <div className="flex flex-col items-center gap-6">
-              <div className="roll-pattern h-16 w-16 border-2 border-ink" aria-hidden />
+              <div className="roll-pattern h-16 w-16 border-2 border-pad/25" aria-hidden />
               <h1 className="font-hangul text-[clamp(4.5rem,13svh,8rem)] leading-[0.92] text-pad [writing-mode:vertical-rl] md:text-[clamp(7rem,24svh,15rem)]">
                 김규현
               </h1>
@@ -123,31 +123,31 @@ function Hero() {
           </p>
         </div>
 
-        <dl className="grid grid-cols-3 border-y-2 border-ink">
+        <dl className="grid grid-cols-3 border-y-2 border-pad/25">
           {[
             ["경력", "8Y 8M"],
             ["Web3", "≈5Y"],
             ["단독 출시", "5"],
           ].map(([k, v], i) => (
-            <div key={k} className={`py-3 ${i ? "border-l-2 border-ink pl-3" : ""}`}>
-              <dt className="font-hangul text-sm text-steel">{k}</dt>
+            <div key={k} className={`py-3 ${i ? "border-l-2 border-pad/25 pl-3" : ""}`}>
+              <dt className="font-hangul text-sm text-pad/65">{k}</dt>
               <dd className="tabular mt-1 font-display text-4xl font-black">{v}</dd>
             </div>
           ))}
         </dl>
 
         <div className="flex flex-wrap items-center gap-3">
-          <a href={`mailto:${personalInfo.email}`} className="group inline-flex items-center gap-3 bg-ink px-5 py-4 font-display text-xl font-black uppercase tracking-wide text-pad transition-colors duration-300 ease-expo hover:bg-nasa">
+          <a href={`mailto:${personalInfo.email}`} className="group inline-flex items-center gap-3 bg-nasa px-5 py-4 font-display text-xl font-black uppercase tracking-wide text-white transition-colors duration-300 ease-expo hover:bg-pad hover:text-ink">
             <Mail className="h-5 w-5" /> {personalInfo.email}
             <ArrowUpRight className="h-5 w-5 transition-transform duration-300 ease-expo group-hover:-translate-y-1 group-hover:translate-x-1" />
           </a>
-          <a href={personalInfo.github} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 border-2 border-ink px-4 py-[14px] font-display text-xl font-black uppercase tracking-wide transition-colors duration-300 ease-expo hover:bg-ink hover:text-pad">
+          <a href={personalInfo.github} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 border-2 border-pad px-4 py-[14px] font-display text-xl font-black uppercase tracking-wide transition-colors duration-300 ease-expo hover:bg-pad hover:text-ink">
             <Github className="h-5 w-5" /> GitHub
           </a>
         </div>
 
-        <a href="#journey" className="inline-flex w-fit items-center gap-2 font-hangul text-sm text-steel hover:text-ink">
-          <ArrowDown className="h-4 w-4" /> 스크롤해서 경력 보기
+        <a href="#journey" className="inline-flex w-fit items-center gap-2 font-hangul text-sm text-pad/65 hover:text-pad">
+          <ArrowDown className="h-4 w-4" /> 스크롤해서 발사하기
         </a>
       </motion.div>
     </section>
@@ -169,10 +169,10 @@ function Manifesto() {
   const bar = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
   return (
-    <section id="about" ref={ref} className="relative h-[260vh] bg-ink text-pad">
+    <section id="about" ref={ref} className="relative h-[260vh]">
       <div className="sticky top-0 flex h-screen flex-col justify-center px-5 pt-12 md:px-6">
         <div className="mx-auto w-full max-w-6xl">
-          <h2 className="font-display text-xl font-black uppercase tracking-[0.15em] text-nasa">About</h2>
+          <h2 className="font-hangul text-xl text-[#ff8a78]">교신 — 소개</h2>
           <p className="mt-6 font-hangul text-[clamp(1.6rem,3.6vw,3.25rem)] leading-[1.35]">
             {words.map((w, i) => (
               <Word key={i} word={w} i={i} total={words.length} progress={scrollYProgress} />
@@ -323,43 +323,69 @@ function Journey() {
 }
 
 
-/* ---------------- Impact: horizontal pinned track ---------------- */
+/* ---------------- Impact: metrics orbit a planet ---------------- */
+
+function OrbitItem({ m, i, n, progress, active }: { m: (typeof impacts)[number]; i: number; n: number; progress: MotionValue<number>; active: boolean }) {
+  // Item i reaches the front (bottom of the ellipse) at progress (i + 0.5) / n.
+  const angle = useTransform(progress, (v) => ((90 + (i / n) * 360 - ((v * n - 0.5) / n) * 360) * Math.PI) / 180);
+  const left = useTransform(angle, (a) => `${50 + Math.cos(a) * 46}%`);
+  const top = useTransform(angle, (a) => `${50 + Math.sin(a) * 17}%`);
+  const depth = useTransform(angle, (a) => (Math.sin(a) + 1) / 2);
+  const scale = useTransform(depth, [0, 1], [0.55, 1.05]);
+  const opacity = useTransform(depth, [0, 1], [0.35, 1]);
+  const zIndex = useTransform(depth, (d) => (d > 0.5 ? 3 : 1));
+  return (
+    <motion.div style={{ left, top, opacity, zIndex }} className="absolute">
+      <div className="-translate-x-1/2 -translate-y-1/2">
+        <motion.div
+          style={{ scale }}
+          className={`grid h-[68px] w-[68px] place-items-center rounded-full border-2 text-center transition-colors duration-500 md:h-[104px] md:w-[104px] ${active ? "border-[#ff8a78] bg-nasa" : "border-pad/40 bg-[#0b0f24]"}`}
+        >
+          <span className="tabular px-1.5 font-display text-[15px] font-black leading-none md:text-[22px]">{m.value}</span>
+        </motion.div>
+      </div>
+    </motion.div>
+  );
+}
 
 function Impact() {
   const ref = useRef<HTMLElement>(null);
-  const track = useRef<HTMLDivElement>(null);
-  const [distance, setDistance] = useState(0);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
-  const x = useTransform(scrollYProgress, [0.05, 0.95], [0, -distance]);
-
-  useLayoutEffect(() => {
-    const measure = () => track.current && setDistance(Math.max(0, track.current.scrollWidth - window.innerWidth));
-    measure();
-    window.addEventListener("resize", measure);
-    return () => window.removeEventListener("resize", measure);
-  }, []);
+  const n = impacts.length;
+  const [active, setActive] = useState(0);
+  useMotionValueEvent(scrollYProgress, "change", (v) => setActive(Math.min(n - 1, Math.max(0, Math.floor(v * n)))));
+  const m = impacts[active];
 
   return (
-    <section id="impact" ref={ref} className="relative h-[380vh] bg-flight text-white">
-      <div className="sticky top-0 flex h-screen flex-col justify-center overflow-hidden pt-12">
-        <div className="mx-auto w-full max-w-7xl px-5 md:px-6">
-          <h2 className="font-display text-[clamp(3rem,8vw,6rem)] font-black uppercase leading-[0.85]">Impact</h2>
-          <p className="mt-3 font-hangul text-2xl text-white/80 md:text-3xl">숫자로 남은 결과</p>
-        </div>
-        <motion.div ref={track} style={{ x }} className="mt-10 flex w-max gap-6 px-5 md:px-[max(1.5rem,calc((100vw-80rem)/2+1.5rem))]">
-          {impacts.map((m, i) => (
-            <div key={m.label} className="flex w-[78vw] flex-none flex-col justify-between border-2 border-white p-6 sm:w-[46vw] md:p-8 lg:w-[30rem]">
-              <span className="tabular font-mono text-sm text-white/70">
-                {String(i + 1).padStart(2, "0")} / {String(impacts.length).padStart(2, "0")}
-              </span>
-              <p className={`tabular mt-10 whitespace-nowrap font-display font-black leading-[0.85] ${m.value.length > 4 ? "text-[clamp(3rem,6.5vw,5.5rem)]" : "text-[clamp(4rem,10vw,8.5rem)]"}`}>{m.value}</p>
-              <div className="mt-8 border-t-2 border-white/40 pt-4">
-                <p className="font-hangul text-2xl">{m.label}</p>
-                <p className="mt-2 text-[15px] leading-relaxed text-white/85">{m.note}</p>
-              </div>
+    <section id="impact" ref={ref} className="relative h-[460vh]">
+      <div className="sticky top-0 flex h-screen items-center overflow-hidden pt-12">
+        <div className="mx-auto grid w-full max-w-7xl items-center gap-6 px-5 md:grid-cols-[1fr_1.15fr] md:gap-10 md:px-6">
+          <div>
+            <h2 className="font-display text-[clamp(2.75rem,7vw,6rem)] font-black uppercase leading-[0.85]">Impact</h2>
+            <p className="mt-3 font-hangul text-xl text-white/80 md:text-3xl">행성 궤도 — 숫자로 남은 성과</p>
+            <motion.div key={active} initial={{ opacity: 0, y: 20, filter: "blur(6px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} transition={{ duration: 0.6, ease: EASE }} className="mt-6 md:mt-12">
+              <p className="tabular whitespace-nowrap font-display text-[clamp(3.5rem,9vw,8rem)] font-black leading-[0.85] text-[#ff8a78]">{m.value}</p>
+              <p className="mt-3 font-hangul text-2xl md:text-3xl">{m.label}</p>
+              <p className="mt-2 max-w-[40ch] text-[15px] leading-relaxed text-white/80 md:text-lg">{m.note}</p>
+            </motion.div>
+            <div className="mt-6 flex gap-2 md:mt-10">
+              {impacts.map((it, i) => (
+                <span key={it.label} className={`h-1.5 w-8 transition-colors duration-500 ${i === active ? "bg-[#ff8a78]" : "bg-pad/20"}`} />
+              ))}
             </div>
-          ))}
-        </motion.div>
+          </div>
+
+          <div className="relative mx-auto aspect-square w-full max-w-[300px] md:max-w-[600px]">
+            <div aria-hidden className="absolute inset-x-[4%] top-1/2 h-[34%] -translate-y-1/2 rounded-[50%] border border-dashed border-pad/30" />
+            <div
+              aria-hidden
+              className="absolute left-1/2 top-1/2 z-[2] h-[44%] w-[44%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_35%_30%,#6f86ea_0%,#1d3fbf_42%,#0a1240_78%)] shadow-[0_0_80px_rgba(29,63,191,0.45)]"
+            />
+            {impacts.map((it, i) => (
+              <OrbitItem key={it.label} m={it} i={i} n={n} progress={scrollYProgress} active={i === active} />
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );
@@ -373,15 +399,15 @@ function CareerBlock({ c, index }: { c: (typeof careers)[number]; index: number 
   const fill = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
   return (
-    <div ref={ref} className="grid gap-10 border-t-2 border-ink py-16 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:gap-14 md:py-24">
+    <div ref={ref} className="grid gap-10 border-t-2 border-pad/25 py-16 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:gap-14 md:py-24">
       <div className="md:sticky md:top-24 md:self-start">
         <p className="tabular font-mono text-sm">{c.period}</p>
         <h3 className="mt-3 font-hangul text-[clamp(2.25rem,4vw,3.5rem)] leading-[1.05]">{c.company}</h3>
-        <p className="mt-4 inline-block bg-ink px-3 py-1 font-hangul text-base text-pad">{c.role}</p>
-        <p className="mt-6 max-w-[48ch] text-[17px] leading-relaxed text-ink/85">{c.summary}</p>
+        <p className="mt-4 inline-block bg-nasa px-3 py-1 font-hangul text-base text-white">{c.role}</p>
+        <p className="mt-6 max-w-[48ch] text-[17px] leading-relaxed text-pad/85">{c.summary}</p>
         <div className="mt-8 hidden items-center gap-3 md:flex">
           <span className="tabular font-mono text-xs">{String(index + 1).padStart(2, "0")}</span>
-          <div className="h-[3px] flex-1 bg-ink/15">
+          <div className="h-[3px] flex-1 bg-pad/15">
             <motion.div className="h-full bg-nasa" style={{ width: fill }} />
           </div>
           <span className="tabular font-mono text-xs">{c.cases.length} cases</span>
@@ -391,21 +417,21 @@ function CareerBlock({ c, index }: { c: (typeof careers)[number]; index: number 
       <ol className="grid gap-6">
         {c.cases.map((k, i) => (
           <Reveal key={k.title}>
-            <li className="border-2 border-ink bg-pad p-6 transition-colors duration-500 ease-expo hover:bg-white md:p-8">
+            <li className="border border-pad/20 bg-white/[0.04] p-6 backdrop-blur-sm transition-colors duration-500 ease-expo hover:border-pad/50 hover:bg-white/[0.08] md:p-8">
               <div className="flex flex-wrap items-baseline justify-between gap-3">
                 <h4 className="font-hangul text-2xl leading-snug md:text-[1.75rem]">{k.title}</h4>
-                <span className="tabular font-mono text-xs text-steel">{k.period ?? String(i + 1).padStart(2, "0")}</span>
+                <span className="tabular font-mono text-xs text-pad/65">{k.period ?? String(i + 1).padStart(2, "0")}</span>
               </div>
               <dl className="mt-6 grid gap-x-6 gap-y-3 text-[15px] leading-relaxed md:grid-cols-[104px_1fr]">
                 {k.background && (
                   <>
-                    <dt className="font-display text-sm font-black uppercase tracking-[0.12em] text-steel">Background</dt>
+                    <dt className="font-display text-sm font-black uppercase tracking-[0.12em] text-pad/65">Background</dt>
                     <dd>{k.background}</dd>
                   </>
                 )}
-                <dt className="font-display text-sm font-black uppercase tracking-[0.12em] text-steel">Action</dt>
+                <dt className="font-display text-sm font-black uppercase tracking-[0.12em] text-pad/65">Action</dt>
                 <dd>{k.action}</dd>
-                <dt className="font-display text-sm font-black uppercase tracking-[0.12em] text-nasa">Impact</dt>
+                <dt className="font-display text-sm font-black uppercase tracking-[0.12em] text-[#ff8a78]">Impact</dt>
                 <dd className="font-semibold">{k.impact}</dd>
               </dl>
             </li>
@@ -418,12 +444,12 @@ function CareerBlock({ c, index }: { c: (typeof careers)[number]; index: number 
 
 function Career() {
   return (
-    <section id="career" className="bg-pad px-5 pt-24 md:px-6 md:pt-32">
+    <section id="career" className="px-5 pt-24 md:px-6 md:pt-32">
       <div className="mx-auto max-w-7xl">
         <div className="flex flex-wrap items-end justify-between gap-6 pb-12">
-          <SectionTitle en="Career" ko="경력 사항" />
+          <SectionTitle en="Mission log" ko="관제 기록 — 경력 사항" />
           <Reveal>
-            <p className="font-hangul text-xl text-steel">{careerTotal}</p>
+            <p className="font-hangul text-xl text-pad/65">{careerTotal}</p>
           </Reveal>
         </div>
         {careers.map((c, i) => (
@@ -441,7 +467,7 @@ function StackCard({ item, i, total, progress }: { item: (typeof aiStack)[number
   const scale = useTransform(progress, [i / total, 1], [1, reduce ? 1 : 1 - (total - i) * 0.035]);
   return (
     <div className="sticky h-[72vh] md:h-[66vh]" style={{ top: `calc(5rem + ${i * 28}px)` }}>
-      <motion.article style={{ scale }} className={`flex h-full origin-top flex-col justify-between border-2 border-ink p-6 md:p-12 ${aiColors[i]}`}>
+      <motion.article style={{ scale }} className={`flex h-full origin-top flex-col gap-10 border-2 border-pad/25 p-6 md:p-12 ${aiColors[i]}`}>
         <div className="flex items-start justify-between gap-6">
           <span className="tabular font-mono text-sm opacity-80">{String(i + 1).padStart(2, "0")}</span>
           <span className="text-right font-display text-sm font-black uppercase tracking-[0.15em] opacity-80">{item.tool}</span>
@@ -459,9 +485,9 @@ function AiWorkflow() {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
   return (
-    <section id="ai" className="bg-pad px-5 pb-32 pt-24 md:px-6 md:pt-32">
+    <section id="ai" className="px-5 pb-32 pt-24 md:px-6 md:pt-32">
       <div className="mx-auto max-w-7xl">
-        <SectionTitle en="AI Native" ko="AI 네이티브 개발 워크플로우" />
+        <SectionTitle en="Propulsion" ko="추진 시스템 — AI 네이티브 개발 워크플로우" />
         <div ref={ref} className="relative mt-16 grid gap-10">
           {aiStack.map((item, i) => (
             <StackCard key={item.title} item={item} i={i} total={aiStack.length} progress={scrollYProgress} />
@@ -486,12 +512,17 @@ function ProjectRow({ p, i }: { p: (typeof personal)[number]; i: number }) {
   return (
     <article ref={ref} className="grid items-center gap-10 border-t border-white/25 py-16 md:grid-cols-2 md:gap-16 md:py-24">
       <motion.div style={{ y, rotate }} className={`mx-auto w-56 md:w-80 ${flip ? "md:order-2" : ""}`}>
-        <Patch project={p} index={i} className="h-auto w-full" />
+        <div className="relative">
+          <div aria-hidden className="satellite-orbit absolute -inset-8 rounded-full border border-dashed border-pad/30">
+            <span className="absolute -top-1.5 left-1/2 h-3 w-3 -translate-x-1/2 rounded-full bg-[#ff8a78]" />
+          </div>
+          <Patch project={p} index={i} className="relative h-auto w-full" />
+        </div>
       </motion.div>
       <Reveal>
         <div className="flex flex-wrap items-center gap-3">
           <span className="tabular font-mono text-sm text-white/70">{p.period}</span>
-          {live && <span className="bg-nasa px-2 py-0.5 font-hangul text-sm">운영 중</span>}
+          {live && <span className="bg-nasa px-2 py-0.5 font-hangul text-sm">교신 중 · 운영 중</span>}
         </div>
         <h3 className="mt-3 font-display text-[clamp(2.5rem,5vw,4.5rem)] font-black uppercase leading-[0.9]">{patchName(p.title)}</h3>
         <p className="mt-2 font-display text-lg font-black uppercase tracking-[0.1em] text-white/60">{p.type}</p>
@@ -522,9 +553,9 @@ function ProjectRow({ p, i }: { p: (typeof personal)[number]; i: number }) {
 
 function Projects() {
   return (
-    <section id="projects" className="bg-vacuum px-5 pt-24 text-white md:px-6 md:pt-32">
+    <section id="projects" className="px-5 pt-24 text-white md:px-6 md:pt-32">
       <div className="mx-auto max-w-7xl">
-        <SectionTitle en="Projects" ko="개인 프로젝트 — 기획부터 배포까지 단독 수행" light />
+        <SectionTitle en="Satellites" ko="위성 — 개인 프로젝트, 기획부터 배포까지 단독 수행" light />
         <div className="mt-12">
           {personal.map((p, i) => (
             <ProjectRow key={p.slug} p={p} i={i} />
@@ -537,9 +568,9 @@ function Projects() {
 
 function CompanyProjects() {
   return (
-    <section className="bg-vacuum px-5 pb-24 pt-16 text-white md:px-6">
+    <section className="px-5 pb-24 pt-16 text-white md:px-6">
       <div className="mx-auto max-w-7xl">
-        <SectionTitle en="At work" ko="회사 프로젝트" light />
+        <SectionTitle en="Expeditions" ko="탐사 기록 — 회사 프로젝트" light />
         <div className="mt-14 grid gap-14">
           {company.map(({ company: name, projects }) => (
             <div key={name}>
@@ -571,10 +602,10 @@ function CompanyProjects() {
 function Leadership() {
   const reduce = useReducedMotion();
   return (
-    <section className="bg-sky px-5 py-24 md:px-6 md:py-32">
+    <section className="px-5 py-24 md:px-6 md:py-32">
       <div className="mx-auto max-w-7xl">
-        <SectionTitle en="Leadership" ko="리더십 & 협업" />
-        <div className="mt-14 grid gap-[2px] border-2 border-ink bg-ink md:grid-cols-2">
+        <SectionTitle en="Crew" ko="승무원 — 리더십 & 협업" />
+        <div className="mt-14 grid gap-px border border-pad/25 bg-pad/25 md:grid-cols-2">
           {leadershipNotes.map((n, i) => (
             <motion.div
               key={n.title}
@@ -582,7 +613,7 @@ function Leadership() {
               whileInView={{ clipPath: "inset(0 0 0% 0)" }}
               viewport={{ once: true, margin: "-15% 0px" }}
               transition={{ duration: 1, ease: EASE, delay: (i % 2) * 0.12 }}
-              className="bg-sky p-6 md:p-10"
+              className="bg-[#0b0f24] p-6 md:p-10"
             >
               <h3 className="font-hangul text-3xl">{n.title}</h3>
               <p className="mt-4 max-w-[52ch] text-[17px] leading-relaxed">{n.body}</p>
@@ -602,13 +633,13 @@ function SkillRow({ group, i, progress }: { group: (typeof skills)[number]; i: n
   const x = useTransform(progress, [0, 1], reduce ? ["0%", "0%"] : right ? ["-30%", "0%"] : ["0%", "-30%"]);
   const items = [...group.items, ...group.items, ...group.items];
   return (
-    <div className="overflow-hidden border-b-2 border-ink py-5">
+    <div className="overflow-hidden border-b-2 border-pad/25 py-5">
       <motion.div style={{ x }} className="flex w-max items-center gap-6 whitespace-nowrap">
-        <span className="bg-ink px-3 py-1 font-display text-xl font-black uppercase tracking-wide text-pad">{group.category}</span>
+        <span className="bg-pad px-3 py-1 font-display text-xl font-black uppercase tracking-wide text-ink">{group.category}</span>
         {items.map((it, k) => (
           <span key={k} className="flex items-center gap-6 font-display text-[clamp(2rem,5vw,4rem)] font-black uppercase leading-none">
             {it}
-            <span aria-hidden className="h-3 w-3 bg-nasa" />
+            <span aria-hidden className="h-2.5 w-2.5 rotate-45 bg-[#ff8a78]" />
           </span>
         ))}
       </motion.div>
@@ -620,11 +651,11 @@ function Skills() {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   return (
-    <section id="skills" ref={ref} className="overflow-hidden bg-pad py-24 md:py-32">
+    <section id="skills" ref={ref} className="overflow-hidden py-24 md:py-32">
       <div className="mx-auto max-w-7xl px-5 md:px-6">
-        <SectionTitle en="Skills" ko="핵심 보유 역량" />
+        <SectionTitle en="Constellation" ko="성좌 — 핵심 보유 역량" />
       </div>
-      <div className="mt-14 border-t-2 border-ink">
+      <div className="mt-14 border-t-2 border-pad/25">
         {skills.map((g, i) => (
           <SkillRow key={g.category} group={g} i={i} progress={scrollYProgress} />
         ))}
@@ -632,13 +663,13 @@ function Skills() {
       <div className="mx-auto mt-20 grid max-w-7xl gap-10 px-5 md:grid-cols-[1fr_2fr] md:px-6">
         <Reveal>
           <h3 className="font-display text-4xl font-black uppercase">Education</h3>
-          <p className="mt-2 font-hangul text-xl text-steel">학력 · 교육 · 외국어</p>
+          <p className="mt-2 font-hangul text-xl text-pad/65">학력 · 교육 · 외국어</p>
         </Reveal>
-        <ul className="border-t-2 border-ink">
+        <ul className="border-t-2 border-pad/25">
           {education.map((e) => (
-            <li key={e.title} className="flex flex-wrap items-baseline justify-between gap-3 border-b border-ink/25 py-5">
+            <li key={e.title} className="flex flex-wrap items-baseline justify-between gap-3 border-b border-pad/25/25 py-5">
               <span className="font-hangul text-xl">{e.title}</span>
-              <span className="tabular font-mono text-sm text-steel">{e.period}</span>
+              <span className="tabular font-mono text-sm text-pad/65">{e.period}</span>
             </li>
           ))}
         </ul>
@@ -653,23 +684,29 @@ function Contact() {
   const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "center center"] });
-  const scale = useTransform(scrollYProgress, [0, 1], reduce ? [1, 1] : [0.7, 1]);
+  const scale = useTransform(scrollYProgress, [0, 1], reduce ? [1, 1] : [0.6, 1]);
 
   return (
-    <footer id="contact" ref={ref} className="fuselage overflow-hidden px-5 py-24 text-white md:px-6 md:py-36">
-      <div className="mx-auto max-w-7xl">
-        <h2 className="font-display text-[clamp(3.5rem,10vw,6rem)] font-black uppercase leading-[0.85]">Contact</h2>
+    <footer id="contact" ref={ref} className="relative overflow-hidden px-5 pb-28 pt-24 text-white md:px-6 md:pb-40 md:pt-36">
+      <div aria-hidden className="pointer-events-none absolute left-1/2 top-[82%] -translate-x-1/2 md:top-[76%]">
+        <motion.div
+          style={{ scale }}
+          className="h-[140vw] w-[140vw] origin-top rounded-full bg-[radial-gradient(circle_at_50%_0%,#e8453a_0%,#a3200f_18%,#3a0a06_40%,#05060a_62%)]"
+        />
+      </div>
+      <div className="relative mx-auto max-w-7xl">
+        <h2 className="font-display text-[clamp(3.5rem,10vw,6rem)] font-black uppercase leading-[0.85]">Open channel</h2>
+        <p className="mt-3 font-hangul text-2xl text-white/80 md:text-3xl">교신 채널 — 연락</p>
         <p className="mt-5 max-w-[48ch] text-lg leading-relaxed">
           프로덕션 수준의 프론트엔드를 책임지면서 AI 워크플로우를 팀에 정착시킬 사람을 찾고 있다면, 메일 한 통이면 됩니다.
         </p>
-        <motion.a
-          style={{ scale }}
+        <a
           href={`mailto:${personalInfo.email}`}
           className="group mt-12 flex w-fit max-w-full origin-left items-center gap-4 break-all font-stencil text-[clamp(2.25rem,7vw,5.5rem)] font-black leading-none decoration-4 underline-offset-8 hover:underline"
         >
           {personalInfo.email}
           <ArrowUpRight className="h-[0.8em] w-[0.8em] flex-none transition-transform duration-300 ease-expo group-hover:-translate-y-2 group-hover:translate-x-2" />
-        </motion.a>
+        </a>
         <div className="mt-16 flex flex-wrap items-center justify-between gap-4 border-t-2 border-white/60 pt-6 font-display text-sm font-black uppercase tracking-[0.15em]">
           <a href={personalInfo.github} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 hover:underline">
             <Github className="h-4 w-4" /> github.com/kimk1029
@@ -686,8 +723,8 @@ function Contact() {
 export default function Portfolio() {
   const { scrollYProgress } = useScroll();
   return (
-    <main className="bg-pad text-ink">
-      <header className="fixed inset-x-0 top-0 z-50 bg-ink text-pad">
+    <main className="text-pad">
+      <header className="fixed inset-x-0 top-0 z-50 bg-vacuum/70 text-pad backdrop-blur-md">
         <div className="mx-auto flex h-12 max-w-7xl items-center justify-between gap-4 px-5 md:px-6">
           <a href="#top" className="font-stencil text-xl font-black uppercase tracking-[0.08em]">
             KKH<span className="text-nasa">.</span>

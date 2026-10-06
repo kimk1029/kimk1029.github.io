@@ -6,6 +6,7 @@ import {
   JetBrains_Mono,
 } from 'next/font/google';
 import './globals.css';
+import Starfield from './Starfield';
 
 const display = Big_Shoulders_Display({ subsets: ['latin'], weight: ['700', '900'], variable: '--font-display' });
 const stencil = Big_Shoulders_Stencil_Display({ subsets: ['latin'], weight: ['800', '900'], variable: '--font-stencil' });
@@ -31,7 +32,10 @@ export default function RootLayout({
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
         />
       </head>
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        <Starfield />
+        {children}
+      </body>
     </html>
   );
 }
