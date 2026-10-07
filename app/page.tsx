@@ -26,6 +26,7 @@ import {
 import { Patch, TRANSMITTING, patchName } from "./Patch";
 import OrbitScene from "./OrbitScene";
 import BriefingPlanet from "./BriefingPlanet";
+import Warp from "./Warp";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -882,6 +883,7 @@ export default function Portfolio() {
         <motion.div className="h-[3px] origin-left bg-nasa" style={{ scaleX: scrollYProgress }} />
       </header>
       <Hero />
+      <Warp />
       <Briefing />
       <Journey />
       <Manifesto />
