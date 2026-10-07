@@ -25,7 +25,7 @@ Visitors open the site from a resume (PDF/docx) or job platform link, often on d
 
 ## Evidence on Hand
 - Real metrics from resume: Lighthouse ~20% improvement (SWR), main data fetching ~34% faster (admin migration), UI revision rounds 4–5 → 1–2 (design system), chart rendering 30%+ faster (Trumpia), 6 products built / 5 shipped / 3 operated.
-- Live URLs: arvotcg.com, dopamine.land, datebase.site, poke-30.com.
+- Live URLs: arvotcg.com, dopamine.land, datebase.site (poke-30.com was the forerunner of ARVO TCG).
 - No real project screenshots yet; `data.ts` uses picsum placeholders. Do not present placeholders as real screenshots.
 - No testimonials or client logos. Do not invent any.
 

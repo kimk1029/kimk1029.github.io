@@ -73,6 +73,10 @@ export interface Project {
   description: string;
   details: string[];
   url?: string;
+  appStore?: string;
+  playStore?: string;
+  logo?: string;
+  screenshots?: string[];
 }
 
 export const allProjects: Project[] = [
@@ -81,13 +85,18 @@ export const allProjects: Project[] = [
     slug: "arvo-tcg",
     title: "ARVO TCG (arvotcg.com)",
     company: "Personal Project",
-    period: "2025 ~ 운영 중",
+    period: "2025.04 ~ 운영 중",
     type: "TCG Community · Web + RN App",
     url: "https://arvotcg.com",
+    appStore: "https://apps.apple.com/kr/app/id6799868587",
+    playStore: "https://play.google.com/store/apps/details?id=com.arvotcg.app",
+    logo: "/projects/arvo-tcg-logo.png",
+    screenshots: ["/projects/arvo-tcg-1.jpg", "/projects/arvo-tcg-2.jpg", "/projects/arvo-tcg-3.jpg", "/projects/arvo-tcg-4.jpg"],
     tech: ["Next.js", "TypeScript", "React Native", "PostgreSQL", "Data Pipeline", "Vercel"],
     shortDesc: "포켓몬·원피스·유희왕 TCG 실시간 시세·거래 커뮤니티. 시세 데이터 파이프라인부터 RN 앱스토어 출시까지 단독 수행.",
-    description: "포켓몬·원피스·유희왕 TCG의 실시간 시세 검색, 박스별 힛카드 가격, 카드 거래·컬렉션 관리를 제공하는 커뮤니티 플랫폼입니다. 시세 데이터 파이프라인 구축부터 React Native 앱스토어 출시까지 프로덕트 전 과정을 단독으로 수행하며 웹·앱 양채널로 운영하고 있습니다.",
+    description: "포켓몬 팬 커뮤니티 '포케페스타30(poke-30.com)'으로 시작해 TCG 전반으로 확장한 최종 버전입니다. 포켓몬·원피스·유희왕 TCG의 실시간 시세 검색, 박스별 힛카드 가격, 카드 거래·컬렉션 관리를 제공하는 커뮤니티 플랫폼입니다. 시세 데이터 파이프라인 구축부터 React Native 앱스토어 출시까지 프로덕트 전 과정을 단독으로 수행하며 웹·앱 양채널로 운영하고 있습니다.",
     details: [
+      "전신 포케페스타30: 사용자 제보 기반 매장 혼잡도·실시간 피드·카드 거래·지도를 하단 탭 중심 모바일 웹으로 운영하며 수요를 검증한 뒤 ARVO TCG로 확장",
       "해외 시세 소스를 집계하는 자체 데이터 파이프라인을 구축해 박스·싱글카드 단위 가격 시계열 데이터를 자체 보유",
       "수집 → 정규화 → 저장 → 서빙 흐름을 분리해 소스 추가·장애 시에도 서비스 영향 최소화",
       "박스별 힛카드 가격, 카드별 시세 추이 차트 등 시세 데이터를 사용자용 화면으로 시각화",
@@ -103,6 +112,7 @@ export const allProjects: Project[] = [
     period: "2025.09 ~ 2025.12",
     type: "Web Game Platform",
     url: "https://dopamine.land",
+    logo: "/projects/dopamine-land-logo.svg",
     tech: ["Next.js", "Phaser.js", "Supabase", "WebSockets", "Vercel", "MCP"],
     shortDesc: "브라우저에서 바로 동작하는 실시간 멀티플레이 게임 플랫폼. MCP 기반 개발 환경으로 단독 런칭.",
     description: "별도 설치 없이 브라우저에서 바로 동작하는 멀티플레이 게임 플랫폼입니다. 텍사스 홀덤, 1:1 테트리스 등 실시간 대전 게임과 포인트 시스템·커뮤니티 기능을 결합했으며, MCP 기반 개발 환경을 구성해 LLM이 게임 상태와 DB 스키마를 직접 조회하며 개발을 보조하는 워크플로우로 완성했습니다.",
@@ -121,6 +131,10 @@ export const allProjects: Project[] = [
     period: "2024.10 ~ 운영 중",
     type: "Location-based Dating App",
     url: "https://datebase.site",
+    appStore: "https://apps.apple.com/kr/app/id6758017190",
+    playStore: "https://play.google.com/store/apps/details?id=com.kimk1029.datepick",
+    logo: "/projects/datebase-logo.png",
+    screenshots: ["/projects/datebase-1.jpg", "/projects/datebase-2.jpg", "/projects/datebase-3.jpg", "/projects/datebase-4.jpg"],
     tech: ["Flutter", "Node.js", "Express", "Prisma", "Supabase", "Railway", "Docker"],
     shortDesc: "Flutter 위치 기반 데이팅 앱. 기획·개발·운영에 디자이너·인플루언서 섭외까지 앱 서비스 전 과정 수행.",
     description: "웹 중심 스택에 모바일 네이티브를 더해, 위치 기반 데이팅 앱의 기획부터 스토어 배포까지 전 과정을 단독으로 검증한 크로스 플랫폼 프로젝트입니다.",
@@ -133,29 +147,14 @@ export const allProjects: Project[] = [
     ]
   },
   {
-    slug: "poke-30",
-    title: "포케페스타30 (poke-30.com)",
-    company: "Personal Project",
-    period: "2025.04 ~ 운영 중",
-    type: "Fan Community",
-    url: "https://www.poke-30.com",
-    tech: ["Next.js", "TypeScript", "Mobile Web", "Community Feed", "Realtime UX"],
-    shortDesc: "포켓몬 팬 커뮤니티. 사용자 제보 기반 장소 혼잡도, 카드 거래, 시세, 지도, 오리파 기능 제공.",
-    description: "포케페스타30은 포켓몬 팬 이벤트와 현장 정보를 중심으로 만든 모바일 웹 커뮤니티입니다.",
-    details: [
-      "공개 사이트 기준 사용자 제보 기반 매장/장소 혼잡도, 시간대별 제보량, 실시간 피드 기능을 제공",
-      "카드 거래, 카드 시세, 지도, 마이페이지, 작성 플로우를 하단 탭 중심의 모바일 앱 형태 UX로 구성",
-      "성수 지역 이벤트와 잉어킹 프로모션 등 현장성 있는 정보를 빠르게 탐색할 수 있는 히어로/퀵 메뉴 설계",
-      "픽셀 아트, 포켓볼 아이콘, 포켓몬 sprite를 활용해 팬 커뮤니티 성격에 맞춘 레트로 모바일 UI 구현",
-      "SEO 메타데이터와 OG/Twitter 카드 설정으로 팬 프로젝트의 검색/공유 노출 기반 구성"
-    ]
-  },
-  {
     slug: "cop-vs-robbers",
     title: "경찰과 도둑 (Cop vs Robbers)",
     company: "Personal Project",
     period: "2025.01 ~ 출시",
     type: "Realtime Mobile Game · React Native",
+    playStore: "https://play.google.com/store/apps/details?id=com.copvsrobbers",
+    logo: "/projects/cop-vs-robbers-logo.png",
+    screenshots: ["/projects/cop-vs-robbers-1.png", "/projects/cop-vs-robbers-2.png", "/projects/cop-vs-robbers-3.png", "/projects/cop-vs-robbers-4.png"],
     tech: ["React Native", "WebSocket", "WebRTC", "Naver Map API", "Vision Camera"],
     shortDesc: "실시간 위치 동기화, WebRTC PTT 무전, QR 방 참가를 하나의 RN 코드베이스로 통합한 위치 기반 멀티플레이 게임.",
     description: "경찰과 도둑 역할을 나누고 GPS, 음성 통신, 지도 UI를 하나의 게임 플로우로 묶은 React Native 프로젝트입니다.",
@@ -399,7 +398,7 @@ export const careers: Career[] = [
       },
       {
         title: "LLM이 프로젝트 컨텍스트를 모르는 문제",
-        action: "Supabase 스키마·게임 상태를 LLM이 직접 조회하는 커스텀 MCP 서버를 구현해 도입. 공개 Agent Skills(코드 리뷰·PR 정리 등)를 선별 도입해 토큰 사용 최적화.",
+        action: "Supabase 등 공개 MCP 서버를 연결해 LLM이 DB 스키마를 직접 조회하도록 구성. 공개 Agent Skills(코드 리뷰·PR 정리 등)를 선별 도입해 토큰 사용 최적화.",
         impact: "수동 컨텍스트 복붙 제거, 반복 작업 자동화로 운영 부담 감소.",
       },
       {

@@ -50,6 +50,24 @@ export default function ProjectDetailClient({ project }: { project: Project }) {
                 <ArrowUpRight className="h-5 w-5 transition-transform duration-300 ease-expo group-hover:-translate-y-1 group-hover:translate-x-1" />
               </a>
             )}
+            {[
+              ["App Store", project.appStore],
+              ["Google Play", project.playStore],
+            ].map(
+              ([label, href]) =>
+                href && (
+                  <a
+                    key={label}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group ml-3 mt-8 inline-flex items-center gap-3 border-2 border-ink px-5 py-[14px] font-display text-xl font-black uppercase tracking-wide transition-colors duration-300 ease-expo hover:bg-ink"
+                  >
+                    {label}
+                    <ArrowUpRight className="h-5 w-5 transition-transform duration-300 ease-expo group-hover:-translate-y-1 group-hover:translate-x-1" />
+                  </a>
+                )
+            )}
           </div>
           <motion.div
             initial={reduce ? false : { rotate: -30, scale: 0.8, opacity: 0 }}
@@ -61,6 +79,19 @@ export default function ProjectDetailClient({ project }: { project: Project }) {
           </motion.div>
         </div>
       </section>
+
+      {project.screenshots && (
+        <section className="mx-auto max-w-7xl px-5 pt-20 md:px-6">
+          <h2 className="font-display text-4xl font-black uppercase md:text-5xl">스크린샷</h2>
+          <ul className="mt-8 flex snap-x gap-4 overflow-x-auto pb-4">
+            {project.screenshots.map((src, i) => (
+              <li key={src} className="flex-none snap-start">
+                <img src={src} alt={`${patchName(project.title)} 스크린샷 ${i + 1}`} loading="lazy" width={392} height={696} className="h-[420px] w-auto border-2 border-pad/20 md:h-[520px]" />
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <div className="mx-auto grid max-w-7xl gap-14 px-5 py-20 md:px-6 lg:grid-cols-[1fr_320px]">
         <section>

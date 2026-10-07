@@ -32,14 +32,6 @@ const EMBLEMS: Record<string, React.ReactNode> = {
       <path d="M100 104 c -14 -9 -16 -22 -7 -24 c 4 -1 6 2 7 4 c 1 -2 3 -5 7 -4 c 9 2 7 15 -7 24 z" fill="#f2f1ec" />
     </g>
   ),
-  // banded ball
-  "poke-30": (
-    <g>
-      <circle cx="100" cy="100" r="30" {...P} />
-      <path d="M70 100 h 20 M110 100 h 20" {...P} />
-      <circle cx="100" cy="100" r="9" {...P} />
-    </g>
-  ),
   // radar sweep
   "cop-vs-robbers": (
     <g>
@@ -89,7 +81,14 @@ export function Patch({ project, index, className = "" }: { project: Project; in
       <circle cx="100" cy="100" r="99" fill="#111214" />
       <circle cx="100" cy="100" r="93" fill="none" stroke="#f2f1ec" strokeWidth="1.5" strokeDasharray="2.5 3" />
       <circle cx="100" cy="100" r="60" fill={field} />
-      {EMBLEMS[project.slug] ?? (
+      {project.logo ? (
+        <>
+          <clipPath id={`${id}-logo`}>
+            <circle cx="100" cy="100" r="60" />
+          </clipPath>
+          <image href={project.logo} x="40" y="40" width="120" height="120" clipPath={`url(#${id}-logo)`} preserveAspectRatio="xMidYMid slice" />
+        </>
+      ) : EMBLEMS[project.slug] ?? (
         <text x="100" y="114" textAnchor="middle" fill="#f2f1ec" fontSize="40" style={{ fontFamily: "var(--font-stencil)", fontWeight: 900 }}>
           {initials(project.slug)}
         </text>

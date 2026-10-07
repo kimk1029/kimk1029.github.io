@@ -42,10 +42,10 @@ const navItems = [
 
 const aiStack = [
   { title: "에이전틱 개발", tool: "Claude Code · Codex · Cursor", body: "자동완성이 아니라 PR 단위로 작업을 위임합니다. 에이전트가 파일·테스트·빌드를 직접 조작하고, 저는 리뷰와 방향을 잡습니다." },
-  { title: "커스텀 MCP 서버", tool: "Model Context Protocol", body: "Supabase 스키마와 게임 상태를 LLM이 직접 조회하도록 MCP 서버를 구현했습니다. 컨텍스트 복붙이 사라졌습니다." },
-  { title: "Agent Skills & Harness", tool: "Skills · Retry · Recovery", body: "공개 Skills를 선별 도입해 토큰을 아끼고, 툴 호출 실패 재시도·에러 복구·컨텍스트 관리를 Node 레이어에 직접 구성했습니다." },
-  { title: "LLM API & Eval", tool: "Anthropic · OpenAI", body: "프롬프트를 설계하고, 반복 작업에는 정답 세트 기반 간이 eval을 돌려 프롬프트 변경 시 품질 회귀를 잡습니다." },
-  { title: "AI UI 생성", tool: "Lovable · v0.dev · shadcn/ui", body: "프로토타입을 빠르게 생성한 뒤 손으로 정제합니다. 속도는 AI에게, 완성도는 사람이 책임집니다." },
+  { title: "MCP 연동", tool: "Model Context Protocol", body: "직접 만든 서버가 아니라 Supabase 등 공개 MCP 서버를 연결해, LLM이 DB 스키마를 직접 조회하게 했습니다. 컨텍스트를 복사해 붙여넣는 일이 줄었습니다." },
+  { title: "Agent Skills & Harness", tool: "Skills · Retry · Recovery", body: "Skills는 에이전트에게 주는 '작업 설명서'입니다. 공개된 것 중 필요한 것만 골라 붙여, 매번 긴 설명을 반복하느라 토큰을 낭비하지 않게 했습니다. Harness는 에이전트를 감싸는 안전장치입니다. 도구 호출이 실패하면 다시 시도하고, 같은 실수를 반복하면 멈추고, 대화가 길어지면 필요한 내용만 남기도록 Node로 직접 짰습니다." },
+  { title: "LLM API & 품질 체크", tool: "Anthropic · OpenAI", body: "자주 반복하는 작업(예: 교회 주보 파싱)은 '이 입력엔 이 결과가 나와야 한다'는 정답 예시를 몇 개 만들어 둡니다. 프롬프트를 고칠 때마다 결과를 정답과 맞춰 보고, 고친 뒤 오히려 나빠졌는지 바로 확인합니다. 흔히 eval(평가)이라 부르는 방식입니다." },
+  { title: "AI UI 생성", tool: "Claude Design · DESIGN.md · impeccable", body: "GitHub 스타 약 7.8만 개의 디자인 스킬 impeccable을 설치하고, 색·타이포·간격 규칙을 DESIGN.md에 적어 둡니다. 그다음 Claude Design으로 시안을 뽑을 때 '이 DESIGN.md와 impeccable 기준을 지켜서 만들어'라고 지시합니다. 방향은 문서와 스킬이 잡고, 마지막 다듬기는 제가 합니다." },
 ];
 const aiColors = ["bg-nasa text-white", "bg-flight text-white", "bg-[#1b1f3b] text-pad", "bg-[#2a1240] text-pad", "bg-pad text-ink"];
 
