@@ -88,10 +88,12 @@ function labelTexture(l: PlanetLabel, i: number, n: number) {
 
 export default function BriefingPlanet({
   progress,
+  form,
   labels,
   flash,
 }: {
   progress: MotionValue<number>;
+  form: MotionValue<number>; // 0→1: debris from the warp burst condenses into the planet
   labels: PlanetLabel[];
   flash: React.RefObject<HTMLDivElement>;
 }) {
@@ -237,6 +239,8 @@ export default function BriefingPlanet({
       let visible = false;
       const tick = (t: number) => {
         const p = progress.get();
+        const f = form.get();
+        const born = smooth(clamp((f - 0.45) / 0.55)); // planet body fades/grows in once debris has gathered
 
         // Dwell on each label, turn quickly between them.
         const s = clamp(p / 0.8) * (n - 1);
@@ -254,13 +258,27 @@ export default function BriefingPlanet({
           m.rotation.y = d * 0.9; // slides with the planet's spin
           m.scale.setScalar(swell);
         });
-        planet.scale.setScalar(swell);
-        atmo.scale.setScalar(swell);
-        planetMat.emissiveIntensity = grow * 0.9;
-        planet.visible = atmo.visible = burst === 0;
+        planet.scale.setScalar(swell * (0.6 + 0.4 * born));
+        atmo.scale.setScalar(swell * (0.6 + 0.4 * born));
+        planetMat.emissiveIntensity = grow * 0.9 + (1 - born) * (f > 0.45 ? 1.2 : 0);
+        planetMat.transparent = born < 1;
+        planetMat.opacity = born;
+        planet.visible = atmo.visible = burst === 0 && born > 0;
+        sheets.forEach((m) => ((m.material as InstanceType<typeof THREE.MeshBasicMaterial>).opacity *= born ** 4));
 
-        debris.visible = burst > 0;
-        if (burst > 0) {
+        debris.visible = burst > 0 || (f > 0 && f < 1);
+        if (burst === 0 && f < 1) {
+          // Reverse burst: debris falls inward from far out and settles on the surface.
+          const k = smooth(clamp(f / 0.7));
+          for (let j = 0; j < COUNT; j++) {
+            const d = RADIUS * (1 + (1 - k) * speeds[j] * 6);
+            pos[j * 3] = dirs[j * 3] * d;
+            pos[j * 3 + 1] = dirs[j * 3 + 1] * d;
+            pos[j * 3 + 2] = dirs[j * 3 + 2] * d;
+          }
+          debrisGeo.attributes.position.needsUpdate = true;
+          debrisMat.opacity = Math.min(1, f * 4) * (1 - born);
+        } else if (burst > 0) {
           const k = 1 - Math.pow(1 - burst, 3);
           for (let j = 0; j < COUNT; j++) {
             const d = RADIUS * swell * (1 + k * speeds[j] * 2.4);
@@ -276,7 +294,7 @@ export default function BriefingPlanet({
         if (flash.current) flash.current.style.opacity = String(burst > 0 ? Math.max(0, 1 - burst * 2.5) * 0.7 : grow * 0.12);
 
         const a = Math.PI / 2 + p * Math.PI * 3;
-        ship.visible = ring.visible = burst === 0;
+        ship.visible = ring.visible = burst === 0 && born === 1;
         ship.position.set(Math.cos(a) * R, 0, Math.sin(a) * R);
         ahead.set(Math.cos(a + 0.05) * R, 0, Math.sin(a + 0.05) * R);
         ship.lookAt(orbit.localToWorld(ahead.clone()));
@@ -309,7 +327,7 @@ export default function BriefingPlanet({
       disposed = true;
       cleanup();
     };
-  }, [progress, labels, flash]);
+  }, [progress, form, labels, flash]);
 
   return <div ref={host} aria-hidden className="absolute inset-0" />;
 }

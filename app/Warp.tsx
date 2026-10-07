@@ -1,20 +1,40 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from "framer-motion";
 
-// Scroll-driven hyperspace jump between the hero and the briefing:
-// stars stream out of the centre, stretch into streaks as you scroll, then flash.
-export default function Warp() {
+const LINES = ["AI 시대", "AI에 발맞추는 개발자가 되기 위한", "여정을 보여드립니다.", "궤도 진입!!"];
+const TEXT_FROM = 0.18;
+const BURST = 0.9; // the last line blows up here
+const SLOT = (BURST - TEXT_FROM) / LINES.length;
+
+function Line({ text, i, progress, last }: { text: string; i: number; progress: MotionValue<number>; last: React.RefObject<HTMLSpanElement> }) {
+  const a = TEXT_FROM + i * SLOT;
+  const isLast = i === LINES.length - 1;
+  const opacity = useTransform(progress, isLast ? [a, a + 0.03, BURST, BURST + 0.01] : [a, a + 0.03, a + SLOT - 0.03, a + SLOT], [0, 1, 1, 0]);
+  const y = useTransform(progress, [a, a + 0.03], [30, 0]);
+  return (
+    <motion.p style={{ opacity, y }} className="absolute inset-0 grid place-items-center px-5 text-center">
+      <span ref={isLast ? last : undefined} className={`block font-hangul leading-[1.1] text-pad ${isLast ? "text-[clamp(3.5rem,11vw,10rem)]" : "text-[clamp(2.2rem,6.5vw,6rem)]"}`}>
+        {text}
+      </span>
+    </motion.p>
+  );
+}
+
+// Pins the hero, then zooms through it into hyperspace: lines change with scroll,
+// the last one trembles and bursts, and the briefing planet forms out of the flash.
+export default function Warp({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
+  const last = useRef<HTMLSpanElement>(null);
   const reduce = useReducedMotion();
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end end"] });
-  const label = useTransform(scrollYProgress, [0.35, 0.55, 0.75, 0.88], [0, 1, 1, 0]);
-  const labelScale = useTransform(scrollYProgress, [0.35, 0.88], [0.9, 1.15]);
-  const flash = useTransform(scrollYProgress, [0.78, 0.9], [0, 1]);
-  // After the flash the whole jump dissolves, so the briefing's own sky shows through without a seam.
-  const fade = useTransform(scrollYProgress, [0, 0.3, 0.9, 1], [0, 1, 1, 0]);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
+  const heroScale = useTransform(scrollYProgress, [0.04, 0.16], [1, reduce ? 1 : 1.5]);
+  const heroOpacity = useTransform(scrollYProgress, [0.04, 0.14], [1, 0]);
+  const heroBlur = useTransform(scrollYProgress, [0.04, 0.16], ["blur(0px)", "blur(12px)"]);
+  const space = useTransform(scrollYProgress, [0.06, 0.16, 0.94, 1], [0, 1, 1, 0]);
+  const flash = useTransform(scrollYProgress, [BURST - 0.01, BURST + 0.03, 1], [0, 1, 0]);
 
   useEffect(() => {
     const c = canvas.current;
@@ -25,6 +45,7 @@ export default function Warp() {
     let h = 0;
     let raf = 0;
     const stars = Array.from({ length: 700 }, () => ({ x: Math.random() * 2 - 1, y: Math.random() * 2 - 1, z: Math.random() }));
+    const shakeFrom = TEXT_FROM + (LINES.length - 1) * SLOT + 0.03;
 
     const resize = () => {
       w = c.clientWidth;
@@ -36,10 +57,11 @@ export default function Warp() {
 
     const draw = () => {
       const p = scrollYProgress.get();
-      const speed = reduce ? 0 : 0.0015 + p * p * 0.06;
+      const speed = reduce ? 0 : 0.0015 + Math.min(p, BURST) ** 2 * 0.07;
       const cx = w / 2;
       const cy = h / 2;
-      const f = Math.max(w, h) * 0.5;
+      const f = Math.max(w, h) * 0.25;
+      const heat = Math.max(0, (p - 0.6) / (BURST - 0.6));
       ctx.fillStyle = "rgba(5,6,10,0.55)";
       ctx.fillRect(0, 0, w, h);
       ctx.lineCap = "round";
@@ -52,19 +74,24 @@ export default function Warp() {
           s.z = 1;
           continue;
         }
-        // Tail drawn from where the star would have been a few frames back, so streaks grow with speed.
+        // Tail drawn from where the star was a few frames back, so streaks grow with speed.
         const tail = Math.min(1, z0 + speed * 6);
-        const x1 = cx + (s.x / s.z) * f * 0.5;
-        const y1 = cy + (s.y / s.z) * f * 0.5;
-        const x0 = cx + (s.x / tail) * f * 0.5;
-        const y0 = cy + (s.y / tail) * f * 0.5;
         const a = Math.min(1, (1 - s.z) * 1.4);
-        ctx.strokeStyle = p > 0.6 ? `rgba(255,${200 - (p - 0.6) * 150},${170 - (p - 0.6) * 250},${a})` : `rgba(242,241,236,${a})`;
+        ctx.strokeStyle = heat > 0 ? `rgba(255,${242 - heat * 90},${236 - heat * 170},${a})` : `rgba(242,241,236,${a})`;
         ctx.lineWidth = (1 - s.z) * 2.4 + 0.3;
         ctx.beginPath();
-        ctx.moveTo(x0, y0);
-        ctx.lineTo(x1 + 0.01, y1);
+        ctx.moveTo(cx + (s.x / tail) * f, cy + (s.y / tail) * f);
+        ctx.lineTo(cx + (s.x / s.z) * f + 0.01, cy + (s.y / s.z) * f);
         ctx.stroke();
+      }
+
+      // The last line swells and trembles harder until it bursts.
+      const t = last.current;
+      if (t) {
+        const k = Math.min(1, Math.max(0, (p - shakeFrom) / (BURST - shakeFrom)));
+        const amp = reduce ? 0 : k * k * 16;
+        t.style.transform = `translate(${(Math.random() - 0.5) * amp}px, ${(Math.random() - 0.5) * amp}px) scale(${1 + k * 0.35})`;
+        t.style.textShadow = k ? `0 0 ${k * 40}px rgba(255,138,120,${k}), 0 0 ${k * 90}px rgba(255,179,71,${k * 0.8})` : "";
       }
       raf = requestAnimationFrame(draw);
     };
@@ -85,14 +112,20 @@ export default function Warp() {
   }, [reduce, scrollYProgress]);
 
   return (
-    <section ref={ref} aria-hidden className="relative h-[220vh]">
-      <motion.div style={{ opacity: fade }} className="sticky top-0 h-screen overflow-hidden">
-        <canvas ref={canvas} className="absolute inset-0 h-full w-full" />
-        <motion.p style={{ opacity: label, scale: labelScale }} className="absolute inset-0 grid place-items-center font-display text-[clamp(2.5rem,8vw,7rem)] font-black uppercase tracking-[0.2em] text-pad">
-          궤도 진입
-        </motion.p>
-        <motion.div style={{ opacity: flash }} className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,#fff7e6_0%,#ffd9a8_35%,#05060a_85%)]" />
-      </motion.div>
+    <section ref={ref} className="relative z-30 h-[700vh]">
+      <div className="sticky top-0 h-screen overflow-hidden">
+        <motion.div style={{ scale: heroScale, opacity: heroOpacity, filter: heroBlur }} className="absolute inset-0">
+          {children}
+        </motion.div>
+        <motion.div aria-hidden style={{ opacity: space }} className="pointer-events-none absolute inset-0 bg-vacuum">
+          <canvas ref={canvas} className="absolute inset-0 h-full w-full" />
+          {LINES.map((text, i) => (
+            <Line key={text} text={text} i={i} progress={scrollYProgress} last={last} />
+          ))}
+          <motion.div style={{ opacity: flash }} className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,#ffffff_0%,#fff2d6_30%,#ffb347_60%,#05060a_100%)]" />
+        </motion.div>
+        <p className="sr-only">{LINES.join(" ")}</p>
+      </div>
     </section>
   );
 }

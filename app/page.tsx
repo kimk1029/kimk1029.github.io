@@ -131,29 +131,26 @@ function SectionTitle({ en, ko, light = false }: { en: string; ko: string; light
 
 function Hero() {
   const reduce = useReducedMotion();
-  const { scrollY } = useScroll();
-  const lift = useTransform(scrollY, [0, 900], [0, reduce ? 0 : -360]);
-  const fade = useTransform(scrollY, [0, 600], [1, reduce ? 1 : 0.2]);
 
   return (
-    <section id="top" className="relative grid min-h-[100svh] overflow-hidden pt-12 lg:grid-cols-[1.35fr_1fr]">
-      <div className="relative min-h-[62svh] overflow-hidden border-b-2 border-pad/25 lg:border-b-0 lg:border-r-2">
+    <section id="top" className="relative grid h-full overflow-hidden pt-12 lg:grid-cols-[1.35fr_1fr]">
+      <div className="relative min-h-[30svh] overflow-hidden border-b-2 border-pad/25 lg:border-b-0 lg:border-r-2">
         <motion.div initial={reduce ? false : { y: "100%" }} animate={{ y: 0 }} transition={{ duration: 1.1, ease: EASE }} className="absolute inset-0">
-          <motion.div style={{ y: lift }} className="fuselage absolute inset-x-0 top-0 bottom-[-360px] flex justify-center gap-6 px-6 pt-8 md:gap-10">
+          <div className="fuselage absolute inset-0 flex justify-center gap-6 px-6 pt-4 md:gap-10 md:pt-8">
             <div className="flex flex-col items-center gap-6">
-              <div className="roll-pattern h-16 w-16 border-2 border-pad/25" aria-hidden />
-              <h1 className="font-hangul text-[clamp(4.5rem,13svh,8rem)] leading-[0.92] text-pad [writing-mode:vertical-rl] md:text-[clamp(7rem,24svh,15rem)]">
+              <div className="roll-pattern h-10 w-10 border-2 md:h-16 md:w-16 border-pad/25" aria-hidden />
+              <h1 className="font-hangul text-[clamp(2.75rem,7.5svh,8rem)] leading-[0.92] text-pad [writing-mode:vertical-rl] md:text-[clamp(7rem,24svh,15rem)]">
                 김규현
               </h1>
             </div>
             <div className="hidden flex-col pt-2 text-pad sm:flex">
               <span className="font-stencil text-4xl font-black uppercase tracking-[0.12em] [writing-mode:vertical-rl] md:text-5xl">Kim Kyu-hyun</span>
             </div>
-          </motion.div>
+          </div>
         </motion.div>
       </div>
 
-      <motion.div style={{ opacity: fade }} className="relative flex flex-col justify-between gap-10 px-5 py-8 md:px-10 md:py-12">
+      <div className="relative flex flex-col justify-between gap-5 px-5 py-5 md:gap-10 md:px-10 md:py-12">
         <div>
           <p className="font-display text-[clamp(3rem,6.2vw,5.75rem)] font-black uppercase leading-[0.88] tracking-[-0.01em]">
             AI Product
@@ -171,19 +168,19 @@ function Hero() {
             ["Web3", "≈5Y"],
             ["단독 출시", "5"],
           ].map(([k, v], i) => (
-            <div key={k} className={`py-3 ${i ? "border-l-2 border-pad/25 pl-3" : ""}`}>
+            <div key={k} className={`py-2 md:py-3 ${i ? "border-l-2 border-pad/25 pl-3" : ""}`}>
               <dt className="font-hangul text-sm text-pad/65">{k}</dt>
-              <dd className="tabular mt-1 font-display text-4xl font-black">{v}</dd>
+              <dd className="tabular mt-1 font-display text-3xl font-black md:text-4xl">{v}</dd>
             </div>
           ))}
         </dl>
 
         <div className="flex flex-wrap items-center gap-3">
-          <a href={`mailto:${personalInfo.email}`} className="group inline-flex items-center gap-3 bg-nasa px-5 py-4 font-display text-xl font-black uppercase tracking-wide text-white transition-colors duration-300 ease-expo hover:bg-pad hover:text-ink">
+          <a href={`mailto:${personalInfo.email}`} className="group inline-flex items-center gap-3 bg-nasa px-4 py-3 font-display text-lg font-black md:px-5 md:py-4 md:text-xl uppercase tracking-wide text-white transition-colors duration-300 ease-expo hover:bg-pad hover:text-ink">
             <Mail className="h-5 w-5" /> {personalInfo.email}
             <ArrowUpRight className="h-5 w-5 transition-transform duration-300 ease-expo group-hover:-translate-y-1 group-hover:translate-x-1" />
           </a>
-          <a href={personalInfo.github} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 border-2 border-pad px-4 py-[14px] font-display text-xl font-black uppercase tracking-wide transition-colors duration-300 ease-expo hover:bg-pad hover:text-ink">
+          <a href={personalInfo.github} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 border-2 border-pad px-4 py-[10px] font-display text-lg font-black md:py-[14px] md:text-xl uppercase tracking-wide transition-colors duration-300 ease-expo hover:bg-pad hover:text-ink">
             <Github className="h-5 w-5" /> GitHub
           </a>
         </div>
@@ -191,7 +188,7 @@ function Hero() {
         <a href="#briefing" className="inline-flex w-fit items-center gap-2 font-hangul text-sm text-pad/65 hover:text-pad">
           <ArrowDown className="h-4 w-4" /> 스크롤해서 발사하기
         </a>
-      </motion.div>
+      </div>
     </section>
   );
 }
@@ -233,20 +230,25 @@ function Manifesto() {
 
 const planetLabels = buildLog.map((r) => ({ title: r.step, tools: r.tools, short: r.short }));
 
+const FORM = 0.12;
+
 function Briefing() {
   const ref = useRef<HTMLElement>(null);
   const flash = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
+  // First FORM of the scroll: the planet condenses out of the warp burst; the steps run on the rest.
+  const form = useTransform(scrollYProgress, [0, FORM], [0, 1]);
+  const steps = useTransform(scrollYProgress, [FORM, 1], [0, 1]);
   const n = buildLog.length;
   const [active, setActive] = useState(0);
-  useMotionValueEvent(scrollYProgress, "change", (v) => setActive(Math.min(n - 1, Math.round(Math.min(1, v / 0.8) * (n - 1)))));
-  const chrome = useTransform(scrollYProgress, [0.8, 0.86], [1, 0]);
-  const driftL = useTransform(scrollYProgress, [0, 0.86], ["6%", "-18%"]);
-  const driftR = useTransform(scrollYProgress, [0, 0.86], ["-18%", "6%"]);
+  useMotionValueEvent(steps, "change", (v) => setActive(Math.min(n - 1, Math.round(Math.min(1, v / 0.8) * (n - 1)))));
+  const chrome = useTransform(steps, [0, 0.03, 0.8, 0.86], [0, 1, 1, 0]);
+  const driftL = useTransform(steps, [0, 0.86], ["6%", "-18%"]);
+  const driftR = useTransform(steps, [0, 0.86], ["-18%", "6%"]);
   const row = buildLog[active];
 
   return (
-    <section id="briefing" ref={ref} className="relative h-[700vh]">
+    <section id="briefing" ref={ref} className="relative -mt-[100vh] h-[800vh]">
       <div className="sticky top-0 h-screen overflow-hidden">
         {/* Giant type sits behind the transparent 3D canvas, so the planet passes in front of it. */}
         <motion.div aria-hidden style={{ opacity: chrome }} className="pointer-events-none absolute inset-0 flex flex-col justify-start gap-2 overflow-hidden pt-[13vh] font-hangul leading-none md:justify-between md:gap-0 md:py-[13vh]">
@@ -258,7 +260,7 @@ function Briefing() {
           </motion.p>
         </motion.div>
         <div className="absolute inset-0 z-10">
-          <BriefingPlanet progress={scrollYProgress} labels={planetLabels} flash={flash} />
+          <BriefingPlanet progress={steps} form={form} labels={planetLabels} flash={flash} />
         </div>
         <div
           ref={flash}
@@ -882,8 +884,9 @@ export default function Portfolio() {
         </div>
         <motion.div className="h-[3px] origin-left bg-nasa" style={{ scaleX: scrollYProgress }} />
       </header>
-      <Hero />
-      <Warp />
+      <Warp>
+        <Hero />
+      </Warp>
       <Briefing />
       <Journey />
       <Manifesto />
