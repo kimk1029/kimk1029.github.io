@@ -2,21 +2,52 @@
 
 import { useEffect, useRef } from "react";
 import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from "framer-motion";
+import { useTier } from "./perf-tier";
 
 const LINES = ["AI 시대", "AI에 발맞추는 개발자가 되기 위한", "여정을 보여드립니다.", "궤도 진입!!"];
 const TEXT_FROM = 0.18;
 const BURST = 0.9; // the last line blows up here
 const SLOT = (BURST - TEXT_FROM) / LINES.length;
+const SPACE_FROM = 0.06; // the space layer is invisible outside this range, so skip drawing there
+const SPACE_TO = 0.98;
 
-function Line({ text, i, progress, last }: { text: string; i: number; progress: MotionValue<number>; last: React.RefObject<HTMLSpanElement> }) {
+function Line({
+  text,
+  i,
+  progress,
+  last,
+  glow,
+}: {
+  text: string;
+  i: number;
+  progress: MotionValue<number>;
+  last: React.RefObject<HTMLSpanElement>;
+  glow: React.RefObject<HTMLSpanElement>;
+}) {
   const a = TEXT_FROM + i * SLOT;
   const isLast = i === LINES.length - 1;
   const opacity = useTransform(progress, isLast ? [a, a + 0.03, BURST, BURST + 0.01] : [a, a + 0.03, a + SLOT - 0.03, a + SLOT], [0, 1, 1, 0]);
   const y = useTransform(progress, [a, a + 0.03], [30, 0]);
   return (
-    <motion.p style={{ opacity, y }} className="absolute inset-0 grid place-items-center px-5 text-center">
-      <span ref={isLast ? last : undefined} className={`block font-hangul leading-[1.1] text-pad ${isLast ? "text-[clamp(3.5rem,11vw,10rem)]" : "text-[clamp(2.2rem,6.5vw,6rem)]"}`}>
+    <motion.p style={{ opacity, y, willChange: "transform, opacity" }} className="absolute inset-0 grid place-items-center px-5 text-center">
+      <span
+        ref={isLast ? last : undefined}
+        style={isLast ? { willChange: "transform" } : undefined}
+        className={`relative block font-hangul leading-[1.1] text-pad ${isLast ? "text-[clamp(3.5rem,11vw,10rem)]" : "text-[clamp(2.2rem,6.5vw,6rem)]"}`}
+      >
         {text}
+        {isLast && (
+          // The glow is a pre-shadowed clone whose opacity is animated. Changing text-shadow every
+          // frame repaints the huge glyphs each time; opacity only touches the compositor.
+          <span
+            ref={glow}
+            aria-hidden
+            className="absolute inset-0 opacity-0 [text-shadow:0_0_40px_rgba(255,138,120,1),0_0_90px_rgba(255,179,71,0.8)]"
+            style={{ willChange: "opacity" }}
+          >
+            {text}
+          </span>
+        )}
       </span>
     </motion.p>
   );
@@ -28,23 +59,30 @@ export default function Warp({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
   const last = useRef<HTMLSpanElement>(null);
+  const glow = useRef<HTMLSpanElement>(null);
   const reduce = useReducedMotion();
+  const tier = useTier();
+  const low = tier === "low";
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
   const heroScale = useTransform(scrollYProgress, [0.04, 0.16], [1, reduce ? 1 : 1.5]);
   const heroOpacity = useTransform(scrollYProgress, [0.04, 0.14], [1, 0]);
-  const heroBlur = useTransform(scrollYProgress, [0.04, 0.16], ["blur(0px)", "blur(12px)"]);
-  const space = useTransform(scrollYProgress, [0.06, 0.16, 0.94, 1], [0, 1, 1, 0]);
+  // Full-screen blur is one of the costliest GPU effects; keep it small, drop it on weak devices.
+  const heroBlur = useTransform(scrollYProgress, [0.04, 0.16], ["blur(0px)", "blur(6px)"]);
+  const space = useTransform(scrollYProgress, [SPACE_FROM, 0.16, 0.94, 1], [0, 1, 1, 0]);
   const flash = useTransform(scrollYProgress, [BURST - 0.01, BURST + 0.03, 1], [0, 1, 0]);
 
   useEffect(() => {
     const c = canvas.current;
     const ctx = c?.getContext("2d");
     if (!c || !ctx) return;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    // Streaks look the same at 1x; a 2x canvas is four times the pixels to fill every frame.
+    const dpr = 1;
+    const frameGap = low ? 1000 / 30 : 0;
     let w = 0;
     let h = 0;
     let raf = 0;
-    const stars = Array.from({ length: 700 }, () => ({ x: Math.random() * 2 - 1, y: Math.random() * 2 - 1, z: Math.random() }));
+    let lastTime = 0;
+    const stars = Array.from({ length: low ? 260 : 450 }, () => ({ x: Math.random() * 2 - 1, y: Math.random() * 2 - 1, z: Math.random() }));
     const shakeFrom = TEXT_FROM + (LINES.length - 1) * SLOT + 0.03;
 
     const resize = () => {
@@ -55,8 +93,13 @@ export default function Warp({ children }: { children: React.ReactNode }) {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
 
-    const draw = () => {
+    const draw = (time: number) => {
+      raf = requestAnimationFrame(draw);
       const p = scrollYProgress.get();
+      if (p < SPACE_FROM || p > SPACE_TO) return; // hero or next section is covering us
+      if (time - lastTime < frameGap) return;
+      lastTime = time;
+
       const speed = reduce ? 0 : 0.0015 + Math.min(p, BURST) ** 2 * 0.07;
       const cx = w / 2;
       const cy = h / 2;
@@ -91,9 +134,8 @@ export default function Warp({ children }: { children: React.ReactNode }) {
         const k = Math.min(1, Math.max(0, (p - shakeFrom) / (BURST - shakeFrom)));
         const amp = reduce ? 0 : k * k * 16;
         t.style.transform = `translate(${(Math.random() - 0.5) * amp}px, ${(Math.random() - 0.5) * amp}px) scale(${1 + k * 0.35})`;
-        t.style.textShadow = k ? `0 0 ${k * 40}px rgba(255,138,120,${k}), 0 0 ${k * 90}px rgba(255,179,71,${k * 0.8})` : "";
+        if (glow.current) glow.current.style.opacity = String(k);
       }
-      raf = requestAnimationFrame(draw);
     };
 
     resize();
@@ -109,20 +151,23 @@ export default function Warp({ children }: { children: React.ReactNode }) {
       io.disconnect();
       window.removeEventListener("resize", resize);
     };
-  }, [reduce, scrollYProgress]);
+  }, [reduce, low, scrollYProgress]);
 
   return (
     <section ref={ref} className="relative z-30 h-[700vh]">
       <div className="sticky top-0 h-screen overflow-hidden">
-        <motion.div style={{ scale: heroScale, opacity: heroOpacity, filter: heroBlur }} className="absolute inset-0">
+        <motion.div
+          style={{ scale: heroScale, opacity: heroOpacity, willChange: "transform, opacity", ...(low || reduce ? {} : { filter: heroBlur }) }}
+          className="absolute inset-0"
+        >
           {children}
         </motion.div>
-        <motion.div aria-hidden style={{ opacity: space }} className="pointer-events-none absolute inset-0 bg-vacuum">
+        <motion.div aria-hidden style={{ opacity: space, willChange: "opacity" }} className="pointer-events-none absolute inset-0 bg-vacuum">
           <canvas ref={canvas} className="absolute inset-0 h-full w-full" />
           {LINES.map((text, i) => (
-            <Line key={text} text={text} i={i} progress={scrollYProgress} last={last} />
+            <Line key={text} text={text} i={i} progress={scrollYProgress} last={last} glow={glow} />
           ))}
-          <motion.div style={{ opacity: flash }} className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,#ffffff_0%,#fff2d6_30%,#ffb347_60%,#05060a_100%)]" />
+          <motion.div style={{ opacity: flash, willChange: "opacity" }} className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,#ffffff_0%,#fff2d6_30%,#ffb347_60%,#05060a_100%)]" />
         </motion.div>
         <p className="sr-only">{LINES.join(" ")}</p>
       </div>

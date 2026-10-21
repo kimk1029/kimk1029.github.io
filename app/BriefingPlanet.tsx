@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import type { MotionValue } from "framer-motion";
 import { buildShip } from "./OrbitScene";
+import { useTier } from "./perf-tier";
 
 export interface PlanetLabel {
   title: string;
@@ -98,10 +99,12 @@ export default function BriefingPlanet({
   flash: React.RefObject<HTMLDivElement>;
 }) {
   const host = useRef<HTMLDivElement>(null);
+  const tier = useTier();
 
   useEffect(() => {
     let disposed = false;
     let cleanup = () => {};
+    const low = tier === "low";
 
     const fontsReady = Promise.all(
       labels.flatMap((l) => [
@@ -114,8 +117,9 @@ export default function BriefingPlanet({
       const el = host.current;
       if (disposed || !el) return;
 
-      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      // Pixel ratio is the biggest lever on fill cost: 1.5 is indistinguishable here, 2 doubles the pixels.
+      const renderer = new THREE.WebGLRenderer({ antialias: !low, alpha: true, powerPreference: "high-performance" });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, low ? 1 : 1.5));
       renderer.domElement.style.width = "100%";
       renderer.domElement.style.height = "100%";
       el.appendChild(renderer.domElement);
@@ -130,10 +134,11 @@ export default function BriefingPlanet({
       const tex = new THREE.CanvasTexture(planetTexture());
       tex.colorSpace = THREE.SRGBColorSpace;
       const planetMat = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.9, emissive: new THREE.Color(0xff5a2a), emissiveIntensity: 0 });
-      const planet = new THREE.Mesh(new THREE.SphereGeometry(RADIUS, 96, 96), planetMat);
+      const segs = low ? 48 : 72;
+      const planet = new THREE.Mesh(new THREE.SphereGeometry(RADIUS, segs, segs), planetMat);
       scene.add(planet);
       const atmo = new THREE.Mesh(
-        new THREE.SphereGeometry(RADIUS * 1.07, 64, 64),
+        new THREE.SphereGeometry(RADIUS * 1.07, low ? 32 : 48, low ? 32 : 48),
         new THREE.MeshBasicMaterial({ color: 0x4f7bff, transparent: true, opacity: 0.15, side: THREE.BackSide }),
       );
       scene.add(atmo);
@@ -175,7 +180,8 @@ export default function BriefingPlanet({
       const ahead = new THREE.Vector3();
 
       // Debris for the burst, sampled on the sphere surface.
-      const COUNT = 6000;
+      // Debris positions are rewritten on the CPU every frame while forming/bursting, so the count matters.
+      const COUNT = low ? 1800 : 3600;
       const dirs = new Float32Array(COUNT * 3);
       const pos = new Float32Array(COUNT * 3);
       const col = new Float32Array(COUNT * 3);
@@ -327,7 +333,7 @@ export default function BriefingPlanet({
       disposed = true;
       cleanup();
     };
-  }, [progress, form, labels, flash]);
+  }, [progress, form, labels, flash, tier]);
 
   return <div ref={host} aria-hidden className="absolute inset-0" />;
 }

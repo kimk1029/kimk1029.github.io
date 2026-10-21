@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import type { MotionValue } from "framer-motion";
+import { useTier } from "./perf-tier";
 
 // Banded gas-giant texture drawn once on a canvas; no image assets to ship.
 const PALETTES = {
@@ -62,17 +63,20 @@ export function buildShip(THREE: typeof import("three")) {
 
 export default function OrbitScene({ progress, variant = "orbit" }: { progress: MotionValue<number>; variant?: "orbit" | "descent" }) {
   const host = useRef<HTMLDivElement>(null);
+  const tier = useTier();
 
   useEffect(() => {
     let disposed = false;
     let cleanup = () => {};
+    const low = tier === "low";
 
     import("three").then((THREE) => {
       const el = host.current;
       if (disposed || !el) return;
 
-      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      // Pixel ratio is the biggest lever on fill cost: 1.5 is indistinguishable here, 2 doubles the pixels.
+      const renderer = new THREE.WebGLRenderer({ antialias: !low, alpha: true, powerPreference: "high-performance" });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, low ? 1 : 1.5));
       el.appendChild(renderer.domElement);
       renderer.domElement.style.width = "100%";
       renderer.domElement.style.height = "100%";
@@ -85,7 +89,7 @@ export default function OrbitScene({ progress, variant = "orbit" }: { progress: 
       scene.add(sun);
 
       const planet = new THREE.Mesh(
-        new THREE.SphereGeometry(2, 64, 64),
+        new THREE.SphereGeometry(2, low ? 40 : 64, low ? 40 : 64),
         new THREE.MeshStandardMaterial({ map: planetTexture(THREE, PALETTES[variant === "orbit" ? "blue" : "red"]), roughness: 0.85 }),
       );
       planet.rotation.z = 0.25;
@@ -175,7 +179,7 @@ export default function OrbitScene({ progress, variant = "orbit" }: { progress: 
       disposed = true;
       cleanup();
     };
-  }, [progress, variant]);
+  }, [progress, variant, tier]);
 
   return <div ref={host} aria-hidden className="absolute inset-0" />;
 }

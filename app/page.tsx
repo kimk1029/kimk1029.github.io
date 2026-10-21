@@ -5,6 +5,7 @@ import Link from "next/link";
 import {
   motion,
   useReducedMotion,
+  useMotionValue,
   useMotionValueEvent,
   useScroll,
   useTransform,
@@ -252,10 +253,11 @@ function Briefing() {
       <div className="sticky top-0 h-screen overflow-hidden">
         {/* Giant type sits behind the transparent 3D canvas, so the planet passes in front of it. */}
         <motion.div aria-hidden style={{ opacity: chrome }} className="pointer-events-none absolute inset-0 flex flex-col justify-start gap-2 overflow-hidden pt-[13vh] font-hangul leading-none md:justify-between md:gap-0 md:py-[13vh]">
-          <motion.p style={{ x: driftL }} className="whitespace-nowrap text-[clamp(3.5rem,11vw,11rem)] text-pad/90">
+          {/* will-change keeps these giant glyphs on their own GPU layer instead of repainting them every frame */}
+          <motion.p style={{ x: driftL, willChange: "transform" }} className="whitespace-nowrap text-[clamp(3.5rem,11vw,11rem)] text-pad/90">
             AI는 누가 쓰느냐에 따라
           </motion.p>
-          <motion.p style={{ x: driftR }} className="whitespace-nowrap text-[clamp(3.5rem,11vw,11rem)] text-transparent [-webkit-text-stroke:1.5px_rgba(255,138,120,0.9)]">
+          <motion.p style={{ x: driftR, willChange: "transform" }} className="whitespace-nowrap text-[clamp(3.5rem,11vw,11rem)] text-transparent [-webkit-text-stroke:1.5px_rgba(255,138,120,0.9)]">
             다른 결과물을 만듭니다
           </motion.p>
         </motion.div>
@@ -265,6 +267,7 @@ function Briefing() {
         <div
           ref={flash}
           aria-hidden
+          style={{ willChange: "opacity" }}
           className="pointer-events-none absolute inset-0 z-20 bg-[radial-gradient(circle_at_50%_50%,#fff7e6_0%,#ffb347_30%,#d4291a_60%,transparent_85%)] opacity-0"
         />
 
@@ -445,17 +448,18 @@ function Journey() {
 
 /* ---------------- Impact: metrics orbit a planet ---------------- */
 
-function OrbitItem({ m, i, n, progress, active }: { m: (typeof impacts)[number]; i: number; n: number; progress: MotionValue<number>; active: boolean }) {
+function OrbitItem({ m, i, n, progress, active, size }: { m: (typeof impacts)[number]; i: number; n: number; progress: MotionValue<number>; active: boolean; size: MotionValue<{ w: number; h: number }> }) {
   // Item i reaches the front (bottom of the ellipse) at progress (i + 0.5) / n.
   const angle = useTransform(progress, (v) => ((90 + (i / n) * 360 - ((v * n - 0.5) / n) * 360) * Math.PI) / 180);
-  const left = useTransform(angle, (a) => `${50 + Math.cos(a) * 46}%`);
-  const top = useTransform(angle, (a) => `${50 + Math.sin(a) * 17}%`);
+  // Moved with transforms, not left/top: left/top would re-run layout on every scrolled frame.
+  const x = useTransform(() => Math.cos(angle.get()) * 0.46 * size.get().w);
+  const y = useTransform(() => Math.sin(angle.get()) * 0.17 * size.get().h);
   const depth = useTransform(angle, (a) => (Math.sin(a) + 1) / 2);
   const scale = useTransform(depth, [0, 1], [0.55, 1.05]);
   const opacity = useTransform(depth, [0, 1], [0.35, 1]);
   const zIndex = useTransform(depth, (d) => (d > 0.5 ? 3 : 1));
   return (
-    <motion.div style={{ left, top, opacity, zIndex }} className="absolute">
+    <motion.div style={{ x, y, opacity, zIndex, willChange: "transform" }} className="absolute left-1/2 top-1/2">
       <div className="-translate-x-1/2 -translate-y-1/2">
         <motion.div
           style={{ scale }}
@@ -475,6 +479,15 @@ function Impact() {
   const [active, setActive] = useState(0);
   useMotionValueEvent(scrollYProgress, "change", (v) => setActive(Math.min(n - 1, Math.max(0, Math.floor(v * n)))));
   const m = impacts[active];
+  const orbitRef = useRef<HTMLDivElement>(null);
+  const size = useMotionValue({ w: 0, h: 0 });
+  useEffect(() => {
+    const el = orbitRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => size.set({ w: el.clientWidth, h: el.clientHeight }));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [size]);
 
   return (
     <section id="impact" ref={ref} className="relative h-[460vh]">
@@ -495,14 +508,14 @@ function Impact() {
             </div>
           </div>
 
-          <div className="relative mx-auto aspect-square w-full max-w-[300px] md:max-w-[600px]">
+          <div ref={orbitRef} className="relative mx-auto aspect-square w-full max-w-[300px] md:max-w-[600px]">
             <div aria-hidden className="absolute inset-x-[4%] top-1/2 h-[34%] -translate-y-1/2 rounded-[50%] border border-dashed border-pad/30" />
             <div
               aria-hidden
               className="absolute left-1/2 top-1/2 z-[2] h-[44%] w-[44%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_35%_30%,#6f86ea_0%,#1d3fbf_42%,#0a1240_78%)] shadow-[0_0_80px_rgba(29,63,191,0.45)]"
             />
             {impacts.map((it, i) => (
-              <OrbitItem key={it.label} m={it} i={i} n={n} progress={scrollYProgress} active={i === active} />
+              <OrbitItem key={it.label} m={it} i={i} n={n} progress={scrollYProgress} active={i === active} size={size} />
             ))}
           </div>
         </div>
@@ -537,7 +550,7 @@ function CareerBlock({ c, index }: { c: (typeof careers)[number]; index: number 
       <ol className="grid gap-6">
         {c.cases.map((k, i) => (
           <Reveal key={k.title}>
-            <li className="border border-pad/20 bg-white/[0.04] p-6 backdrop-blur-sm transition-colors duration-500 ease-expo hover:border-pad/50 hover:bg-white/[0.08] md:p-8">
+            <li className="border border-pad/20 bg-white/[0.04] p-6 transition-colors duration-500 ease-expo hover:border-pad/50 hover:bg-white/[0.08] md:p-8">
               <div className="flex flex-wrap items-baseline justify-between gap-3">
                 <h4 className="font-hangul text-2xl leading-snug md:text-[1.75rem]">{k.title}</h4>
                 <span className="tabular font-mono text-xs text-pad/65">{k.period ?? String(i + 1).padStart(2, "0")}</span>
@@ -587,7 +600,7 @@ function StackCard({ item, i, total, progress }: { item: (typeof aiStack)[number
   const scale = useTransform(progress, [i / total, 1], [1, reduce ? 1 : 1 - (total - i) * 0.035]);
   return (
     <div className="sticky h-[72vh] md:h-[66vh]" style={{ top: `calc(5rem + ${i * 28}px)` }}>
-      <motion.article style={{ scale }} className={`flex h-full origin-top flex-col gap-10 border-2 border-pad/25 p-6 md:p-12 ${aiColors[i]}`}>
+      <motion.article style={{ scale, willChange: "transform" }} className={`flex h-full origin-top flex-col gap-10 border-2 border-pad/25 p-6 md:p-12 ${aiColors[i]}`}>
         <div className="flex items-start justify-between gap-6">
           <span className="tabular font-mono text-sm opacity-80">{String(i + 1).padStart(2, "0")}</span>
           <span className="text-right font-display text-sm font-black uppercase tracking-[0.15em] opacity-80">{item.tool}</span>
@@ -631,7 +644,7 @@ function ProjectRow({ p, i }: { p: (typeof personal)[number]; i: number }) {
 
   return (
     <article ref={ref} className="grid items-center gap-10 border-t border-white/25 py-16 md:grid-cols-2 md:gap-16 md:py-24">
-      <motion.div style={{ y, rotate }} className={`mx-auto w-56 md:w-80 ${flip ? "md:order-2" : ""}`}>
+      <motion.div style={{ y, rotate, willChange: "transform" }} className={`mx-auto w-56 md:w-80 ${flip ? "md:order-2" : ""}`}>
         <div className="relative">
           <div aria-hidden className="satellite-orbit absolute -inset-8 rounded-full border border-dashed border-pad/30">
             <span className="absolute -top-1.5 left-1/2 h-3 w-3 -translate-x-1/2 rounded-full bg-[#ff8a78]" />
@@ -754,7 +767,7 @@ function SkillRow({ group, i, progress }: { group: (typeof skills)[number]; i: n
   const items = [...group.items, ...group.items, ...group.items];
   return (
     <div className="overflow-hidden border-b-2 border-pad/25 py-5">
-      <motion.div style={{ x }} className="flex w-max items-center gap-6 whitespace-nowrap">
+      <motion.div style={{ x, willChange: "transform" }} className="flex w-max items-center gap-6 whitespace-nowrap">
         <span className="bg-pad px-3 py-1 font-display text-xl font-black uppercase tracking-wide text-ink">{group.category}</span>
         {items.map((it, k) => (
           <span key={k} className="flex items-center gap-6 font-display text-[clamp(2rem,5vw,4rem)] font-black uppercase leading-none">
@@ -832,7 +845,7 @@ function Contact() {
     <footer id="contact" ref={ref} className="relative overflow-hidden px-5 pb-28 pt-24 text-white md:px-6 md:pb-40 md:pt-36">
       <div aria-hidden className="pointer-events-none absolute left-1/2 top-[82%] -translate-x-1/2 md:top-[76%]">
         <motion.div
-          style={{ scale }}
+          style={{ scale, willChange: "transform" }}
           className="h-[140vw] w-[140vw] origin-top rounded-full bg-[radial-gradient(circle_at_50%_0%,#e8453a_0%,#a3200f_18%,#3a0a06_40%,#05060a_62%)]"
         />
       </div>

@@ -7,6 +7,7 @@ import {
 } from 'next/font/google';
 import './globals.css';
 import Starfield from './Starfield';
+import { PerfTierProbe } from './perf-tier';
 
 const display = Big_Shoulders_Display({ subsets: ['latin'], weight: ['700', '900'], variable: '--font-display' });
 const stencil = Big_Shoulders_Stencil_Display({ subsets: ['latin'], weight: ['800', '900'], variable: '--font-stencil' });
@@ -33,6 +34,7 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased">
+        <PerfTierProbe />
         <Starfield />
         {children}
       </body>
