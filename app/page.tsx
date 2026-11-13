@@ -31,7 +31,7 @@ import Warp from "./Warp";
 import Wormhole from "./Wormhole";
 import Tesseract from "./Tesseract";
 import MissionHud from "./MissionHud";
-import { Letterbox, ShaderScene } from "./Cinema";
+import { Letterbox, SceneLine, ShaderScene } from "./Cinema";
 import { GARGANTUA } from "./shaders";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -482,8 +482,15 @@ function Impact() {
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
   const n = impacts.length;
   const [active, setActive] = useState(0);
-  useMotionValueEvent(scrollYProgress, "change", (v) => setActive(Math.min(n - 1, Math.max(0, Math.floor(v * n)))));
+  // The metrics play out over the first 82% of the scroll; the rest is the fall into the hole.
+  const orbit = useTransform(scrollYProgress, [0, 0.82], [0, 1], { clamp: true });
+  useMotionValueEvent(orbit, "change", (v) => setActive(Math.min(n - 1, Math.max(0, Math.floor(v * n)))));
   const m = impacts[active];
+  const reduce = useReducedMotion();
+  const suckScale = useTransform(scrollYProgress, [0.84, 0.95], [1, reduce ? 1 : 0.04]);
+  const suckRotate = useTransform(scrollYProgress, [0.84, 0.95], [0, reduce ? 0 : 140]);
+  const suckOpacity = useTransform(scrollYProgress, [0.84, 0.93], [1, 0]);
+  const scrim = useTransform(scrollYProgress, [0.82, 0.9], [1, 0]);
   const orbitRef = useRef<HTMLDivElement>(null);
   const stickyRef = useRef<HTMLDivElement>(null);
   const size = useMotionValue({ w: 0, h: 0 });
@@ -506,13 +513,18 @@ function Impact() {
   }, [size, center]);
 
   return (
-    <section id="impact" ref={ref} data-act="ACT III · 가르강튀아" className="relative h-[520vh]">
+    <section id="impact" ref={ref} data-act="ACT III · 가르강튀아" className="relative h-[640vh]">
       <div ref={stickyRef} className="sticky top-0 flex h-screen items-center overflow-hidden bg-[radial-gradient(circle_at_70%_50%,#7a3a0c_0%,#1a0d05_30%,#05060a_60%)] pt-12">
         <ShaderScene frag={GARGANTUA} progress={scrollYProgress} center={center} steps={80} />
         {/* Keeps the copy readable where the accretion disk sweeps behind it. */}
-        <div aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-b from-vacuum/85 via-vacuum/35 to-transparent md:bg-gradient-to-r md:from-vacuum/90 md:via-vacuum/45" />
+        <motion.div aria-hidden style={{ opacity: scrim }} className="pointer-events-none absolute inset-0 bg-gradient-to-b from-vacuum/85 via-vacuum/35 to-transparent md:bg-gradient-to-r md:from-vacuum/90 md:via-vacuum/45" />
         <Letterbox progress={scrollYProgress} />
-        <div className="relative z-10 mx-auto grid w-full max-w-7xl items-center gap-6 px-5 md:grid-cols-[1fr_1.15fr] md:gap-10 md:px-6">
+        <SceneLine progress={scrollYProgress} from={0.87} to={0.995} className="z-30">
+          <p className="font-mono text-xs uppercase tracking-[0.3em] text-[#ff8a78] md:text-sm">Event horizon</p>
+          <p className="mt-4 font-hangul text-[clamp(2.2rem,6.5vw,6rem)] leading-[1.12] text-pad [text-shadow:0_2px_30px_rgba(5,6,10,0.95)]">사건의 지평선을<br />넘습니다.</p>
+        </SceneLine>
+        {/* Everything on screen spirals into the hole: origin is the hole itself. */}
+        <motion.div style={{ scale: suckScale, rotate: suckRotate, opacity: suckOpacity, willChange: "transform, opacity" }} className="relative z-10 mx-auto grid w-full max-w-7xl origin-[50%_72%] items-center gap-6 px-5 md:origin-[76%_50%] md:grid-cols-[1fr_1.15fr] md:gap-10 md:px-6">
           <div>
             <h2 className="font-display text-[clamp(2.75rem,7vw,6rem)] font-black uppercase leading-[0.85]">Impact</h2>
             <p className="mt-3 font-hangul text-xl text-white/80 md:text-3xl">가르강튀아 궤도 — 숫자로 남은 성과</p>
@@ -532,10 +544,10 @@ function Impact() {
           <div ref={orbitRef} className="relative mx-auto aspect-square w-full max-w-[300px] md:max-w-[600px]">
             <div aria-hidden className="absolute inset-x-[4%] top-1/2 h-[34%] -translate-y-1/2 rounded-[50%] border border-dashed border-pad/30" />
             {impacts.map((it, i) => (
-              <OrbitItem key={it.label} m={it} i={i} n={n} progress={scrollYProgress} active={i === active} size={size} />
+              <OrbitItem key={it.label} m={it} i={i} n={n} progress={orbit} active={i === active} size={size} />
             ))}
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
@@ -547,6 +559,7 @@ function CareerBlock({ c, index }: { c: (typeof careers)[number]; index: number 
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start 70%", "end 60%"] });
   const fill = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+  const reduce = useReducedMotion();
 
   return (
     <div ref={ref} className="grid gap-10 border-t-2 border-pad/25 py-16 md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] md:gap-14 md:py-24">
@@ -566,7 +579,14 @@ function CareerBlock({ c, index }: { c: (typeof careers)[number]; index: number 
 
       <ol className="grid gap-6">
         {c.cases.map((k, i) => (
-          <Reveal key={k.title}>
+          <motion.div
+            key={k.title}
+            style={{ transformPerspective: 1100, transformOrigin: "50% 0%" }}
+            initial={reduce ? false : { opacity: 0, rotateX: -38, y: 60 }}
+            whileInView={{ opacity: 1, rotateX: 0, y: 0 }}
+            viewport={{ once: true, margin: "-10% 0px" }}
+            transition={{ duration: 1, ease: EASE }}
+          >
             <li className="border border-pad/20 bg-white/[0.04] p-6 transition-colors duration-500 ease-expo hover:border-pad/50 hover:bg-white/[0.08] md:p-8">
               <div className="flex flex-wrap items-baseline justify-between gap-3">
                 <h4 className="font-hangul text-2xl leading-snug md:text-[1.75rem]">{k.title}</h4>
@@ -585,7 +605,7 @@ function CareerBlock({ c, index }: { c: (typeof careers)[number]; index: number 
                 <dd className="font-semibold">{k.impact}</dd>
               </dl>
             </li>
-          </Reveal>
+          </motion.div>
         ))}
       </ol>
     </div>

@@ -8,6 +8,9 @@ uniform float uTime;
 uniform float uP;
 uniform vec2 uCenter;
 uniform float uSteps;
+uniform vec2 uMouse;
+
+mat2 rot(float a) { return mat2(cos(a), -sin(a), sin(a), cos(a)); }
 
 float hash(vec2 p) {
   p = fract(p * vec2(123.34, 456.21));
@@ -40,17 +43,22 @@ float stars3(vec3 d, float density) {
 export const GARGANTUA = /* glsl */ `${COMMON}
 void main() {
   vec2 uv = (gl_FragCoord.xy - uCenter * uRes) / uRes.y;
-  float p = smoothstep(0.0, 1.0, uP);
-  float dist = mix(30.0, 13.0, p);
-  float inc = mix(0.17, 0.075, p);
-  float yaw = uP * 1.2 + uTime * 0.02;
+  // 0..0.82: slow approach while the metrics orbit. 0.84..1: we fall in.
+  float p = smoothstep(0.0, 1.0, clamp(uP / 0.82, 0.0, 1.0));
+  float k = smoothstep(0.84, 1.0, uP);
+  float k2 = k * k;
+  float dist = mix(mix(30.0, 13.0, p), 1.6, k2);
+  float inc = mix(0.17, 0.075, p) + k * 0.25;
+  float yaw = uP * 1.2 + uTime * 0.02 + k2 * 4.0;
+  // Space itself winds up around the hole as we cross the horizon.
+  uv = rot(k2 * 2.6 / (length(uv) + 0.35)) * uv;
   vec3 ro = dist * vec3(cos(inc) * sin(yaw), sin(inc), cos(inc) * cos(yaw));
   vec3 fw = normalize(-ro);
   vec3 rt = normalize(cross(vec3(0.0, 1.0, 0.0), fw));
   vec3 up = cross(fw, rt);
   float roll = -0.12;
   uv = mat2(cos(roll), -sin(roll), sin(roll), cos(roll)) * uv;
-  vec3 rd = normalize(fw * 1.6 + rt * uv.x + up * uv.y);
+  vec3 rd = normalize(fw * mix(1.6, 0.55, k) + rt * uv.x + up * uv.y);
 
   vec3 pos = ro, vel = rd;
   vec3 hv = cross(pos, vel);
@@ -93,7 +101,7 @@ void main() {
     col += tr * vec3(stars3(d, 42.0) + stars3(d, 95.0) * 0.6);
     col += tr * vec3(0.03, 0.04, 0.11) * fbm(d.xy * 3.0 + d.z);
   }
-  col = 1.0 - exp(-col * 1.5);
+  col = (1.0 - exp(-col * 1.5)) * (1.0 - smoothstep(0.75, 1.0, k));
   gl_FragColor = vec4(col, 1.0);
 }
 `;
@@ -146,40 +154,62 @@ void main() {
 }
 `;
 
-// Tesseract: an endless corridor whose walls are shelves of glowing spines,
-// flown through as you scroll.
+// Tesseract: a lattice of shelf-beams running along all three axes, repeated forever and
+// ray-marched, so nearer and farther beams slide past each other with real parallax.
+// The camera flies down one channel while rolling; the pointer leans the view.
 export const TESSERACT = /* glsl */ `${COMMON}
+float bar(vec2 a) { vec2 d = abs(a) - 0.34; return max(d.x, d.y); }
+float map(vec3 p) {
+  vec3 q = mod(p + 2.0, 4.0) - 2.0;
+  return min(bar(q.xy), min(bar(q.yz), bar(q.xz)));
+}
 void main() {
   vec2 uv = (gl_FragCoord.xy - 0.5 * uRes) / uRes.y;
-  float ang = (uP - 0.5) * 0.5;
-  uv = mat2(cos(ang), -sin(ang), sin(ang), cos(ang)) * uv;
-  float ax = 1.25;
-  vec2 q = vec2(uv.x / ax, uv.y);
-  float d = max(abs(q.x), abs(q.y));
-  float z = 0.5 / max(d, 0.002);
-  float t = uTime * 0.12 + uP * 7.0;
-  bool side = abs(q.x) > abs(q.y);
-  vec2 w = side ? vec2(z + t, uv.y * z * 2.0) : vec2(z + t, uv.x * z * 2.0 / ax);
+  float t = uTime * 0.35 + uP * 30.0;
+  vec3 ro = vec3(2.0 + sin(t * 0.13) * 0.55, 2.0 + cos(t * 0.11) * 0.55, t);
+  uv = rot(uP * 2.6 + uTime * 0.03) * uv;
+  // Very wide lens on entry (still falling), settling as we find our footing.
+  vec3 rd = normalize(vec3(uv, mix(0.45, 1.0, smoothstep(0.0, 0.22, uP))));
+  rd.yz = rot(cos(uP * 4.0) * 0.28 - uMouse.y * 0.3) * rd.yz;
+  rd.xz = rot(sin(uP * 6.283) * 0.55 + uMouse.x * 0.4) * rd.xz;
 
-  vec2 cell = vec2(floor(w.x * 7.0), floor(w.y * 2.5));
-  vec2 f = vec2(fract(w.x * 7.0), fract(w.y * 2.5));
-  float h = hash(cell);
-  float spine = smoothstep(0.0, 0.1, f.x) * smoothstep(1.0, 0.9, f.x);
-  float shelf = smoothstep(0.0, 0.07, f.y) * smoothstep(1.0, 0.88, f.y);
-  vec3 bc = mix(vec3(0.5, 0.24, 0.07), vec3(1.0, 0.72, 0.32), h);
-  bc = mix(bc, vec3(0.2, 0.32, 0.95), step(0.9, h));
-  bc = mix(bc, vec3(0.9, 0.2, 0.12), step(0.96, h));
-  float lit = 0.05 + 0.6 * pow(hash(cell + 17.0), 3.0);
-  // A pulse of light travels down the shelves.
-  lit += 0.9 * smoothstep(0.12, 0.0, abs(fract(w.x * 0.08 - uTime * 0.09) - 0.5) - 0.02) * h;
-  vec3 col = bc * spine * shelf * lit;
+  float tt = 0.0, d = 1.0, glow = 0.0;
+  for (int i = 0; i < 80; i++) {
+    if (float(i) >= uSteps) break;
+    d = map(ro + rd * tt);
+    glow += exp(-tt * 0.09) / (1.0 + d * d * 60.0);
+    if (d < 0.002 + tt * 0.0025 || tt > 70.0) break;
+    tt += d * 0.92;
+  }
 
-  // Gravity strings: thin bright lines running the length of the corridor.
-  float str = smoothstep(0.035, 0.0, abs(fract(w.y * 1.25 + 0.5) - 0.5));
-  col += vec3(1.0, 0.8, 0.5) * str * 0.35 * (side ? 1.0 : 0.6);
-
-  col *= smoothstep(0.02, 0.5, d) * (0.55 + 0.45 * smoothstep(0.9, 0.2, d));
-  col += vec3(1.0, 0.74, 0.4) * exp(-d * 16.0) * 0.9;
-  gl_FragColor = vec4(1.0 - exp(-col * 1.25), 1.0);
+  vec3 col = vec3(0.0);
+  if (tt < 70.0) {
+    vec3 p = ro + rd * tt;
+    vec3 q = mod(p + 2.0, 4.0) - 2.0;
+    float dxy = bar(q.xy), dyz = bar(q.yz), dxz = bar(q.xz);
+    float along; vec2 c2; vec2 lane;
+    if (dxy <= dyz && dxy <= dxz) { along = p.z; c2 = q.xy; lane = floor((p.xy + 2.0) / 4.0); }
+    else if (dyz <= dxz) { along = p.x; c2 = q.yz; lane = floor((p.yz + 2.0) / 4.0) + 31.0; }
+    else { along = p.y; c2 = q.xz; lane = floor((p.xz + 2.0) / 4.0) + 67.0; }
+    float face = abs(c2.x) > abs(c2.y) ? sign(c2.x) : 2.0 * sign(c2.y);
+    float cellI = floor(along * 5.0);
+    float f = fract(along * 5.0);
+    float h = hash(vec2(cellI + face * 13.0, lane.x * 7.0 + lane.y * 3.0));
+    float spine = smoothstep(0.0, 0.12, f) * smoothstep(1.0, 0.88, f);
+    // Position across the face, for the shelf edge lines.
+    float across = abs(c2.x) > abs(c2.y) ? c2.y : c2.x;
+    float shelf = smoothstep(0.34, 0.3, abs(across));
+    vec3 bc = mix(vec3(0.5, 0.24, 0.07), vec3(1.0, 0.72, 0.32), h);
+    bc = mix(bc, vec3(0.2, 0.32, 0.95), step(0.9, h));
+    bc = mix(bc, vec3(0.9, 0.2, 0.12), step(0.96, h));
+    float lit = 0.07 + 0.95 * pow(hash(vec2(cellI * 1.7 + lane.y, face + lane.x)), 3.0);
+    lit += 1.2 * smoothstep(0.1, 0.0, abs(fract(along * 0.07 - uTime * 0.12 + h) - 0.5)) * h;
+    col = bc * spine * shelf * lit * 1.25;
+  }
+  col *= exp(-tt * 0.075);
+  col += vec3(1.0, 0.7, 0.36) * glow * 0.018;
+  // Opens out of the black we fell into.
+  col *= smoothstep(0.0, 0.07, uP);
+  gl_FragColor = vec4(1.0 - exp(-col * 1.4), 1.0);
 }
 `;

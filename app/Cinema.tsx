@@ -57,6 +57,14 @@ export function ShaderScene({
     const uP = u("uP");
     const uCenter = u("uCenter");
     const uSteps = u("uSteps");
+    const uMouse = u("uMouse");
+    // Pointer position, eased, so the view leans instead of snapping.
+    const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
+    const onMove = (e: PointerEvent) => {
+      mouse.tx = (e.clientX / window.innerWidth) * 2 - 1;
+      mouse.ty = (e.clientY / window.innerHeight) * 2 - 1;
+    };
+    window.addEventListener("pointermove", onMove, { passive: true });
     c.style.opacity = "1";
 
     const low = tier === "low";
@@ -79,6 +87,9 @@ export function ShaderScene({
       gl.uniform1f(uTime, reduce ? 0 : time / 1000);
       gl.uniform1f(uP, progress.get());
       gl.uniform2f(uCenter, ctr.x, 1 - ctr.y);
+      mouse.x += (mouse.tx - mouse.x) * 0.06;
+      mouse.y += (mouse.ty - mouse.y) * 0.06;
+      gl.uniform2f(uMouse, mouse.x, mouse.y);
       gl.uniform1f(uSteps, low ? Math.round(steps * 0.6) : steps);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
     };
@@ -113,6 +124,7 @@ export function ShaderScene({
       ro.disconnect();
       io.disconnect();
       off?.();
+      window.removeEventListener("pointermove", onMove);
       gl.getExtension("WEBGL_lose_context")?.loseContext();
     };
   }, [frag, progress, center, steps, tier]);
