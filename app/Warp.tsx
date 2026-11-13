@@ -154,7 +154,7 @@ export default function Warp({ children }: { children: React.ReactNode }) {
   }, [reduce, low, scrollYProgress]);
 
   return (
-    <section ref={ref} className="relative z-30 h-[700vh]">
+    <section ref={ref} data-act="ACT I · 발사" className="relative z-30 h-[700vh]">
       <div className="sticky top-0 h-screen overflow-hidden">
         <motion.div
           style={{ scale: heroScale, opacity: heroOpacity, willChange: "transform, opacity", ...(low || reduce ? {} : { filter: heroBlur }) }}

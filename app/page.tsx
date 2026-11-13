@@ -28,6 +28,11 @@ import { Patch, TRANSMITTING, patchName } from "./Patch";
 import OrbitScene from "./OrbitScene";
 import BriefingPlanet from "./BriefingPlanet";
 import Warp from "./Warp";
+import Wormhole from "./Wormhole";
+import Tesseract from "./Tesseract";
+import MissionHud from "./MissionHud";
+import { Letterbox, ShaderScene } from "./Cinema";
+import { GARGANTUA } from "./shaders";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -209,7 +214,7 @@ function Manifesto() {
   const bar = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
   return (
-    <section id="about" ref={ref} className="relative h-[260vh]">
+    <section id="about" ref={ref} data-act="ACT II · 교신" className="relative h-[260vh]">
       <div className="sticky top-0 flex h-screen flex-col justify-center px-5 pt-12 md:px-6">
         <div className="mx-auto w-full max-w-6xl">
           <h2 className="font-hangul text-xl text-[#ff8a78]">교신 — 소개</h2>
@@ -249,7 +254,7 @@ function Briefing() {
   const row = buildLog[active];
 
   return (
-    <section id="briefing" ref={ref} className="relative -mt-[100vh] h-[800vh]">
+    <section id="briefing" ref={ref} data-act="ACT I · 미션 브리핑" className="relative -mt-[100vh] h-[800vh]">
       <div className="sticky top-0 h-screen overflow-hidden">
         {/* Giant type sits behind the transparent 3D canvas, so the planet passes in front of it. */}
         <motion.div aria-hidden style={{ opacity: chrome }} className="pointer-events-none absolute inset-0 flex flex-col justify-start gap-2 overflow-hidden pt-[13vh] font-hangul leading-none md:justify-between md:gap-0 md:py-[13vh]">
@@ -365,7 +370,7 @@ function Journey() {
   const s = stages[stage];
 
   return (
-    <section id="journey" ref={ref} className="relative md:h-[420vh]">
+    <section id="journey" ref={ref} data-act="ACT II · 항해" className="relative md:h-[420vh]">
       {/* Desktop: one sticky flight, scroll drives the profile */}
       <div className={`sticky top-0 hidden h-screen overflow-hidden pt-12 transition-colors duration-700 ease-expo md:block ${s.theme}`}>
         <div className="mx-auto grid h-full max-w-7xl grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-10 px-6 py-10 xl:pr-24">
@@ -463,7 +468,7 @@ function OrbitItem({ m, i, n, progress, active, size }: { m: (typeof impacts)[nu
       <div className="-translate-x-1/2 -translate-y-1/2">
         <motion.div
           style={{ scale }}
-          className={`grid h-[68px] w-[68px] place-items-center rounded-full border-2 text-center transition-colors duration-500 md:h-[104px] md:w-[104px] ${active ? "border-[#ff8a78] bg-nasa" : "border-pad/40 bg-[#0b0f24]"}`}
+          className={`grid h-[68px] w-[68px] place-items-center rounded-full border-2 text-center transition-colors duration-500 md:h-[104px] md:w-[104px] ${active ? "border-[#ff8a78] bg-nasa" : "border-pad/50 bg-[#0b0f24]/90"}`}
         >
           <span className="tabular px-1.5 font-display text-[15px] font-black leading-none md:text-[22px]">{m.value}</span>
         </motion.div>
@@ -480,22 +485,38 @@ function Impact() {
   useMotionValueEvent(scrollYProgress, "change", (v) => setActive(Math.min(n - 1, Math.max(0, Math.floor(v * n)))));
   const m = impacts[active];
   const orbitRef = useRef<HTMLDivElement>(null);
+  const stickyRef = useRef<HTMLDivElement>(null);
   const size = useMotionValue({ w: 0, h: 0 });
+  // Where the black hole sits on the full-bleed canvas: the middle of the orbit widget.
+  const center = useMotionValue({ x: 0.5, y: 0.5 });
   useEffect(() => {
     const el = orbitRef.current;
-    if (!el) return;
-    const ro = new ResizeObserver(() => size.set({ w: el.clientWidth, h: el.clientHeight }));
+    const sticky = stickyRef.current;
+    if (!el || !sticky) return;
+    const measure = () => {
+      size.set({ w: el.clientWidth, h: el.clientHeight });
+      const a = el.getBoundingClientRect();
+      const b = sticky.getBoundingClientRect();
+      center.set({ x: (a.left + a.width / 2 - b.left) / b.width, y: (a.top + a.height / 2 - b.top) / b.height });
+    };
+    const ro = new ResizeObserver(measure);
     ro.observe(el);
+    ro.observe(sticky);
     return () => ro.disconnect();
-  }, [size]);
+  }, [size, center]);
 
   return (
-    <section id="impact" ref={ref} className="relative h-[460vh]">
-      <div className="sticky top-0 flex h-screen items-center overflow-hidden pt-12">
-        <div className="mx-auto grid w-full max-w-7xl items-center gap-6 px-5 md:grid-cols-[1fr_1.15fr] md:gap-10 md:px-6">
+    <section id="impact" ref={ref} data-act="ACT III · 가르강튀아" className="relative h-[520vh]">
+      <div ref={stickyRef} className="sticky top-0 flex h-screen items-center overflow-hidden bg-[radial-gradient(circle_at_70%_50%,#7a3a0c_0%,#1a0d05_30%,#05060a_60%)] pt-12">
+        <ShaderScene frag={GARGANTUA} progress={scrollYProgress} center={center} steps={80} />
+        {/* Keeps the copy readable where the accretion disk sweeps behind it. */}
+        <div aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-b from-vacuum/85 via-vacuum/35 to-transparent md:bg-gradient-to-r md:from-vacuum/90 md:via-vacuum/45" />
+        <Letterbox progress={scrollYProgress} />
+        <div className="relative z-10 mx-auto grid w-full max-w-7xl items-center gap-6 px-5 md:grid-cols-[1fr_1.15fr] md:gap-10 md:px-6">
           <div>
             <h2 className="font-display text-[clamp(2.75rem,7vw,6rem)] font-black uppercase leading-[0.85]">Impact</h2>
-            <p className="mt-3 font-hangul text-xl text-white/80 md:text-3xl">행성 궤도 — 숫자로 남은 성과</p>
+            <p className="mt-3 font-hangul text-xl text-white/80 md:text-3xl">가르강튀아 궤도 — 숫자로 남은 성과</p>
+            <p className="mt-2 max-w-[38ch] text-sm leading-relaxed text-white/60 md:text-base">이곳의 1시간은 바깥의 7년. 말이 길어질 시간이 없어서, 숫자만 남깁니다.</p>
             <motion.div key={active} initial={{ opacity: 0, y: 20, filter: "blur(6px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} transition={{ duration: 0.6, ease: EASE }} className="mt-6 md:mt-12">
               <p className="tabular whitespace-nowrap font-display text-[clamp(3.5rem,9vw,8rem)] font-black leading-[0.85] text-[#ff8a78]">{m.value}</p>
               <p className="mt-3 font-hangul text-2xl md:text-3xl">{m.label}</p>
@@ -510,10 +531,6 @@ function Impact() {
 
           <div ref={orbitRef} className="relative mx-auto aspect-square w-full max-w-[300px] md:max-w-[600px]">
             <div aria-hidden className="absolute inset-x-[4%] top-1/2 h-[34%] -translate-y-1/2 rounded-[50%] border border-dashed border-pad/30" />
-            <div
-              aria-hidden
-              className="absolute left-1/2 top-1/2 z-[2] h-[44%] w-[44%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_35%_30%,#6f86ea_0%,#1d3fbf_42%,#0a1240_78%)] shadow-[0_0_80px_rgba(29,63,191,0.45)]"
-            />
             {impacts.map((it, i) => (
               <OrbitItem key={it.label} m={it} i={i} n={n} progress={scrollYProgress} active={i === active} size={size} />
             ))}
@@ -577,7 +594,7 @@ function CareerBlock({ c, index }: { c: (typeof careers)[number]; index: number 
 
 function Career() {
   return (
-    <section id="career" className="px-5 pt-24 md:px-6 md:pt-32">
+    <section id="career" data-act="ACT IV · 관제 기록" className="px-5 pt-24 md:px-6 md:pt-32">
       <div className="mx-auto max-w-7xl">
         <div className="flex flex-wrap items-end justify-between gap-6 pb-12">
           <SectionTitle en="Mission log" ko="관제 기록 — 경력 사항" />
@@ -618,7 +635,7 @@ function AiWorkflow() {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
   return (
-    <section id="ai" className="px-5 pb-32 pt-24 md:px-6 md:pt-32">
+    <section id="ai" data-act="ACT IV · 추진 시스템" className="px-5 pb-32 pt-24 md:px-6 md:pt-32">
       <div className="mx-auto max-w-7xl">
         <SectionTitle en="Propulsion" ko="추진 시스템 — AI 네이티브 개발 워크플로우" />
         <div ref={ref} className="relative mt-16 grid gap-10">
@@ -686,7 +703,7 @@ function ProjectRow({ p, i }: { p: (typeof personal)[number]; i: number }) {
 
 function Projects() {
   return (
-    <section id="projects" className="px-5 pt-24 text-white md:px-6 md:pt-32">
+    <section id="projects" data-act="ACT V · 위성" className="px-5 pt-24 text-white md:px-6 md:pt-32">
       <div className="mx-auto max-w-7xl">
         <SectionTitle en="Satellites" ko="위성 — 개인 프로젝트, 기획부터 배포까지 단독 수행" light />
         <div className="mt-12">
@@ -784,7 +801,7 @@ function Skills() {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   return (
-    <section id="skills" ref={ref} className="overflow-hidden py-24 md:py-32">
+    <section id="skills" ref={ref} data-act="ACT V · 성좌" className="overflow-hidden py-24 md:py-32">
       <div className="mx-auto max-w-7xl px-5 md:px-6">
         <SectionTitle en="Constellation" ko="성좌 — 핵심 보유 역량" />
       </div>
@@ -820,7 +837,7 @@ function Landing() {
   const lineB = useTransform(scrollYProgress, [0.45, 0.7], [0, 1]);
   const lineC = useTransform(scrollYProgress, [0.8, 0.95], [0, 1]);
   return (
-    <section ref={ref} className="relative h-[320vh]">
+    <section ref={ref} data-act="ACT VI · 귀환" className="relative h-[320vh]">
       <div className="sticky top-0 h-screen overflow-hidden">
         <OrbitScene progress={scrollYProgress} variant="descent" />
         <div className="pointer-events-none relative z-10 mx-auto flex h-full max-w-7xl flex-col justify-end gap-3 px-5 pb-16 font-hangul md:px-6">
@@ -842,7 +859,7 @@ function Contact() {
   const scale = useTransform(scrollYProgress, [0, 1], reduce ? [1, 1] : [0.6, 1]);
 
   return (
-    <footer id="contact" ref={ref} className="relative overflow-hidden px-5 pb-28 pt-24 text-white md:px-6 md:pb-40 md:pt-36">
+    <footer id="contact" ref={ref} data-act="ACT VI · 교신 채널" className="relative overflow-hidden px-5 pb-28 pt-24 text-white md:px-6 md:pb-40 md:pt-36">
       <div aria-hidden className="pointer-events-none absolute left-1/2 top-[82%] -translate-x-1/2 md:top-[76%]">
         <motion.div
           style={{ scale, willChange: "transform" }}
@@ -897,13 +914,16 @@ export default function Portfolio() {
         </div>
         <motion.div className="h-[3px] origin-left bg-nasa" style={{ scaleX: scrollYProgress }} />
       </header>
+      <MissionHud />
       <Warp>
         <Hero />
       </Warp>
       <Briefing />
+      <Wormhole />
       <Journey />
       <Manifesto />
       <Impact />
+      <Tesseract total={careerTotal} />
       <Career />
       <AiWorkflow />
       <Projects />
