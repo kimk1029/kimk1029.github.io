@@ -141,14 +141,18 @@ export default function Warp({ children }: { children: React.ReactNode }) {
     resize();
     window.addEventListener("resize", resize);
     // Only animate while the section is on screen.
-    const io = new IntersectionObserver(([e]) => {
-      cancelAnimationFrame(raf);
-      if (e.isIntersecting) raf = requestAnimationFrame(draw);
-    });
-    io.observe(c);
+    const io =
+      typeof IntersectionObserver === "undefined"
+        ? null
+        : new IntersectionObserver(([e]) => {
+            cancelAnimationFrame(raf);
+            if (e.isIntersecting) raf = requestAnimationFrame(draw);
+          });
+    if (io) io.observe(c);
+    else raf = requestAnimationFrame(draw);
     return () => {
       cancelAnimationFrame(raf);
-      io.disconnect();
+      io?.disconnect();
       window.removeEventListener("resize", resize);
     };
   }, [reduce, low, scrollYProgress]);

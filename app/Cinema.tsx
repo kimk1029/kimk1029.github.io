@@ -3,13 +3,14 @@
 import { useEffect, useRef } from "react";
 import { motion, useTransform, type MotionValue } from "framer-motion";
 import { useTier } from "./perf-tier";
+import { Safe, useNear } from "./Safe";
 
 const VERT = "attribute vec2 p; void main(){ gl_Position = vec4(p, 0.0, 1.0); }";
 
 // Runs one full-screen fragment shader, driven by scroll progress. Raw WebGL: a single
 // triangle and five uniforms don't need three.js. Draws only while on screen, at a capped
 // pixel count, because a full-screen ray shader is the most expensive thing on the page.
-export function ShaderScene({
+function ShaderSceneInner({
   frag,
   progress,
   center,
@@ -24,23 +25,28 @@ export function ShaderScene({
 }) {
   const ref = useRef<HTMLCanvasElement>(null);
   const tier = useTier();
+  const near = useNear(ref);
 
   useEffect(() => {
     const c = ref.current;
-    if (!c) return;
+    if (!c || !near) return;
+    let cleanup = () => {};
+    // Any failure here leaves the CSS fallback behind the canvas visible.
+    try {
     const gl = c.getContext("webgl", { antialias: false, alpha: false, powerPreference: "high-performance" });
-    if (!gl) return; // the CSS fallback behind the canvas stays visible
+    if (!gl || gl.isContextLost()) return;
 
     const compile = (type: number, src: string) => {
-      const s = gl.createShader(type)!;
+      const s = gl.createShader(type);
+      if (!s) return null; // a lost context hands back null
       gl.shaderSource(s, src);
       gl.compileShader(s);
       return gl.getShaderParameter(s, gl.COMPILE_STATUS) ? s : null;
     };
     const vs = compile(gl.VERTEX_SHADER, VERT);
     const fs = compile(gl.FRAGMENT_SHADER, frag);
-    const prog = gl.createProgram()!;
-    if (!vs || !fs) return;
+    const prog = gl.createProgram();
+    if (!vs || !fs || !prog) return;
     gl.attachShader(prog, vs);
     gl.attachShader(prog, fs);
     gl.linkProgram(prog);
@@ -119,17 +125,30 @@ export function ShaderScene({
     // With reduced motion there is no loop, so repaint when the scroll position changes.
     const off = reduce ? progress.on("change", () => visible && paint(0)) : undefined;
 
-    return () => {
+    cleanup = () => {
       cancelAnimationFrame(raf);
       ro.disconnect();
       io.disconnect();
       off?.();
       window.removeEventListener("pointermove", onMove);
+      c.style.opacity = "0";
       gl.getExtension("WEBGL_lose_context")?.loseContext();
     };
-  }, [frag, progress, center, steps, tier]);
+    } catch {
+      c.style.opacity = "0";
+    }
+    return () => cleanup();
+  }, [frag, progress, center, steps, tier, near]);
 
   return <canvas ref={ref} aria-hidden className={`absolute inset-0 h-full w-full opacity-0 ${className}`} />;
+}
+
+export function ShaderScene(props: Parameters<typeof ShaderSceneInner>[0]) {
+  return (
+    <Safe>
+      <ShaderSceneInner {...props} />
+    </Safe>
+  );
 }
 
 // Cinema bars that close in at the start of a pinned scene and open at the end.

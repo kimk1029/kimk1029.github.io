@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import type { MotionValue } from "framer-motion";
 import { useTier } from "./perf-tier";
+import { Safe, useNear } from "./Safe";
 
 // Banded gas-giant texture drawn once on a canvas; no image assets to ship.
 const PALETTES = {
@@ -61,11 +62,13 @@ export function buildShip(THREE: typeof import("three")) {
   return { ship, flame };
 }
 
-export default function OrbitScene({ progress, variant = "orbit" }: { progress: MotionValue<number>; variant?: "orbit" | "descent" }) {
+function OrbitSceneInner({ progress, variant = "orbit" }: { progress: MotionValue<number>; variant?: "orbit" | "descent" }) {
   const host = useRef<HTMLDivElement>(null);
   const tier = useTier();
+  const near = useNear(host);
 
   useEffect(() => {
+    if (!near) return;
     let disposed = false;
     let cleanup = () => {};
     const low = tier === "low";
@@ -170,16 +173,25 @@ export default function OrbitScene({ progress, variant = "orbit" }: { progress: 
         cancelAnimationFrame(raf);
         ro.disconnect();
         io.disconnect();
+        renderer.forceContextLoss();
         renderer.dispose();
         el.removeChild(renderer.domElement);
       };
-    });
+    }).catch(() => {});
 
     return () => {
       disposed = true;
       cleanup();
     };
-  }, [progress, variant, tier]);
+  }, [progress, variant, tier, near]);
 
   return <div ref={host} aria-hidden className="absolute inset-0" />;
+}
+
+export default function OrbitScene(props: Parameters<typeof OrbitSceneInner>[0]) {
+  return (
+    <Safe>
+      <OrbitSceneInner {...props} />
+    </Safe>
+  );
 }

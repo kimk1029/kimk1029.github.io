@@ -31,6 +31,7 @@ import Warp from "./Warp";
 import Wormhole from "./Wormhole";
 import Tesseract from "./Tesseract";
 import MissionHud from "./MissionHud";
+import { Safe } from "./Safe";
 import { Letterbox, SceneLine, ShaderScene } from "./Cinema";
 import { GARGANTUA } from "./shaders";
 
@@ -506,6 +507,8 @@ function Impact() {
       const b = sticky.getBoundingClientRect();
       center.set({ x: (a.left + a.width / 2 - b.left) / b.width, y: (a.top + a.height / 2 - b.top) / b.height });
     };
+    measure();
+    if (typeof ResizeObserver === "undefined") return; // very old browsers: measured once is enough
     const ro = new ResizeObserver(measure);
     ro.observe(el);
     ro.observe(sticky);
@@ -934,7 +937,9 @@ export default function Portfolio() {
         </div>
         <motion.div className="h-[3px] origin-left bg-nasa" style={{ scaleX: scrollYProgress }} />
       </header>
-      <MissionHud />
+      <Safe>
+        <MissionHud />
+      </Safe>
       <Warp>
         <Hero />
       </Warp>

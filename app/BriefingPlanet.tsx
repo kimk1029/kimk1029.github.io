@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import type { MotionValue } from "framer-motion";
 import { buildShip } from "./OrbitScene";
 import { useTier } from "./perf-tier";
+import { Safe, useNear } from "./Safe";
 
 export interface PlanetLabel {
   title: string;
@@ -87,7 +88,7 @@ function labelTexture(l: PlanetLabel, i: number, n: number) {
   return c;
 }
 
-export default function BriefingPlanet({
+function BriefingPlanetInner({
   progress,
   form,
   labels,
@@ -100,16 +101,18 @@ export default function BriefingPlanet({
 }) {
   const host = useRef<HTMLDivElement>(null);
   const tier = useTier();
+  const near = useNear(host);
 
   useEffect(() => {
+    if (!near) return;
     let disposed = false;
     let cleanup = () => {};
     const low = tier === "low";
 
     const fontsReady = Promise.all(
       labels.flatMap((l) => [
-        document.fonts.load('600 40px "Pretendard Variable"', l.short),
-        document.fonts.load(`64px ${cssFont("--font-hangul", "sans-serif")}`, l.title),
+        document.fonts?.load('600 40px "Pretendard Variable"', l.short),
+        document.fonts?.load(`64px ${cssFont("--font-hangul", "sans-serif")}`, l.title),
       ]),
     ).catch(() => undefined);
 
@@ -324,16 +327,25 @@ export default function BriefingPlanet({
         ro.disconnect();
         io.disconnect();
         tex.dispose();
+        renderer.forceContextLoss();
         renderer.dispose();
         el.removeChild(renderer.domElement);
       };
-    });
+    }).catch(() => {});
 
     return () => {
       disposed = true;
       cleanup();
     };
-  }, [progress, form, labels, flash, tier]);
+  }, [progress, form, labels, flash, tier, near]);
 
   return <div ref={host} aria-hidden className="absolute inset-0" />;
+}
+
+export default function BriefingPlanet(props: Parameters<typeof BriefingPlanetInner>[0]) {
+  return (
+    <Safe>
+      <BriefingPlanetInner {...props} />
+    </Safe>
+  );
 }
